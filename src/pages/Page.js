@@ -1,0 +1,69 @@
+
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Container from '@mui/material/Container';
+import { Menu, Sync, Mail } from '@material-ui/icons';
+import { Drawer, Box, List, ListItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
+import { useState } from 'react';
+import { useHistory } from 'react-router';
+
+export default function Page({ title, children }) {
+    const [menuOpen, setMenuOpen] = useState(false);
+    const history = useHistory();
+    return (
+        <>
+            <AppBar position="static">
+                <Toolbar>
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 2 }}
+                        onClick={e => { setMenuOpen(true) }}
+                    >
+                        <Menu />
+                    </IconButton>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                        {title}
+                    </Typography>
+                </Toolbar>
+            </AppBar>
+            <Drawer
+                anchor="left"
+                open={menuOpen}
+                onClose={() => { setMenuOpen(false) }}
+            >
+                <Box
+                    sx={{ width: 250 }}
+                    role="presentation"
+                    onClick={() => { setMenuOpen(false) }}
+                    onKeyDown={() => { setMenuOpen(false) }}
+                >
+                    <List>
+                        <ListItem button key={"change-player"} onClick={e=>{history.push("/login")}}>
+                            <ListItemIcon>
+                                <Sync/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Cambiar participante"} />
+                        </ListItem>
+                    </List>
+                    <Divider />
+                    <List>
+                        <ListItem button key={"Test2"}>
+                            <ListItemIcon>
+                                <Mail/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Test2"} />
+                        </ListItem>
+                    </List>
+                </Box>
+            </Drawer>
+            <Container>
+                {children}
+            </Container>
+        </>
+    );
+}

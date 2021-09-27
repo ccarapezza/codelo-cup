@@ -1,12 +1,10 @@
-import logo from "./logo.svg";
 import "./App.css";
-
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import axios from "axios";
 
-axios.defaults.baseURL = "https://192.168.0.5:8080";
+axios.defaults.baseURL = "https://codelo-cup-api.herokuapp.com/";
 //axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 //axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
