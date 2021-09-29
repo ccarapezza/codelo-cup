@@ -14,13 +14,11 @@ import {
   Divider,
 } from "@mui/material";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import { useState } from "react";
 import { useHistory } from "react-router";
 
-export default function Page({ title, children }) {
+export default function Page({ title, children, footer = true }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const history = useHistory();
   return (
@@ -87,23 +85,25 @@ export default function Page({ title, children }) {
         </Box>
       </Drawer>
       <Container sx={{ p: 2, pl: 3, pr: 3 }}>{children}</Container>
-      <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
-        <Card>
-          <CardContent>
-            <Typography
-              sx={{ fontSize: 14 }}
-              color="text.secondary"
-              gutterBottom
-            >
-              Participante
-            </Typography>
-            <Typography variant="h5" component="div">
-              Jorge Juarez
-            </Typography>
-            <Typography color="text.secondary">#1234</Typography>
-          </CardContent>
-        </Card>
-      </AppBar>
+      {footer&&
+        <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
+            <Card>
+            <CardContent>
+                <Typography
+                sx={{ fontSize: 14 }}
+                color="text.secondary"
+                gutterBottom
+                >
+                Participante
+                </Typography>
+                <Typography variant="h5" component="div">
+                Jorge Juarez
+                </Typography>
+                <Typography color="text.secondary">#1234</Typography>
+            </CardContent>
+            </Card>
+        </AppBar>
+      }
     </>
   );
 }
