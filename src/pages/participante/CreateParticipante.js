@@ -73,7 +73,7 @@ export default function CreateParticipante() {
                 <ListItem>
                   <Stack width="100%" spacing={2}>
                     <Box sx={{display:"flex", justifyContent:"space-between" }}>
-                      <Chip label={"#"+index}/>
+                      <Chip label={"#"+(index+1)}/>
                       <IconButton size="small" component="span" disabled={index===0} onClick={(e)=>{removeMuestra(index)}}>
                         <Delete fontSize="small"/>
                       </IconButton>

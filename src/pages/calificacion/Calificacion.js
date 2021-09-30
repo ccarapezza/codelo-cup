@@ -1,8 +1,8 @@
-import React from 'react'
-import { InputLabel, Rating, Slider } from '@mui/material'
-import { Box } from '@mui/system'
+import React, { useState } from 'react'
+import { InputLabel, Paper, Rating, Stack } from '@mui/material'
 import { useParams } from 'react-router';
 import Page from '../Page';
+import { Box } from '@mui/system';
 
 const marks = [
     { label: "1", value: 1 },
@@ -19,55 +19,34 @@ const marks = [
 
 export default function Calificacion() {
     let { hash } = useParams();
+    const [presentacion, setPresentacion] = useState();
+    const [aromaApagado, setAromaApagado] = useState();
+    const [aromaPrendido, setAromaPrendido] = useState();
+    const [saborApagado, setSaborApagado] = useState();
+    const [saborPrendido, setSaborPrendido] = useState();
+
     console.log("hash",hash);
     return (
         <Page title="Calificación" >
-            <Box>
-                <InputLabel htmlFor="visual-input">Visual</InputLabel>
-                <Slider
-                id="visual-input"
-                aria-label="Temperature"
-                defaultValue={1}
-                valueLabelDisplay="off"
-                step={1}
-                marks={marks}
-                min={1}
-                max={10}
-                />
+            <Stack spacing={2}>
+                <InputLabel htmlFor="presentacion-input">Presentación</InputLabel>
+                <Box sx={{display:"flex"}}>
+                    <Rating name="presentacion-input" size="large" value={5} onChange={(event, value)=>{setPresentacion(value)}} max={10} />
+                    <Paper variant="outlined">{presentacion}</Paper>
+                </Box>
 
-                <InputLabel sx={{ mt: 4 }} htmlFor="aroma-input">
-                Aroma
-                </InputLabel>
-                <Rating name="aroma-input" defaultValue={5} max={10} /><span>5</span>
+                <InputLabel htmlFor="aroma-input">Aroma (Apagado)</InputLabel>
+                <Rating name="aroma-input" size="large" defaultValue={5} max={10} /><span>5</span>
 
-                <InputLabel sx={{ mt: 4 }} htmlFor="sabor-input">
-                Sabor
-                </InputLabel>
-                <Slider
-                id="sabor-input"
-                aria-label="Sabor"
-                defaultValue={1}
-                valueLabelDisplay="auto"
-                step={1}
-                marks={marks}
-                min={1}
-                max={10}
-                />
+                <InputLabel htmlFor="aroma-input">Aroma (Prendido)</InputLabel>
+                <Rating name="aroma-input" size="large" defaultValue={5} max={10} /><span>5</span>
 
-                <InputLabel sx={{ mt: 4 }} htmlFor="efecto-input">
-                Efecto
-                </InputLabel>
-                <Slider
-                id="efecto-input"
-                aria-label="Efecto"
-                defaultValue={1}
-                valueLabelDisplay="auto"
-                step={1}
-                marks={marks}
-                min={1}
-                max={10}
-                />
-            </Box>
+                <InputLabel htmlFor="sabor-input">Sabor (Apagado)</InputLabel>
+                <Rating name="aroma-input" size="large" defaultValue={5} max={10} /><span>5</span>
+
+                <InputLabel htmlFor="sabor-input">Sabor (Prendido)</InputLabel>
+                <Rating name="aroma-input" size="large" defaultValue={5} max={10} /><span>5</span>
+            </Stack>
         </Page>
     )
 }
