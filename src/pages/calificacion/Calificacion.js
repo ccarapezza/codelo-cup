@@ -1,51 +1,59 @@
 import React, { useState } from 'react'
-import { InputLabel, Paper, Rating, Stack } from '@mui/material'
+import { Button, Chip, Divider, InputLabel, Paper, Rating, Stack } from '@mui/material'
+import { Star } from "@material-ui/icons";
 import { useParams } from 'react-router';
 import Page from '../Page';
 import { Box } from '@mui/system';
 
-const marks = [
-    { label: "1", value: 1 },
-    { label: "2", value: 2 },
-    { label: "3", value: 3 },
-    { label: "4", value: 4 },
-    { label: "5", value: 5 },
-    { label: "6", value: 6 },
-    { label: "7", value: 7 },
-    { label: "8", value: 8 },
-    { label: "9", value: 9 },
-    { label: "10", value: 10 },
-];
-
 export default function Calificacion() {
     let { hash } = useParams();
-    const [presentacion, setPresentacion] = useState();
-    const [aromaApagado, setAromaApagado] = useState();
-    const [aromaPrendido, setAromaPrendido] = useState();
-    const [saborApagado, setSaborApagado] = useState();
-    const [saborPrendido, setSaborPrendido] = useState();
+    const [presentacion, setPresentacion] = useState(5);
+    const [aromaApagado, setAromaApagado] = useState(5);
+    const [aromaPrendido, setAromaPrendido] = useState(5);
+    const [saborApagado, setSaborApagado] = useState(5);
+    const [saborPrendido, setSaborPrendido] = useState(5);
 
     console.log("hash",hash);
     return (
-        <Page title="Calificación" >
-            <Stack spacing={2}>
+        <Page title={<Box sx={{display:"flex", alignItems: "center"}}>Calificación <Chip sx={{ml:1, color: "white"}} size="small" variant="outlined" label={"Muestra #"+1}/></Box>} >
+            <Stack >
                 <InputLabel htmlFor="presentacion-input">Presentación</InputLabel>
-                <Box sx={{display:"flex"}}>
-                    <Rating name="presentacion-input" size="large" value={5} onChange={(event, value)=>{setPresentacion(value)}} max={10} />
-                    <Paper variant="outlined">{presentacion}</Paper>
+                <Box sx={{display:"flex", alignItems: "center"}}>
+                    <Rating sx={{display:"flex"}} name="presentacion-input" value={presentacion} onChange={(event, value)=>{setPresentacion(value)}} max={10} />
+                    <Paper sx={{p:1, ml:2, borderColor: "black", fontWeight: "bold"}} variant="outlined">{presentacion}</Paper>
                 </Box>
+                <Divider sx={{mt:1, mb:1}}/>
 
-                <InputLabel htmlFor="aroma-input">Aroma (Apagado)</InputLabel>
-                <Rating name="aroma-input" size="large" defaultValue={5} max={10} /><span>5</span>
+                <InputLabel htmlFor="aroma-a-input">Aroma (Apagado)</InputLabel>
+                <Box sx={{display:"flex", alignItems: "center"}}>
+                    <Rating name="aroma-a-input" value={aromaApagado} onChange={(event, value)=>{setAromaApagado(value)}} max={10} />
+                    <Paper sx={{p:1, ml:2, borderColor: "black", fontWeight: "bold"}} variant="outlined">{aromaApagado}</Paper>
+                </Box>
+                <Divider sx={{mt:1, mb:1}}/>
 
-                <InputLabel htmlFor="aroma-input">Aroma (Prendido)</InputLabel>
-                <Rating name="aroma-input" size="large" defaultValue={5} max={10} /><span>5</span>
+                <InputLabel htmlFor="sabor-a-input">Sabor (Apagado)</InputLabel>
+                <Box sx={{display:"flex", alignItems: "center"}}>
+                    <Rating name="sabor-a-input" value={saborApagado} onChange={(event, value)=>{setSaborApagado(value)}} max={10} />
+                    <Paper sx={{p:1, ml:2, borderColor: "black", fontWeight: "bold"}} variant="outlined">{saborApagado}</Paper>
+                </Box>
+                <Divider sx={{mt:1, mb:1}}/>
 
-                <InputLabel htmlFor="sabor-input">Sabor (Apagado)</InputLabel>
-                <Rating name="aroma-input" size="large" defaultValue={5} max={10} /><span>5</span>
+                <InputLabel htmlFor="aroma-p-input">Aroma (Prendido)</InputLabel>
+                <Box sx={{display:"flex", alignItems: "center"}}>
+                    <Rating name="aroma-p-input" value={aromaPrendido} onChange={(event, value)=>{setAromaPrendido(value)}} max={10} />
+                    <Paper sx={{p:1, ml:2, borderColor: "black", fontWeight: "bold"}} variant="outlined">{aromaPrendido}</Paper>
+                </Box>
+                <Divider sx={{mt:1, mb:1}}/>
 
-                <InputLabel htmlFor="sabor-input">Sabor (Prendido)</InputLabel>
-                <Rating name="aroma-input" size="large" defaultValue={5} max={10} /><span>5</span>
+                <InputLabel htmlFor="sabor-p-input">Sabor (Prendido)</InputLabel>
+                <Box sx={{display:"flex", alignItems: "center"}}>
+                    <Rating name="sabor-p-input" value={saborPrendido} onChange={(event, value)=>{setSaborPrendido(value)}} max={10} />
+                    <Paper sx={{p:1, ml:2, borderColor: "black", fontWeight: "bold"}} variant="outlined">{saborPrendido}</Paper>
+                </Box>
+                <Divider sx={{mt:1, mb:1}}/>
+                <Button size="large" color="primary" variant="contained" startIcon={<Star/>} onClick={()=>{}}>
+                    Calificar
+                </Button>
             </Stack>
         </Page>
     )
