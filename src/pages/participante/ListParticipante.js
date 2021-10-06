@@ -39,7 +39,7 @@ export default function ListParticipante() {
         <List sx={{paddingTop: "0", marginTop: 0}}>
           {participantes?.map((participante)=>{
             return(
-              <>
+              <div key={participante.hash}>
                 <ListItem>
                   <ListItemAvatar>
                     <Avatar>
@@ -47,18 +47,21 @@ export default function ListParticipante() {
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
-                  primary={participante.name} 
-                  secondary={
-                    <React.Fragment>
-                      {participante.muestras?.map((muestra)=>
-                        <Chip sx={{pl: "5px", mr: 1}} icon={<FontAwesomeIcon icon={faCannabis} />} label={muestra.name+(muestra.description?(" ("+muestra.description+")"):"")} />
-                      )}
-                    </React.Fragment>
-                  }
+                    primary={participante.name} 
+                    secondary={participante.muestras?.map((muestra)=>
+                      <Chip
+                        key={muestra.hash}
+                        component="span"
+                        sx={{pl: "5px", mr: 1}}
+                        icon={<FontAwesomeIcon
+                          icon={faCannabis} />
+                        }
+                        label={muestra.name+(muestra.description?(" ("+muestra.description+")"):"")} />
+                    )}
                   />
                 </ListItem>
-                <Divider/>
-              </>
+                <Divider />
+              </div>
             )
           })}
         </List>

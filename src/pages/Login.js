@@ -1,19 +1,26 @@
-import { Stack } from "@mui/material";
+import { faCamera, faSquareFull, faSyncAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Card, CardContent, CardHeader, IconButton, Stack } from "@mui/material";
 import React, { useContext, useState } from "react";
 import QrReader from "react-qr-reader";
+import Loading from "../components/Loading";
 import Context from "../context/Context";
 import Page from "./Page";
 
 export default function Login() {
   const context = useContext(Context);
+  const [camera, setCamera] = useState("environment");
+  const switchCamera = () => {
+      setCamera(camera==="environment"?"user":"environment");
+  };
 
   const [hash, setHash] = useState();
-  const [result, setResult] = useState();
-  const [error, setError] = useState();
+  const [error, setError] = useState(false);
 
   const handleScan = (data) => {
     if (data) {
-      setResult(data);
+      setHash(data)
+      context.participanteLogin(data)
     }
   };
 
@@ -25,20 +32,41 @@ export default function Login() {
   return (
     <Page title="Ingresar Participante">
       <Stack>
-        {!result && (
-          <QrReader
-            delay={300}
-            onError={handleError}
-            onScan={handleScan}
-            style={{ width: "100%" }}
-          />
+        {!error && (
+          <Card>
+            <CardHeader
+              sx={{pb:0}}
+              subheader="Escanee el codigo de su credencial para comenzar a calificar"
+              action={
+                <IconButton aria-label="settings" onClick={(e)=>{switchCamera()}}>
+                  <span className="fa-layers fa-fw fa-2x fa-dark">
+                    <FontAwesomeIcon icon={faCamera}/>
+                    <FontAwesomeIcon icon={faSquareFull} transform="shrink-4 down-1"/>
+                    <FontAwesomeIcon icon={faSyncAlt} inverse transform="shrink-8 down-1"/>
+                  </span>
+                </IconButton>
+              } />
+            <CardContent>
+              {/*<div>
+                <input type="text" value={hash} onChange={(e)=>{setHash(e.target.value)}} />
+                <button onClick={(e)=>{context.participanteLogin(hash)}}>Login</button>
+              </div>
+              <div>QR RESULT:{hash}</div>
+              <div>{JSON.stringify(error)}</div>*/}
+              {!hash?
+                <QrReader
+                  facingMode={camera}
+                  delay={300}
+                  onError={handleError}
+                  onScan={handleScan}
+                  style={{ width: "100%" }}
+                  />
+              :
+                <Loading/>
+              }
+            </CardContent>
+        </Card>
         )}
-        <p>
-          <input type="text" value={hash} onChange={(e)=>{setHash(e.target.value)}} />
-          <button onClick={(e)=>{context.participanteLogin(hash)}}>Login</button>
-        </p>
-        <p>QR RESULT:{result}</p>
-        <p>{JSON.stringify(error)}</p>
       </Stack>
     </Page>
   );

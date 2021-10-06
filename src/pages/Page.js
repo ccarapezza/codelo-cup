@@ -91,8 +91,8 @@ export default function Page({ title, children, footer = true }) {
           </List>
           {context.isLogged&&
             <List>
-              <Divider>
-                <Chip label="Administración" />
+              <Divider key={"admin-menu-title"}>
+                <Chip label="Menú Administrador" color="primary"/>
               </Divider>
               
               <ListItem button key={"create-player"} onClick={(e)=>history.push("/participante/create")}>

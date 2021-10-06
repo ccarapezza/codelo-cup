@@ -9,10 +9,9 @@ import ListParticipante from "./pages/participante/ListParticipante";
 import AdminLogin from "./pages/AdminLogin";
 import ContextProvider from "./context/ContextProvider";
 
-//axios.defaults.baseURL = "https://codelo-cup-api.herokuapp.com/";
-axios.defaults.baseURL = "http://localhost:8080/";
-//axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
-//axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+axios.defaults.baseURL = "https://codelo-cup-api.herokuapp.com/";
+//axios.defaults.baseURL = "http://localhost:8080/";
+axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
 export default function App() {
   return (
@@ -26,7 +25,7 @@ export default function App() {
             <Route path="/login">
               <Login />
             </Route>
-            <Route path="/calificacion/:hash">
+            <Route path="/calificacion">
               <Calificacion />
             </Route>
             <Route path="/participante/create">

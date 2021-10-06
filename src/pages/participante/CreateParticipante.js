@@ -104,7 +104,7 @@ export default function CreateParticipante() {
           <List sx={{paddingTop: "0", marginTop: 0}}>
             {muestras.map((muestra, index)=>{
               return(
-                <>
+                <div key={index}>
                   <ListItem>
                     <Stack width="100%" spacing={2}>
                       <Box sx={{display:"flex", justifyContent:"space-between" }}>
@@ -118,7 +118,7 @@ export default function CreateParticipante() {
                     </Stack>
                   </ListItem>
                   <Divider/>
-                </>
+                </div>
               )
             })}
             <ListItem sx={{display: "flex", justifyContent: "end"}}>

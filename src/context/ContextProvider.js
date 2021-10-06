@@ -32,8 +32,6 @@ function ContextProvider({ children }) {
   const setUserData = (newUserData) => {
     if(newUserData){
       sessionStorage.setItem('userdata', JSON.stringify(newUserData));
-    }else{
-      sessionStorage.clear();
     }
     setUserDataState(newUserData);
   }
@@ -41,13 +39,12 @@ function ContextProvider({ children }) {
   const setParticipanteData = (newParticipanteData) => {
     if(newParticipanteData){
       sessionStorage.setItem('participantedata', JSON.stringify(newParticipanteData));
-    }else{
-      sessionStorage.clear();
     }
     setParticipanteDataState(newParticipanteData);
   }
 
   const login = (username, password) => {
+    sessionStorage.clear();
     setUserData(null);
     setIsLogged(false);
     axios.post("/api/auth/signin",{
@@ -72,32 +69,14 @@ function ContextProvider({ children }) {
   }
 
   const logout = () => {
+    sessionStorage.clear();
     setUserData(null);
     showMessage("Sesión cerrada.", "success");
     history.push("/");
   }
 
-  useEffect(() => {
-    if(userData?.accessToken){
-      setIsLogged(true);
-      setIsParticipanteLogged(false);
-      setParticipanteData(null);
-    }else{
-      setIsLogged(false);
-    }
-  }, [userData?.accessToken]);
-
-  useEffect(() => {
-    if(participanteData?.hash){
-      setIsParticipanteLogged(true);
-      setIsLogged(false);
-      setUserData(null);
-    }else{
-      setIsParticipanteLogged(false);
-    }
-  }, [participanteData?.hash]);
-
   const participanteLogin = (hash) => {
+    sessionStorage.clear();
     setParticipanteData(null);
     setIsParticipanteLogged(false);
     axios.post("/api/participante/login",{
@@ -114,10 +93,38 @@ function ContextProvider({ children }) {
       }
     })
     .catch(function (error) {
-      showMessage("No se ha encontrado el Participante. Contacte con el administrador.", "error");
+      showMessage("No se ha encontrado el Participante. Contacte con el administrador."+error, "error");
       console.error(error);
     })
   };
+
+  useEffect(() => {
+    if(userData?.accessToken){
+      setIsLogged(true);
+      setIsParticipanteLogged(false);
+      setParticipanteData(null);
+      //Set id token
+      axios.defaults.headers.common["x-access-hash"] = null;
+      axios.defaults.headers.common["x-access-token"] = userData?.accessToken;
+      console.log("Setting headers...", axios.defaults.headers.common);
+    }else{
+      setIsLogged(false);
+    }
+  }, [userData?.accessToken]);
+  
+  useEffect(() => {
+    if(participanteData?.hash){
+      setIsParticipanteLogged(true);
+      setIsLogged(false);
+      setUserData(null);
+      //Set id hash
+      axios.defaults.headers.common["x-access-token"] = null;
+      axios.defaults.headers.common["x-access-hash"] = participanteData?.hash;
+    }else{
+      setIsParticipanteLogged(false);
+    }
+  }, [participanteData?.hash]);
+
 
   return (
     <Context.Provider value={{ 
