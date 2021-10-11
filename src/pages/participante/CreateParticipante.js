@@ -27,7 +27,6 @@ export default function CreateParticipante() {
       name: nombre,
       muestras: muestras,
     }).then(function (response) {
-      console.log(response);
       if(response.status === 200){
         context.showMessage("Participante creado correctamente!", "success");
         clearForm();

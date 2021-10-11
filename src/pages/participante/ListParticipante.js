@@ -15,7 +15,6 @@ export default function ListParticipante() {
     axios.get("/api/participante/list")
     .then(function (response) {
       // handle success
-      console.log(response);
       if(response.status === 200){
         setParticipantes(response.data);
       }

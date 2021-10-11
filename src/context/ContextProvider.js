@@ -51,9 +51,7 @@ function ContextProvider({ children }) {
       username: username,
       password: password,
     }).then(function (response) {
-      console.log(response);
       if(response.status === 200){
-        console.log(response.data)
         setUserData(response.data);
         showMessage("Sesión iniciada, Bienvenido!", "success");
         history.push("/");
@@ -71,6 +69,7 @@ function ContextProvider({ children }) {
   const logout = () => {
     sessionStorage.clear();
     setUserData(null);
+    setParticipanteData(null);
     showMessage("Sesión cerrada.", "success");
     history.push("/");
   }
@@ -82,7 +81,6 @@ function ContextProvider({ children }) {
     axios.post("/api/participante/login",{
       hash: hash
     }).then(function (response) {
-      console.log(response);
       if(response.status === 200){
         setParticipanteData(response.data);
         showMessage("Participante Identificado correctamente!", "success");
@@ -106,7 +104,6 @@ function ContextProvider({ children }) {
       //Set id token
       axios.defaults.headers.common["x-access-hash"] = null;
       axios.defaults.headers.common["x-access-token"] = userData?.accessToken;
-      console.log("Setting headers...", axios.defaults.headers.common);
     }else{
       setIsLogged(false);
     }
@@ -147,7 +144,7 @@ function ContextProvider({ children }) {
       }}>
         {children}
         <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
-          <Alert onClose={handleSnackbarClose} severity={severity} sx={{ width: '100%' }}>
+          <Alert elevation={3} onClose={handleSnackbarClose} severity={severity} sx={{ width: '100%' }}>
             {snackbarMessage}
           </Alert>
         </Snackbar>

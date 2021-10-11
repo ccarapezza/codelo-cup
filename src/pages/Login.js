@@ -47,12 +47,14 @@ export default function Login() {
                 </IconButton>
               } />
             <CardContent>
-              {/*<div>
+              {/*
+              <div>
                 <input type="text" value={hash} onChange={(e)=>{setHash(e.target.value)}} />
                 <button onClick={(e)=>{context.participanteLogin(hash)}}>Login</button>
               </div>
               <div>QR RESULT:{hash}</div>
-              <div>{JSON.stringify(error)}</div>*/}
+              <div>{JSON.stringify(error)}</div>
+              */}
               {!hash?
                 <QrReader
                   facingMode={camera}

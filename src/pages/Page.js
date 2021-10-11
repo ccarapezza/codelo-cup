@@ -47,8 +47,8 @@ export default function Page({ title, children, footer = true }) {
           <List>
             <ListItem button key={"home"} onClick={(e)=>history.push("/")}>
               <ListItemIcon>
-                <span className="fa-layers fa-fw fa-2x">
-                  <FontAwesomeIcon icon={faHome} />
+                <span className="fa-layers fa-fw fa-3x">
+                  <FontAwesomeIcon icon={faHome} transform="shrink-6 left-2"/>
                 </span>
               </ListItemIcon>
               <ListItemText primary={"Inicio"} />
@@ -75,8 +75,16 @@ export default function Page({ title, children, footer = true }) {
                   </ListItemIcon>
                   <ListItemText primary={"Calificar Muestra"} />
                 </ListItem>
+                <ListItem button key={"logout"} onClick={(e)=>context.logout()}>
+                  <ListItemIcon>
+                    <span className="fa-layers fa-fw fa-3x">
+                      <FontAwesomeIcon icon={faSignOutAlt} transform="shrink-6 left-2"/>
+                    </span>
+                  </ListItemIcon>
+                  <ListItemText primary={"Cerrar Sesión"} />
+                </ListItem>
               </>
-              :
+              :!context.isLogged&&
               <ListItem button key={"participante-login"} onClick={(e)=>history.push("/login")}>
                 <ListItemIcon>
                 <span className="fa-layers fa-fw fa-3x">
@@ -117,17 +125,16 @@ export default function Page({ title, children, footer = true }) {
           }
         </Box>
       </Drawer>
-      <Container sx={{ p: 2, pl: 3, pr: 3 }}>{children}</Container>
+      <Container sx={{ p: 2, mb:footer && context.isParticipanteLogged?8:2 }}>{children}</Container>
       {footer && context.isParticipanteLogged &&
-        <AppBar position="fixed" color="transparent" sx={{ top: "auto", bottom: 0 }}>
+        <AppBar position="fixed" color="secondary" sx={{ top: "auto", bottom: 0 }}>
           <Box sx={{ p: 1 }}>
-            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            <Typography sx={{ fontSize: "1rem", fontWeight: "bold" }} color="text.secondary">
               Participante
             </Typography>
             <Typography variant="h5" component="div">
-              {context.participanteData?.name}
+              <Chip label={"#"+context.participanteData?.id} sx={{ mr: 1 }}/>{context.participanteData?.name}
             </Typography>
-            <Typography color="text.secondary">#{context.participanteData?.id}</Typography>
           </Box>
         </AppBar>
       }
