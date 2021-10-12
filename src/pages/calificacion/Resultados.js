@@ -8,15 +8,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCannabis } from '@fortawesome/free-solid-svg-icons'
 
 export default function ListParticipante() {
-  const [participantes, setParticipantes] = useState([]);
+  const [calificaciones, setCalificaciones] = useState([]);
 
-  const listAllParticipantes = () => {
-    setParticipantes();
-    axios.get("/api/participante/list")
+  const obtenerResultados = () => {
+    setCalificaciones();
+    
+  };
+
+  useEffect(() => {
+    axios.get("/api/calificaciones/resultados")
     .then(function (response) {
       // handle success
       if(response.status === 200){
-        setParticipantes(response.data);
+        setCalificaciones(response.data?.calificaciones);
       }
     })
     .catch(function (error) {
@@ -26,14 +30,10 @@ export default function ListParticipante() {
     .then(function () {
       // always executed
     });
-  };
-
-  useEffect(() => {
-    listAllParticipantes();
   }, []);
 
   return (
-    <Page title="Listado Participantes" footer={false}>
+    <Page title="Nuevo Participante" footer={false}>
       
         <List sx={{paddingTop: "0", marginTop: 0}}>
           {participantes?.map((participante)=>{
@@ -42,7 +42,7 @@ export default function ListParticipante() {
                 <ListItem>
                   <ListItemAvatar>
                     <Avatar>
-                      {participante.id}
+                      <AccountCircle />
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText

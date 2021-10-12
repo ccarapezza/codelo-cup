@@ -129,10 +129,17 @@ export default function Calificacion() {
                         </Box>
                         <Divider sx={{ mt: 1, mb: 1 }} />
 
-                        <InputLabel htmlFor="aroma-a-input">Aroma (Apagado)</InputLabel>
+                        <InputLabel htmlFor="aroma-a-input">Aroma (En flor)</InputLabel>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
                             <Rating name="aroma-a-input" value={aromaApagado} onChange={(event, value) => { setAromaApagado(value?value:aromaApagado) }} max={10} />
                             <Paper sx={{ p: 1, ml: 2, borderColor: "black", fontWeight: "bold" }} variant="outlined">{aromaApagado}</Paper>
+                        </Box>
+                        <Divider sx={{ mt: 1, mb: 1 }} />
+
+                        <InputLabel htmlFor="aroma-p-input">Aroma (Picadura)</InputLabel>
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Rating name="aroma-p-input" value={aromaPrendido} onChange={(event, value) => { setAromaPrendido(value?value:aromaPrendido) }} max={10} />
+                            <Paper sx={{ p: 1, ml: 2, borderColor: "black", fontWeight: "bold" }} variant="outlined">{aromaPrendido}</Paper>
                         </Box>
                         <Divider sx={{ mt: 1, mb: 1 }} />
 
@@ -143,14 +150,8 @@ export default function Calificacion() {
                         </Box>
                         <Divider sx={{ mt: 1, mb: 1 }} />
 
-                        <InputLabel htmlFor="aroma-p-input">Aroma (Prendido)</InputLabel>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Rating name="aroma-p-input" value={aromaPrendido} onChange={(event, value) => { setAromaPrendido(value?value:aromaPrendido) }} max={10} />
-                            <Paper sx={{ p: 1, ml: 2, borderColor: "black", fontWeight: "bold" }} variant="outlined">{aromaPrendido}</Paper>
-                        </Box>
-                        <Divider sx={{ mt: 1, mb: 1 }} />
 
-                        <InputLabel htmlFor="sabor-p-input">Sabor (Prendido)</InputLabel>
+                        <InputLabel htmlFor="sabor-p-input">Sabor (Encendido)</InputLabel>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
                             <Rating name="sabor-p-input" value={saborPrendido} onChange={(event, value) => { setSaborPrendido(value?value:saborPrendido) }} max={10} />
                             <Paper sx={{ p: 1, ml: 2, borderColor: "black", fontWeight: "bold" }} variant="outlined">{saborPrendido}</Paper>
