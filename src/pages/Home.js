@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { faCannabis, faClock, faListAlt, faQrcode, faSignOutAlt, faSquare, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faChair, faClock, faListAlt, faPollH, faQrcode, faSignOutAlt, faSquare, faTable, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Chip, Divider, Grid, InputLabel, Paper, Rating, Stack } from "@mui/material";
 import { useHistory } from "react-router";
@@ -58,6 +58,34 @@ export default function Home() {
                 <FontAwesomeIcon icon={faListAlt} transform="shrink-6 left-1"/>
               </span>
               <span>Listado Participantes</span>
+            </Button>
+            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/participante/qr-list")}}>
+              <span className="fa-layers fa-fw fa-6x">
+                <FontAwesomeIcon icon={faQrcode} transform="shrink-6 left-1"/>
+                <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4"/>
+                <FontAwesomeIcon icon={faUser} inverse transform="shrink-12 down-4 right-4"/>
+              </span>
+              <span>QRs Participantes</span>
+            </Button>
+            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/muestra/qr-list")}}>
+              <span className="fa-layers fa-fw fa-6x">
+                <FontAwesomeIcon icon={faQrcode} transform="shrink-6 left-1"/>
+                <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4"/>
+                <FontAwesomeIcon icon={faCannabis} inverse transform="shrink-12 down-4 right-4"/>
+              </span>
+              <span>QRs Muestras</span>
+            </Button>
+            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/calificaciones/resultados")}}>
+              <span className="fa-layers fa-fw fa-6x">
+                <FontAwesomeIcon icon={faPollH} transform="shrink-6 left-1"/>
+              </span>
+              <span>Resultados</span>
+            </Button>
+            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/mesas-manager")}}>
+              <span className="fa-layers fa-fw fa-6x">
+                <FontAwesomeIcon icon={faChair} transform="shrink-6 left-1"/>
+              </span>
+              <span>Mesas</span>
             </Button>
             <Button variant="outlined" fullWidth onClick={(e)=>{context.logout()}}>
               <span className="fa-layers fa-fw fa-6x">

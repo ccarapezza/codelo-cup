@@ -12,8 +12,8 @@ export default function CreateParticipante() {
   const [nombre, setNombre] = useState("");
   const [muestras, setMuestras] = useState([
     {
-        name:"",
-        description:"",
+      name:"",
+      description:"",
     }
   ]);
   const { register, handleSubmit, formState: { errors } } = useForm();

@@ -1,5 +1,4 @@
 
-import { AccountCircle } from "@material-ui/icons";
 import { Avatar, Chip, Divider, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -34,36 +33,35 @@ export default function ListParticipante() {
 
   return (
     <Page title="Listado Participantes" footer={false}>
-      
-        <List sx={{paddingTop: "0", marginTop: 0}}>
-          {participantes?.map((participante)=>{
-            return(
-              <div key={participante.hash}>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      {participante.id}
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={participante.name} 
-                    secondary={participante.muestras?.map((muestra)=>
-                      <Chip
-                        key={muestra.hash}
-                        component="span"
-                        sx={{pl: "5px", mr: 1}}
-                        icon={<FontAwesomeIcon
-                          icon={faCannabis} />
-                        }
-                        label={muestra.name+(muestra.description?(" ("+muestra.description+")"):"")} />
-                    )}
-                  />
-                </ListItem>
-                <Divider />
-              </div>
-            )
-          })}
-        </List>
+      <List sx={{paddingTop: "0", marginTop: 0}}>
+        {participantes?.map((participante)=>{
+          return(
+            <div key={participante.hash}>
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>
+                    {participante.id}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={participante.name} 
+                  secondary={participante.muestras?.map((muestra)=>
+                    <Chip
+                      key={muestra.hash}
+                      component="span"
+                      sx={{pl: "5px", mr: 1}}
+                      icon={<FontAwesomeIcon
+                        icon={faCannabis} />
+                      }
+                      label={muestra.name+(muestra.description?(" ("+muestra.description+")"):"")} />
+                  )}
+                />
+              </ListItem>
+              <Divider />
+            </div>
+          )
+        })}
+      </List>
     </Page>
   );
 }

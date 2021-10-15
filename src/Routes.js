@@ -10,6 +10,10 @@ import AdminLogin from "./pages/AdminLogin";
 import { useContext } from "react";
 import Context from "./context/Context";
 import NotFoundPage from "./pages/NotFoundPage";
+import Resultados from "./pages/calificacion/Resultados";
+import QrListParticipantes from "./pages/participante/QrListParticipantes";
+import QrListMuestra from "./pages/participante/QrListMuestra";
+import MesasManager from "./pages/mesa/MesasManager";
 
 //axios.defaults.baseURL = "https://codelo-cup-api.herokuapp.com/";
 axios.defaults.baseURL = "http://localhost:8080/";
@@ -41,9 +45,37 @@ export default function Routes() {
           <Redirect to="/404" />
         }
       </Route>
+      <Route path="/calificaciones/resultados">
+        {context.isLogged?
+          <Resultados />
+        :
+          <Redirect to="/404" />
+        }
+      </Route>
       <Route path="/participante/list">
         {context.isLogged?
           <ListParticipante />
+        :
+          <Redirect to="/404" />
+        }
+      </Route>
+      <Route path="/participante/qr-list">
+        {context.isLogged?
+          <QrListParticipantes />
+        :
+          <Redirect to="/404" />
+        }
+      </Route>
+      <Route path="/muestra/qr-list">
+        {context.isLogged?
+          <QrListMuestra />
+        :
+          <Redirect to="/404" />
+        }
+      </Route>
+      <Route path="/mesas-manager">
+        {context.isLogged?
+          <MesasManager />
         :
           <Redirect to="/404" />
         }
