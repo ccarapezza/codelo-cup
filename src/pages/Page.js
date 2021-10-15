@@ -135,6 +135,11 @@ export default function Page({ title, children, footer = true }) {
             <Typography variant="h5" component="div">
               <Chip label={"#"+context.participanteData?.id} sx={{ mr: 1 }}/>{context.participanteData?.name}
             </Typography>
+            {context.participanteData?.mesa&&
+              <Typography sx={{ fontSize: ".7rem", fontWeight: "bold" }} color="text.secondary">
+                {context.participanteData?.mesa?.name}
+              </Typography>
+            }
           </Box>
         </AppBar>
       }

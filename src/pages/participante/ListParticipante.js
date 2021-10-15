@@ -1,5 +1,5 @@
 
-import { Avatar, Chip, Divider, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
+import { Avatar, Chip, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Page from "../Page";
@@ -56,6 +56,9 @@ export default function ListParticipante() {
                       label={muestra.name+(muestra.description?(" ("+muestra.description+")"):"")} />
                   )}
                 />
+                {participante.mesa&&
+                  <Typography>{participante.mesa?.name}</Typography>
+                }
               </ListItem>
               <Divider />
             </div>

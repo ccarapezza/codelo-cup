@@ -2,7 +2,7 @@ import { Divider, Paper } from "@mui/material";
 import { useDrop } from "react-dnd";
 import { yellow } from '@mui/material/colors';
 
-export const DropBox = function DropBox({ name, children, sx }) {
+export const DropBox = function DropBox({ name, children, sx, displayName }) {
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
         accept: "box",
         drop: () => ({ name: name }),
@@ -20,7 +20,7 @@ export const DropBox = function DropBox({ name, children, sx }) {
         backgroundColor = yellow[100];
     }
     return (<Paper ref={drop} role={name} sx={{ ...sx, backgroundColor, borderColor:"#000" }} variant="outlined">
-                <Divider>Mesa 1</Divider>
+                <Divider><h3 style={{margin:10}}>{displayName}</h3></Divider>
                 {children}
             </Paper>);
 };

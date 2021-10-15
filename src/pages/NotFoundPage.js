@@ -13,7 +13,7 @@ export default function NotFoundPage() {
           <FontAwesomeIcon icon={faSquare} inverse transform="shrink-1" />
           <FontAwesomeIcon icon={faJoint}  transform="shrink-10"/>
         </div>
-        <Typography variant="h4">404 - Página no encontrada</Typography>
+        <Typography variant="h4" sx={{textAlign: "center"}}>404 - Página no encontrada</Typography>
       </Stack>
     </Page>
   );
