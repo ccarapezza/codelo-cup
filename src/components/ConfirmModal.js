@@ -33,7 +33,7 @@ export default function ConfirmModal({message, operation, faIcon, buttonColor="p
                 {<Typography variant="h6" sx={{ pb: 5 }}>{message}</Typography>}
                 <Box sx={{display:"flex", flexDirection: "row", justifyContent: "space-between" }}>
                     <Button color="error" variant="outlined" onClick={()=>setOpen(false)}>No</Button>
-                    <Button color="success" variant="outlined" onClick={()=>{operation()}}>Si</Button>
+                    <Button color="success" variant="outlined" onClick={()=>{operation(); setOpen(false);}}>Si</Button>
                 </Box>
             </Box>
         </Modal>

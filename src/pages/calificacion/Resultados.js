@@ -1,12 +1,12 @@
 
-import { Avatar, Button, Chip, Divider, IconButton, InputLabel, List, ListItem, ListItemAvatar, Paper, Rating, Stack, Typography} from "@mui/material";
+import { Avatar, Button, Chip, Divider, InputLabel, List, ListItem, ListItemAvatar, Paper, Rating, Stack, Typography} from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Page from "../Page";
-import { faClock, faEye, faEyeSlash, faSortAmountDown, faSortAmountUp } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faClock, faEye, faEyeSlash, faSortAmountDown, faSortAmountUp, faUser, faUserAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { deepOrange } from '@mui/material/colors';
+import { deepOrange, green } from '@mui/material/colors';
 
 export default function Resultados() {
   const [resultados, setResultados] = useState([]);
@@ -74,6 +74,10 @@ export default function Resultados() {
             {orderValue==="saborApagado"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
             Sabor Apagado
           </Button>
+          <Button color="secondary" variant={orderValue==="promedioTotal"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("promedioTotal"); setSortOrder(sortOrder?0:1)}}>
+            {orderValue==="promedioTotal"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
+            Promedio Total
+          </Button>
         </Stack>
         <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", margin: 2}} direction="row" spacing={1}>
           {showDetails?
@@ -91,6 +95,10 @@ export default function Resultados() {
         <Divider/>
         <List sx={{paddingTop: 0, marginTop: 0}}>
           {Object.keys(resultados).map((k)=>resultados[k])
+            .map((e)=>{return({
+              ...e,
+              promedioTotal: ((e.presentacion+e.aromaApagado+e.aromaPrendido+e.saborPrendido+e.saborApagado)/5)
+            })})
             .sort(function(a, b) {
               if (a[orderValue] > b[orderValue]) {
                 return sortOrder?1:-1;
@@ -105,15 +113,15 @@ export default function Resultados() {
                 <div key={resultado.muestraId}>
                   <ListItem sx={{display:"flex", alignItems:"center", justifyContent: "center"}}>
                     <ListItemAvatar sx={{display:"flex", flexDirection:"column", alignItems:"center", margin: 2}}>
-                      <Avatar sx={{ width: 74, height: 74, bgcolor: deepOrange[500] }}>
+                      <Avatar sx={{ width: 74, height: 74, bgcolor: green[500] }}>
                         <Stack sx={{display:"flex", flexDirection:"column", alignItems:"center"}}>
-                          <h6 style={{padding:0, margin: 0}}>Muestra</h6>
+                          <FontAwesomeIcon icon={faCannabis}/>
                           <h2 style={{padding:0, margin: 0}}>{"#"+resultado.muestraId}</h2>
                         </Stack>
                       </Avatar>
-                      <h5 style={{padding:0, margin: 0}}>{resultado?.muestra?.name}</h5>
-                      <Paper variant="outlined" sx={{display:"flex", flexDirection:"column", alignItems:"center", padding: 1, marginTop: 2}}>
-                        <h6 style={{padding:0, margin:0}}>Participante</h6>
+                      <h3 style={{padding:0, margin: 0}}>{resultado?.muestra?.name}</h3>
+                      <Paper variant="outlined" sx={{display:"flex", flexDirection:"column", alignItems:"center", padding: 1, marginTop: 2, bgcolor: deepOrange[500]}}>
+                        <h6 style={{padding:0, margin:0}}><FontAwesomeIcon icon={faUserAlt} style={{marginRight: 5}}/>Participante</h6>
                         <Typography variant="h6" component="div">{"#"+resultado?.muestra?.participante?.id+" - "+resultado?.muestra?.participante?.name}</Typography>
                       </Paper>
                     </ListItemAvatar>
@@ -133,8 +141,8 @@ export default function Resultados() {
                       <InputLabel htmlFor="saborApagado-input">Sabor (Apagado): <strong style={{paddingLeft:"5px"}}>{resultado.saborApagado}</strong></InputLabel>
                       <Rating name="saborApagado-input" value={resultado.saborApagado} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                       <Divider/>
-                      <InputLabel htmlFor="saborApagado-input"><strong>Promedio Total: {(resultado.presentacion+resultado.aromaApagado+resultado.aromaPrendido+resultado.saborPrendido+resultado.saborApagado)/5}</strong></InputLabel>
-                      <Rating name="saborApagado-input" value={(resultado.presentacion+resultado.aromaApagado+resultado.aromaPrendido+resultado.saborPrendido+resultado.saborApagado)/5} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+                      <InputLabel htmlFor="saborApagado-input"><strong>Promedio Total: {resultado.promedioTotal}</strong></InputLabel>
+                      <Rating name="saborApagado-input" value={resultado.promedioTotal} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                       <Divider sx={{marginBottom: "5px"}}/>
                       <InputLabel>Calificaciones: <strong style={{paddingLeft:"5px"}}>{resultado.count}</strong></InputLabel>
                     </Paper>

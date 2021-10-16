@@ -194,8 +194,8 @@ export default function MesasManager() {
           >
             <InputBase
               sx={{ ml: 1, flex: 1 }}
-              placeholder="Buscar Participante"
-              inputProps={{ 'aria-label': 'Buscar Participante' }}
+              placeholder={"Buscar Participante - ("+participantes?.filter(participante => !isParticipanteExistInMesas(participante.id)).length+" Restantes)"}
+              inputProps={{ 'aria-label': 'Buscar Participante'}}
               value={searchFieldParticipante}
               onChange={(e)=>setSearchFieldParticipante(e.target.value)}
             />

@@ -14,6 +14,7 @@ import Resultados from "./pages/calificacion/Resultados";
 import QrListParticipantes from "./pages/participante/QrListParticipantes";
 import QrListMuestra from "./pages/participante/QrListMuestra";
 import MesasManager from "./pages/mesa/MesasManager";
+import EditParticipante from "./pages/participante/EditParticipante";
 
 //axios.defaults.baseURL = "https://codelo-cup-api.herokuapp.com/";
 axios.defaults.baseURL = "http://localhost:8080/";
@@ -41,6 +42,13 @@ export default function Routes() {
       <Route path="/participante/create">
         {context.isLogged?
           <CreateParticipante />
+        :
+          <Redirect to="/404" />
+        }
+      </Route>
+      <Route path="/participante/edit/:id?">
+        {context.isLogged?
+          <EditParticipante />
         :
           <Redirect to="/404" />
         }

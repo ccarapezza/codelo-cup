@@ -12,8 +12,8 @@ export default function CreateParticipante() {
   const [nombre, setNombre] = useState("");
   const [muestras, setMuestras] = useState([
     {
-      name:"",
-      description:"",
+        name:"",
+        description:"",
     }
   ]);
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -27,6 +27,7 @@ export default function CreateParticipante() {
       name: nombre,
       muestras: muestras,
     }).then(function (response) {
+      console.log(response);
       if(response.status === 200){
         context.showMessage("Participante creado correctamente!", "success");
         clearForm();
