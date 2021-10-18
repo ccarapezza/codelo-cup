@@ -35,7 +35,7 @@ export default function QrsParticipantePdfDocument({participantes}){
   return(<Document>
     <Page size="A4" style={styles.body} wrap>
       {participantes?.map((participante)=>{
-        return(<View style={styles.participante}>
+        return(<View key={"participante-"+participante.id} style={styles.participante}>
           <Image
             style={styles.image}
             src={participante.qrHash}

@@ -35,7 +35,7 @@ export default function QrsMuestraPdfDocument({muestras}){
   return(<Document>
     <Page size="A4" style={styles.body} wrap>
       {muestras?.map((muestra)=>{
-        return(<View style={styles.muestra}>
+        return(<View key={"muestra-"+muestra.id} style={styles.muestra}>
           <Image
             style={styles.image}
             src={muestra.qrHash}

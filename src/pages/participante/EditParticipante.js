@@ -161,7 +161,7 @@ export default function EditParticipante() {
               <ConfirmModal faIcon={faTrash} buttonColor="error" message="Esta seguro que desea eliminar la muestra?" operation={()=>{deleteMuestra(muestra.id)}}/>
             </Box>
           )}
-          <ButtonModal onClick={()=>{setMuestraName(""); setMuestraDescription("");}} faIcon={faPlus} textButton="Crear Muestra" operation={()=>{addMuestra()}}>
+          <ButtonModal onClick={()=>{setMuestraName(""); setMuestraDescription("");}} faIcon={faPlus} textButton="Crear Muestra" saveDisabled={!muestraName} operation={()=>{addMuestra()}}>
             <Box>
               <Divider sx={{pb:2}}>Nueva muestra</Divider>
               <TextField fullWidth id="name-input" label="Nombre" variant="outlined" value={muestraName} onChange={(e)=>setMuestraName(e?.target?.value)} />

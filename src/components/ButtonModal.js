@@ -21,7 +21,7 @@ const styleDefault = {
     justifyContent: "space-between"
   };
 
-export default function ButtonModal({children, style, faIcon, textButton="", buttonColor="primary", operation, closeLabel="Cerrar", saveLabel="Guardar", onClick=()=>{}}) {
+export default function ButtonModal({children, style, faIcon, textButton="", buttonColor="primary", operation, closeLabel="Cerrar", saveLabel="Guardar", saveDisabled=false, onClick=()=>{}}) {
     const [open, setOpen] = useState(false);
 
     return (<>
@@ -33,7 +33,7 @@ export default function ButtonModal({children, style, faIcon, textButton="", but
                 {children}
                 <Box sx={{display:"flex", flexDirection: "row", justifyContent: "space-between", mt: 2 }}>
                     <Button color="error" variant="outlined" onClick={()=>{setOpen(false)}}>{closeLabel}</Button>
-                    <Button color="success" variant="outlined" onClick={()=>{operation(); setOpen(false);}}>{saveLabel}</Button>
+                    <Button color="success" disabled={saveDisabled} variant="outlined" onClick={()=>{operation(); setOpen(false);}}>{saveLabel}</Button>
                 </Box>
             </Box>
         </Modal>

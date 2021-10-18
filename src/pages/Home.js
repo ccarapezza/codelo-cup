@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { faCannabis, faChair, faClock, faListAlt, faPollH, faQrcode, faSignOutAlt, faSquare, faTable, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faChair, faClock, faListAlt, faPollH, faQrcode, faSignOutAlt, faSquare, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Chip, Divider, Grid, InputLabel, Paper, Rating, Stack } from "@mui/material";
 import { useHistory } from "react-router";
@@ -127,7 +127,7 @@ export default function Home() {
                         <Divider sx={{marginBottom: "5px"}}/>
                         <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                           <Button startIcon={<Edit/>} color="secondary" variant="contained" size="small" onClick={()=>history.push("/calificacion/"+calificacion?.muestra?.hash)}>Editar</Button>
-                          <div><FontAwesomeIcon icon={faClock} transform="shrink-6" style={{color: "grey"}}/><span style={{color: "grey"}}>{updatedAt.getHours()+":"+updatedAt.getMinutes()}</span></div>
+                          <div><FontAwesomeIcon icon={faClock} transform="shrink-6" style={{color: "grey"}}/><span style={{color: "grey"}}>{updatedAt.toLocaleTimeString().substr(0, updatedAt.toLocaleTimeString().lastIndexOf(":"))}</span></div>
                         </Box>
                       </Paper>
                     </Grid>)

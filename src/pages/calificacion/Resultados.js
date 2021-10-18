@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Page from "../Page";
-import { faCannabis, faClock, faEye, faEyeSlash, faSortAmountDown, faSortAmountUp, faUser, faUserAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faClock, faEye, faEyeSlash, faSortAmountDown, faSortAmountUp, faUserAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { deepOrange, green } from '@mui/material/colors';
 
@@ -53,28 +53,28 @@ export default function Resultados() {
   return (
     <Page title="Resultados" footer={false}>
         <Divider>Ordenar por:</Divider>
-        <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", margin: 2}} direction="row" spacing={1}>
-          <Button color="secondary" variant={orderValue==="presentacion"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("presentacion"); setSortOrder(sortOrder?0:1)}}>
+        <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", flexWrap: "wrap", margin: 2}} direction="row" spacing={1}>
+          <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="presentacion"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("presentacion"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="presentacion"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
             Presentación
           </Button>
-          <Button color="secondary" variant={orderValue==="aromaApagado"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("aromaApagado"); setSortOrder(sortOrder?0:1)}}>
+          <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="aromaApagado"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("aromaApagado"); setSortOrder(sortOrder?0:1)}}>
           {orderValue==="aromaApagado"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
             Aroma Apagado
           </Button>
-          <Button color="secondary" variant={orderValue==="aromaPrendido"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("aromaPrendido"); setSortOrder(sortOrder?0:1)}}>
+          <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="aromaPrendido"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("aromaPrendido"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="aromaPrendido"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
             Aroma Prendido
           </Button>
-          <Button color="secondary" variant={orderValue==="saborPrendido"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("saborPrendido"); setSortOrder(sortOrder?0:1)}}>
+          <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="saborPrendido"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("saborPrendido"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="saborPrendido"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
             Sabor Prendido
           </Button>
-          <Button color="secondary" variant={orderValue==="saborApagado"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("saborApagado"); setSortOrder(sortOrder?0:1)}}>
+          <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="saborApagado"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("saborApagado"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="saborApagado"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
             Sabor Apagado
           </Button>
-          <Button color="secondary" variant={orderValue==="promedioTotal"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("promedioTotal"); setSortOrder(sortOrder?0:1)}}>
+          <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="promedioTotal"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("promedioTotal"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="promedioTotal"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
             Promedio Total
           </Button>
@@ -98,7 +98,17 @@ export default function Resultados() {
             .map((e)=>{return({
               ...e,
               promedioTotal: ((e.presentacion+e.aromaApagado+e.aromaPrendido+e.saborPrendido+e.saborApagado)/5)
-            })})
+            })}).map((calificacion)=>{
+              return({
+                ...calificacion,
+                presentacion: Math.round(calificacion.presentacion/5 * 10) / 10,
+                aromaPrendido: Math.round(calificacion.aromaPrendido/5 * 10) / 10,
+                aromaApagado: Math.round(calificacion.aromaApagado/5 * 10) / 10,
+                saborPrendido: Math.round(calificacion.saborPrendido/5 * 10) / 10,
+                saborApagado: Math.round(calificacion.saborApagado/5 * 10) / 10,
+                promedioTotal: Math.round(calificacion.promedioTotal/5 * 10) / 10
+              })
+            })
             .sort(function(a, b) {
               if (a[orderValue] > b[orderValue]) {
                 return sortOrder?1:-1;
@@ -111,7 +121,7 @@ export default function Resultados() {
             .map((resultado)=>{
               return(
                 <div key={resultado.muestraId}>
-                  <ListItem sx={{display:"flex", alignItems:"center", justifyContent: "center"}}>
+                  <ListItem sx={{display:"flex", alignItems:"center", justifyContent: showDetails?"start":"center", overflowX: "auto"}}>
                     <ListItemAvatar sx={{display:"flex", flexDirection:"column", alignItems:"center", margin: 2}}>
                       <Avatar sx={{ width: 74, height: 74, bgcolor: green[500] }}>
                         <Stack sx={{display:"flex", flexDirection:"column", alignItems:"center"}}>
@@ -148,8 +158,7 @@ export default function Resultados() {
                     </Paper>
                     {showDetails&&resultado.calificaciones?.map((calificacion)=>{
                       const updatedAt = new Date(Date.parse(calificacion.updatedAt));
-                      return(
-                        <Paper sx={{padding:"5px"}} elevation={1}>
+                      return(<Paper sx={{padding:"5px", mr: 1}} elevation={4} key={"calificacion-"+calificacion.id}>
                           <Divider sx={{pb:"5px"}}><Chip sx={{textOverflow: "ellipsis"}} color="secondary" label={`#${calificacion.participante?.id} - ${calificacion.participante?.name}`}/></Divider>
                           <InputLabel htmlFor="presentacion-input"><span>Presentación: </span><strong style={{paddingLeft:"5px"}}>{calificacion.presentacion}</strong></InputLabel>
                           <Rating name="presentacion-input" value={calificacion.presentacion} max={10} readOnly sx={{fontSize: "1rem"}}/>
@@ -165,10 +174,9 @@ export default function Resultados() {
                           <Rating name="saborApagado-input" value={calificacion.saborApagado} max={10} readOnly sx={{fontSize: "1rem"}}/>
                           <Divider sx={{marginBottom: "5px"}}/>
                           <Box sx={{display: "flex", justifyContent: "end", alignItems: "center"}}>
-                            <div><FontAwesomeIcon icon={faClock} transform="shrink-6" style={{color: "grey"}}/><span style={{color: "grey"}}>{updatedAt.toTimeString().split(' ')[0]}</span></div>
+                            <div><FontAwesomeIcon icon={faClock} transform="shrink-6" style={{color: "grey"}}/><span style={{color: "grey"}}>{updatedAt.toLocaleTimeString().substr(0, updatedAt.toLocaleTimeString().lastIndexOf(":"))}</span></div>
                           </Box>
-                        </Paper>
-                      )
+                        </Paper>)
                     })}
                   </ListItem>
                   <Divider />

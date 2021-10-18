@@ -2,7 +2,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import Page from "../Page";
-import { Button, Chip, Divider, Grid, IconButton, InputBase, List, Modal, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Chip, Divider, Grid, IconButton, InputBase, List, Paper, Stack, TextField, Typography } from "@mui/material";
 import { Search } from "@material-ui/icons";
 import { Box } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -237,7 +237,7 @@ export default function MesasManager() {
           </ButtonModal>
           <List sx={{paddingTop: "0", marginTop: 0}}>
             {searchFieldMuestra && muestras?.filter(muestra => parseInt(muestra.id)===(!isNaN(searchFieldMuestra)?parseInt(searchFieldMuestra):0) || muestra.name?.toLowerCase().includes(searchFieldMuestra?.toLowerCase())).map((muestra, index)=>{
-              return(<DraggableBox key={"muestras"+muestras.id} onUpdate={()=>listAllMesas()} name={"muestra-"+muestra.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: green[500], borderRadius: 1, margin: 1, ml: 1, mr: 1}}>
+              return(<DraggableBox key={"muestras"+muestra.id} onUpdate={()=>listAllMesas()} name={"muestra-"+muestra.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: green[500], borderRadius: 1, margin: 1, ml: 1, mr: 1}}>
                   <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
                     <FontAwesomeIcon icon={faCannabis} style={{paddingLeft: 10}}/>
                     <Chip size="small" label={"#"+muestra.id} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: green[200]}}/>
