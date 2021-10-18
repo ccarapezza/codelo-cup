@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import Routes from "./Routes";
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from "@emotion/react";
-import { blueGrey, deepOrange, grey, red } from "@mui/material/colors";
+import { blueGrey, deepOrange } from "@mui/material/colors";
 
 //axios.defaults.baseURL = "https://codelo-cup-api.herokuapp.com/";
 axios.defaults.baseURL = "http://localhost:8080/";
