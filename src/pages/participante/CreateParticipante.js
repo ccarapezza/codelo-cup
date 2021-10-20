@@ -1,22 +1,30 @@
 import { AddCircleOutline, Delete, Save } from "@material-ui/icons";
-import { Button, Chip, Divider, IconButton, List, ListItem, Stack, TextField } from "@mui/material";
+import { Button, Chip, Divider, FormControlLabel, IconButton, List, ListItem, Stack, Switch, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
+import SelectCategoria from "../../components/SelectCategoria";
+import SelectDojo from "../../components/SelectDojo";
 import Context from "../../context/Context";
 import Page from "../Page";
 
 export default function CreateParticipante() {
   const context = useContext(Context);
   const [nombre, setNombre] = useState("");
+  const [dojo, setDojo] = useState("");
   const [muestras, setMuestras] = useState([
     {
         name:"",
         description:"",
+        categoriaId:"",
     }
   ]);
   const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const [grow, setGrow] = useState("");
+
+  const [esGrow, setEsGrow] = useState(false);
 
   const onSubmit = () => {
     createParticipante();
@@ -26,6 +34,8 @@ export default function CreateParticipante() {
     axios.post("/api/participante/create",{
       name: nombre,
       muestras: muestras,
+      dojoId: dojo?dojo:null,
+      grow: grow?grow:null
     }).then(function (response) {
       console.log(response);
       if(response.status === 200){
@@ -68,11 +78,25 @@ export default function CreateParticipante() {
     }));
   }
 
+  const setCategoriaMuestra = (index, value)=>{
+    setMuestras(muestras.map((element,currentIndex)=>{
+      if(currentIndex!==index){
+        return element;
+      }else{
+        return ({
+            ...element,
+            categoriaId: value&&!isNaN(value)?parseInt(value):""
+        })
+      }
+    }));
+  }
+
   const addMuestra = ()=>{
     setMuestras(currentMuestras=>{
       return currentMuestras.concat({
         name:"",
         description:"",
+        categoriaId:""
       });
     })
   }
@@ -89,6 +113,7 @@ export default function CreateParticipante() {
       {
           name:"",
           description:"",
+          categoriaId:""
       }
     ]);
   }
@@ -98,6 +123,13 @@ export default function CreateParticipante() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack width="100%" spacing={2}>
           <TextField {...register("name-input", { required: true })} error={errors["name-input"]} fullWidth id="name-input" label="Nombre" variant="outlined" value={nombre} onChange={(e)=>setNombre(e?.target?.value)} />
+          <Box sx={{display:"flex", flexDirection: "row" }}>
+            <FormControlLabel control={<Switch defaultChecked checked={esGrow} onChange={(e)=>setEsGrow(e.target.checked)} />} label="Es Grow?" sx={{whiteSpace:"nowrap"}}/>
+            {esGrow&&
+              <TextField {...register("grow-name-input", { required: true })} error={errors["grow-name-input"]} fullWidth id="grow-name-input" label="Nombre" variant="outlined" value={grow} onChange={(e)=>setGrow(e?.target?.value)} />
+            }
+          </Box>
+          <SelectDojo value={dojo} onChange={(e)=>setDojo(e?.target?.value)}/>
           <Divider>
             <Chip label="Muestras" />
           </Divider>
@@ -114,7 +146,8 @@ export default function CreateParticipante() {
                         </IconButton>
                       </Box>
                       <TextField {...register("muestra-name-input"+index, { required: true })} error={errors["muestra-name-input"+index]} label="Nombre" variant="outlined" value={muestras[index]?.name} onChange={(e)=>setNombreMuestra(index, e?.target?.value)}/>
-                      <TextField id="muestra-desc-input" label="Descripcion" variant="outlined" value={muestras[index]?.description} onChange={(e)=>setDescripcionMuestra(index, e?.target?.value)}/>
+                      <TextField id="muestra-desc-input" label="Banco/Criador" variant="outlined" value={muestras[index]?.description} onChange={(e)=>setDescripcionMuestra(index, e?.target?.value)}/>
+                      <SelectCategoria selectProps={{...register("categoria-input"+index, { required: true })}} error={errors["categoria-input"+index]?true:false} value={muestras[index]?.categoriaId} onChange={(e)=>setCategoriaMuestra(index, e?.target?.value)}/>
                     </Stack>
                   </ListItem>
                   <Divider/>

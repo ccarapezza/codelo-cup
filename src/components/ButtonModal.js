@@ -21,11 +21,11 @@ const styleDefault = {
     justifyContent: "space-between"
   };
 
-export default function ButtonModal({children, style, faIcon, textButton="", buttonColor="primary", operation, closeLabel="Cerrar", saveLabel="Guardar", saveDisabled=false, onClick=()=>{}}) {
+export default function ButtonModal({children, style, faIcon, textButton="", buttonColor="primary", operation, closeLabel="Cerrar", saveLabel="Guardar", saveDisabled=false, onClick=()=>{}, sx}) {
     const [open, setOpen] = useState(false);
 
     return (<>
-        <Button variant="outlined" color={buttonColor} onClick={()=>{setOpen(true); onClick();}} sx={{width:"fit-content"}}>
+        <Button variant="outlined" color={buttonColor} onClick={()=>{setOpen(true); onClick();}} sx={{...sx, width:"fit-content"}}>
             <FontAwesomeIcon icon={faIcon}/>{textButton&&<span style={{ marginLeft: 5 }}>{textButton}</span>}
         </Button>
         <Modal open={open} onClose={()=>setOpen(false)} >

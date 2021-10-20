@@ -6,10 +6,11 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import QRCode from 'qrcode'
 import QrsMuestraPdfDocument from "../pdf/QrsMuestraPdfDocument";
 import Loading from "../../components/Loading";
-import { Avatar, Button, Divider, IconButton, InputBase, List, ListItem, ListItemAvatar, Paper, Stack } from "@mui/material";
+import { Avatar, Button, Chip, Divider, IconButton, InputBase, List, ListItem, ListItemAvatar, Paper, Stack } from "@mui/material";
 import { Search } from "@material-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { Box } from "@mui/system";
 
 export default function QrListMuestra() {
   const [muestras, setMuestras] = useState([]);
@@ -55,7 +56,7 @@ export default function QrListMuestra() {
   return (
     <Page title="QR Muestras" footer={false}>
       <Stack sx={{textAlign: "center"}} spacing={2}>
-        {muestrasWithQrs&&muestrasWithQrs.length>0&&
+        {muestrasWithQrs&&muestrasWithQrs.length>0?
         <>
           <PDFDownloadLink style={{textDecoration: "none"}} document={<QrsMuestraPdfDocument muestras={muestrasWithQrs} />} fileName="Muestras-QR-CodeloCup.pdf">
             {({ blob, url, loading, error }) =>
@@ -67,49 +68,54 @@ export default function QrListMuestra() {
                 </Button>
             }
           </PDFDownloadLink>
+          <Divider>Buscar Muestra</Divider>
+          <Paper
+            component="form"
+            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}
+          >
+            <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Buscar Muestra"
+              inputProps={{ 'aria-label': 'Buscar Muestra' }}
+              value={searchField}
+              onChange={(e)=>setSearchField(e.target.value)}
+            />
+            <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+              <Search />
+            </IconButton>
+          </Paper>
+          <List sx={{paddingTop: "0", marginTop: 0}}>
+              {searchField && !isNaN(searchField) && muestrasWithQrs.filter(muestra => parseInt(muestra.id)===parseInt(searchField)).map((muestra, index)=>{
+                return(<>
+                  <ListItem key={index}>
+                    <ListItemAvatar>
+                      <Avatar sx={{ width: 62, height: 62 }}>
+                        <h2>{"#"+muestra.id}</h2>
+                      </Avatar>
+                    </ListItemAvatar>
+                    <img src={muestra.qrHash} alt={muestra.hash} style={{width: "250px"}}/>
+                    
+                  </ListItem>
+                  <PDFDownloadLink style={{textDecoration: "none"}} document={<QrsMuestraPdfDocument muestras={[muestra]} />} fileName={"Muestra"+muestra.id+"-QR-CodeloCup.pdf"}>
+                      {({ blob, url, loading, error }) =>
+                        loading ?
+                          <Loading/>
+                        :
+                          <Button size="large" color="primary" variant="contained">
+                            <FontAwesomeIcon style={{marginRight: 20}} icon={faFilePdf} transform="grow-6" />Exportar a PDF
+                          </Button>
+                      }
+                    </PDFDownloadLink>
+                </>)
+              })}
+            </List>
         </>
+        :
+        <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <h2><Chip label="No hay Muestras disponibles"/></h2>
+        </Box>
         }
-        <Divider>Buscar Muestra</Divider>
-        <Paper
-          component="form"
-          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}
-        >
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="Buscar Muestra"
-            inputProps={{ 'aria-label': 'Buscar Muestra' }}
-            value={searchField}
-            onChange={(e)=>setSearchField(e.target.value)}
-          />
-          <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
-            <Search />
-          </IconButton>
-        </Paper>
-        <List sx={{paddingTop: "0", marginTop: 0}}>
-            {searchField && !isNaN(searchField) && muestrasWithQrs.filter(muestra => parseInt(muestra.id)===parseInt(searchField)).map((muestra, index)=>{
-              return(<>
-                <ListItem key={index}>
-                  <ListItemAvatar>
-                    <Avatar sx={{ width: 62, height: 62 }}>
-                      <h2>{"#"+muestra.id}</h2>
-                    </Avatar>
-                  </ListItemAvatar>
-                  <img src={muestra.qrHash} alt={muestra.hash} style={{width: "250px"}}/>
-                  
-                </ListItem>
-                <PDFDownloadLink style={{textDecoration: "none"}} document={<QrsMuestraPdfDocument muestras={[muestra]} />} fileName={"Muestra"+muestra.id+"-QR-CodeloCup.pdf"}>
-                    {({ blob, url, loading, error }) =>
-                      loading ?
-                        <Loading/>
-                      :
-                        <Button size="large" color="primary" variant="contained">
-                          <FontAwesomeIcon style={{marginRight: 20}} icon={faFilePdf} transform="grow-6" />Exportar a PDF
-                        </Button>
-                    }
-                  </PDFDownloadLink>
-              </>)
-            })}
-          </List>
+        
       </Stack>
     </Page>
   );

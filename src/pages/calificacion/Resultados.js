@@ -4,12 +4,16 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Page from "../Page";
-import { faCannabis, faClock, faEye, faEyeSlash, faSortAmountDown, faSortAmountUp, faUserAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faClock, faEye, faEyeSlash, faSortAmountDown, faSortAmountUp, faStoreAlt, faUserAlt, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { deepOrange, green } from '@mui/material/colors';
+import SelectCategoria from "../../components/SelectCategoria";
+import CategoriaColors from "../../CategoriaColors";
+import { deepPurple, lightGreen } from "@material-ui/core/colors";
 
 export default function Resultados() {
   const [resultados, setResultados] = useState([]);
+  const [muestraCategoriaFilter, setMuestraCategoriaFilter] = useState("")
 
   useEffect(() => {
     axios.get("/api/calificaciones/resultados")
@@ -92,6 +96,10 @@ export default function Resultados() {
             </Button>
           }
         </Stack>
+        <Divider>Filtrar por:</Divider>
+          <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", margin: 2}} direction="row" spacing={1}>
+            <SelectCategoria blankLabel="Todas" value={muestraCategoriaFilter} onChange={(e)=>setMuestraCategoriaFilter(e?.target?.value)}/>
+          </Stack>
         <Divider/>
         <List sx={{paddingTop: 0, marginTop: 0}}>
           {Object.keys(resultados).map((k)=>resultados[k])
@@ -101,12 +109,12 @@ export default function Resultados() {
             })}).map((calificacion)=>{
               return({
                 ...calificacion,
-                presentacion: Math.round(calificacion.presentacion/5 * 10) / 10,
-                aromaPrendido: Math.round(calificacion.aromaPrendido/5 * 10) / 10,
-                aromaApagado: Math.round(calificacion.aromaApagado/5 * 10) / 10,
-                saborPrendido: Math.round(calificacion.saborPrendido/5 * 10) / 10,
-                saborApagado: Math.round(calificacion.saborApagado/5 * 10) / 10,
-                promedioTotal: Math.round(calificacion.promedioTotal/5 * 10) / 10
+                presentacion: Math.round(calificacion.presentacion/calificacion.count * 10) / 10,
+                aromaPrendido: Math.round(calificacion.aromaPrendido/calificacion.count * 10) / 10,
+                aromaApagado: Math.round(calificacion.aromaApagado/calificacion.count * 10) / 10,
+                saborPrendido: Math.round(calificacion.saborPrendido/calificacion.count * 10) / 10,
+                saborApagado: Math.round(calificacion.saborApagado/calificacion.count * 10) / 10,
+                promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
               })
             })
             .sort(function(a, b) {
@@ -117,6 +125,13 @@ export default function Resultados() {
                 return sortOrder?-1:1;
               }
               return 0;
+            })
+            .filter((resultado)=>{
+              if(resultado.muestra?.categoria && muestraCategoriaFilter){
+                return parseInt(resultado.muestra.categoria.id) === muestraCategoriaFilter
+              }else{
+                return resultado;
+              }
             })
             .map((resultado)=>{
               return(
@@ -130,9 +145,24 @@ export default function Resultados() {
                         </Stack>
                       </Avatar>
                       <h3 style={{padding:0, margin: 0}}>{resultado?.muestra?.name}</h3>
+                      <Chip size="small" label={resultado?.muestra.categoria?.name} sx={{backgroundColor: CategoriaColors[resultado?.muestra.categoria.id], fontWeight: "bold"}}/>
                       <Paper variant="outlined" sx={{display:"flex", flexDirection:"column", alignItems:"center", padding: 1, marginTop: 2, bgcolor: deepOrange[500]}}>
                         <h6 style={{padding:0, margin:0}}><FontAwesomeIcon icon={faUserAlt} style={{marginRight: 5}}/>Participante</h6>
                         <Typography variant="h6" component="div">{"#"+resultado?.muestra?.participante?.id+" - "+resultado?.muestra?.participante?.name}</Typography>
+                        {resultado?.muestra?.participante?.dojo&&
+                          <Chip icon={<FontAwesomeIcon icon={faVihara} style={{color: "white"}}/>} size="small" label={resultado?.muestra?.participante?.dojo?.name} sx={{backgroundColor: deepPurple[400], color: "white"}}/>
+                        }
+                        {resultado?.muestra?.participante?.grow&&
+                          <Chip title="Es Grow" icon={
+                            <span className="fa-layers fa-fw" style={{color: "black", marginLeft:10}}>
+                              <FontAwesomeIcon icon={faCannabis} transform="shrink-4 up-8"/>
+                              <FontAwesomeIcon icon={faStoreAlt} transform="shrink-3 down-5"/>
+                            </span>
+                          }
+                          sx={{backgroundColor: lightGreen[400], fontWeight: "bold"}}
+                          label={resultado?.muestra?.participante?.grow}
+                          />
+                        }
                       </Paper>
                     </ListItemAvatar>
                     

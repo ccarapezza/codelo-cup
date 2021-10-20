@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import ButtonModal from "../../components/ButtonModal";
 import ConfirmModal from "../../components/ConfirmModal";
+import SelectCategoria from "../../components/SelectCategoria";
 import Context from "../../context/Context";
 import Page from "../Page";
 
@@ -20,6 +21,7 @@ export default function EditParticipante() {
 
   const [muestraName, setMuestraName] = useState("");
   const [muestraDescription, setMuestraDescription] = useState("");
+  const [muestraCategoria, setMuestraCategoria] = useState("");
 
   const [muestras, setMuestras] = useState([
     {
@@ -108,6 +110,7 @@ export default function EditParticipante() {
       participanteId: id,
       name: muestraName,
       description: muestraDescription,
+      categoriaId: muestraCategoria,
     }).then(function (response) {
       console.log(response);
       if(response.status === 200){
@@ -157,15 +160,22 @@ export default function EditParticipante() {
                 component="span"
                 sx={{pl: "5px", mr: 1, backgroundColor: green[500]}}
                 icon={<FontAwesomeIcon icon={faCannabis} />}
-                label={<><Chip size="small" label={"#"+muestra.id} sx={{mr: 1, backgroundColor: green[300]}}/>{muestra.name+(muestra.description?(" ("+muestra.description+")"):"")}</>} />
+                label={
+                  <>
+                    <Chip size="small" label={"#"+muestra.id} sx={{mr: 1, backgroundColor: green[300]}}/>
+                    {muestra.name+(muestra.description?(" ("+muestra.description+")"):"")}
+                    <Chip size="small" label={muestra.categoria?.name} sx={{ml: 1, backgroundColor: [muestra.categoria.id], fontWeight: "bold"}}/>
+                  </>
+                } />
               <ConfirmModal faIcon={faTrash} buttonColor="error" message="Esta seguro que desea eliminar la muestra?" operation={()=>{deleteMuestra(muestra.id)}}/>
             </Box>
           )}
-          <ButtonModal onClick={()=>{setMuestraName(""); setMuestraDescription("");}} faIcon={faPlus} textButton="Crear Muestra" saveDisabled={!muestraName} operation={()=>{addMuestra()}}>
+          <ButtonModal onClick={()=>{setMuestraName(""); setMuestraDescription(""); setMuestraCategoria("");}} faIcon={faPlus} textButton="Crear Muestra" saveDisabled={!muestraName||!muestraCategoria} operation={()=>{addMuestra()}}>
             <Box>
               <Divider sx={{pb:2}}>Nueva muestra</Divider>
               <TextField fullWidth id="name-input" label="Nombre" variant="outlined" value={muestraName} onChange={(e)=>setMuestraName(e?.target?.value)} />
-              <TextField fullWidth id="name-input" label="Descripción" variant="outlined" sx={{mt: 2}} value={muestraDescription} onChange={(e)=>setMuestraDescription(e?.target?.value)} />
+              <TextField fullWidth id="description-input" label="Descripción" variant="outlined" sx={{mt: 2}} value={muestraDescription} onChange={(e)=>setMuestraDescription(e?.target?.value)} />
+              <SelectCategoria value={muestraCategoria} onChange={(e)=>setMuestraCategoria(e?.target?.value)}/>
             </Box>
           </ButtonModal>
           <Button type="submit" size="large" color="primary" variant="contained" startIcon={<Save />} onClick={()=>updateParticipante()}>

@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCannabis, faChair, faHome, faListAlt, faPollH, faQrcode, faSignOutAlt, faSquare, faSyncAlt, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { deepOrange } from "@mui/material/colors";
 
-export default function Page({ title, children, footer = true }) {
+export default function Page({ title, children, footer = true, style }) {
   const context = useContext(Context);
   const [menuOpen, setMenuOpen] = useState(false);
   const history = useHistory();
@@ -167,7 +167,7 @@ export default function Page({ title, children, footer = true }) {
           }
         </Box>
       </Drawer>
-      <Container sx={{ p: 2, mb:footer && context.isParticipanteLogged?8:2 }}>{children}</Container>
+      <Container sx={{ p: 2, mb:footer && context.isParticipanteLogged?8:2, ...style }}>{children}</Container>
       {footer && context.isParticipanteLogged &&
         <AppBar position="fixed" color="secondary" sx={{ top: "auto", bottom: 0 }}>
           <Box sx={{ p: 1 }}>

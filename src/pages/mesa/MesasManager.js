@@ -15,6 +15,7 @@ import { DraggableBox } from "../../components/DraggableBox";
 import Context from "../../context/Context";
 import ConfirmModal from "../../components/ConfirmModal";
 import ButtonModal from "../../components/ButtonModal";
+import CategoriaColors from "../../CategoriaColors";
 
 
 export default function MesasManager() {
@@ -242,6 +243,7 @@ export default function MesasManager() {
                     <FontAwesomeIcon icon={faCannabis} style={{paddingLeft: 10}}/>
                     <Chip size="small" label={"#"+muestra.id} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: green[200]}}/>
                     <Typography>{muestra.name}</Typography>
+                    <Chip size="small" label={muestra.categoria?.name} sx={{ml: 1, backgroundColor: CategoriaColors[muestra.categoria?.id], fontWeight: "bold"}}/>
                     {isMuestraExistInMesas(muestra.id)&&
                       <FontAwesomeIcon icon={faExclamationCircle} style={{paddingLeft: 10, color: red[700]}}/>
                     }
@@ -272,6 +274,7 @@ export default function MesasManager() {
                             <FontAwesomeIcon icon={faCannabis} style={{paddingLeft: 10}}/>
                             <Chip size="small" label={"#"+muestra.id} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: green[200]}}/>
                             <Typography>{muestra.name}</Typography>
+                            <Chip size="small" label={muestra.categoria?.name} sx={{ml: 1, backgroundColor: CategoriaColors[muestra.categoria?.id], fontWeight: "bold"}}/>
                             {muestraCountInMesas(muestra.id)>1&&
                               <FontAwesomeIcon icon={faExclamationCircle} style={{paddingLeft: 10, color: red[700]}}/>
                             }

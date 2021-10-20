@@ -8,6 +8,7 @@ import Page from "./Page";
 import axios from "axios";
 import { Box } from "@mui/system";
 import { Edit } from "@material-ui/icons";
+import copaLogo from './../assets/copa-logo.png'
 
 export default function Home() {
   const context = useContext(Context);
@@ -39,7 +40,7 @@ export default function Home() {
   }, [context.isParticipanteLogged]);
 
   return (
-    <Page title="Home" >
+    <Page title="Home">
       <Stack spacing={2}>
         
         {context.isLogged?
@@ -138,6 +139,10 @@ export default function Home() {
               }
             </>
           :
+          <>
+            <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+              <img src={copaLogo} alt="CodeloCup" style={{width:"100%", maxWidth:"500px"}}/>
+            </Box>
             <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/login")}}>
               <span className="fa-layers fa-fw fa-6x">
                 <FontAwesomeIcon icon={faUser} transform="shrink-6 left-1"/>
@@ -146,6 +151,7 @@ export default function Home() {
               </span>
               <span>Ingresar</span>
             </Button>
+          </>
         }
       </Stack>
     </Page>
