@@ -226,14 +226,14 @@ export default function Calificacion() {
                                 </IconButton>
                             } />
                         <CardContent>
-                            
+                            {/* 
                                 <div>
                                     <input type="text" value={hashMuestra} onChange={(e)=>{setHashMuestra(e.target.value)}} />
                                     <button onClick={(e)=>{validarMuestra()}}>Login</button>
                                 </div>
                                 <div>QR RESULT:{hashMuestra}</div>
                                 <div>{JSON.stringify(error)}</div>
-                            
+                            */}
                             <QrReader
                                 facingMode={camera}
                                 delay={300}

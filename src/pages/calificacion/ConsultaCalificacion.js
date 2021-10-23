@@ -21,7 +21,7 @@ export default function ConsultaCalificacion() {
 
     const [camera, setCamera] = useState("environment");
 
-    const [hashMuestra, setHashMuestra] = useState();
+    //const [hashMuestra, setHashMuestra] = useState();
     const [verGrafico, setVerGrafico] = useState(false);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -143,7 +143,7 @@ export default function ConsultaCalificacion() {
                 console.error(response);
             }
         }).catch(function (error) {
-            setHashMuestra();
+            //setHashMuestra();
             context.showMessage("No se ha podido validar la muestra.", "error");
             console.error(error);
         }).then(function () {
@@ -267,13 +267,14 @@ export default function ConsultaCalificacion() {
                                 </IconButton>
                             } />
                         <CardContent>
+                            {/*
                                 <div>
                                     <input type="text" value={hashMuestra} onChange={(e)=>{setHashMuestra(e.target.value)}} />
                                     <button onClick={(e)=>{validarMuestra(hashMuestra)}}>Login</button>
                                 </div>
                                 <div>QR RESULT:{hashMuestra}</div>
                                 <div>{JSON.stringify(error)}</div>
-                            
+                            */}
                             <QrReader
                                 facingMode={camera}
                                 delay={300}
