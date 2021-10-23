@@ -108,6 +108,9 @@ export default function CreateParticipante() {
 
   const clearForm = ()=>{ 
     setNombre("");
+    setDojo("");
+    setGrow("");
+    setEsGrow(false);
     setMuestras([
       {
           name:"",

@@ -186,7 +186,13 @@ export default function ConsultaCalificacion() {
                 <Loading />
                 : verGrafico && !error ?
                     <Stack>
-                        <Radar data={promedio} options={options} />
+                        {promedioData?.length>0?
+                            <Radar data={promedio} options={options} />
+                            :
+                            <Box sx={{ display: "flex", justifyContent: "center"}}>
+                                <h2><Chip label="Aún hay Calificaciones disponibles"/></h2>
+                            </Box>
+                        }
                         <Button fullWidth variant="outlined" color="primary" onClick={()=>setVerGrafico(false)}>Comparar</Button>
                         <Divider sx={{mt: 2, mb:2}}/>
                         {promedioData.map((currentPromedio, index)=>{
@@ -256,7 +262,7 @@ export default function ConsultaCalificacion() {
                     <Card>
                         <CardHeader
                             sx={{ pb: 0 }}
-                            subheader="Escanee el codigo de la muestra para calificarla"
+                            subheader="Escaneé el código de la muestra para consultar sus calificaciones"
                             action={
                                 <IconButton aria-label="settings" onClick={(e) => { switchCamera() }}>
                                     <span className="fa-layers fa-fw fa-2x fa-dark">

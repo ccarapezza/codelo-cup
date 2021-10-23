@@ -215,7 +215,7 @@ export default function Calificacion() {
                     <Card>
                         <CardHeader
                             sx={{ pb: 0 }}
-                            subheader="Escanee el codigo de la muestra para calificarla"
+                            subheader="Escaneé el código de la muestra para calificarla"
                             action={
                                 <IconButton aria-label="settings" onClick={(e) => { switchCamera() }}>
                                     <span className="fa-layers fa-fw fa-2x fa-dark">

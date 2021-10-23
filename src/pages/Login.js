@@ -36,7 +36,7 @@ export default function Login() {
           <Card>
             <CardHeader
               sx={{pb:0}}
-              subheader="Escanee el codigo de su credencial para comenzar a calificar"
+              subheader="Escaneé el código de su credencial para comenzar a calificar"
               action={
                 <IconButton aria-label="settings" onClick={(e)=>{switchCamera()}}>
                   <span className="fa-layers fa-fw fa-2x fa-dark">
