@@ -1,11 +1,36 @@
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Divider, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { Box } from '@mui/system';
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
 import Context from '../context/Context';
+import ButtonModal from './ButtonModal';
 
-export default function SelectCategoria({id="select-categoria", label="Categoría", value, onChange, selectProps, error, blankLabel=""}) {
+export default function SelectCategoria({id="select-categoria", label="Categoría", value, onChange, selectProps, error, blankLabel="", sx, optionsEnable=false}) {
     const context = useContext(Context)
     const [categorias, setCategorias] = useState([]);
+    const [categoriaName, setCategoriaName] = useState([]);
+
+    const addNewCategoria = () => {
+        axios.post("/api/categoria/create", {
+            name: categoriaName,
+        }).then(function (response) {
+            if (response.status === 200) {
+                const categoria = response.data;
+                context.showMessage("Categoría creada correctamente!", "success");
+                setCategoriaName("");
+                setCategorias(categorias.concat({id: categoria.id, name: categoria.name}));
+                onChange({target:{value: categoria.id}});
+            } else {
+                context.showMessage("No se ha creado la Categoria. Contacte con el administrador.", "error");
+                console.error(response);
+            }
+        })
+        .catch(function (error) {
+            context.showMessage("No se ha creado la Categoria. Contacte con el administrador.", "error");
+            console.error(error);
+        })
+    };
 
     useEffect(() => {
         setCategorias([]);
@@ -26,10 +51,11 @@ export default function SelectCategoria({id="select-categoria", label="Categorí
     }, [])
 
     return (
-        <FormControl fullWidth sx={{mt: 2}}>
+        <FormControl fullWidth sx={{mt: 2, display:"flex", flexDirection: "row", ...sx}}>
             <InputLabel id={id+"-label"}>{label}</InputLabel>
             <Select 
                 {...selectProps}
+                fullWidth
                 error={error}
                 value={value}
                 label={label}
@@ -39,10 +65,18 @@ export default function SelectCategoria({id="select-categoria", label="Categorí
                 <MenuItem value="">{blankLabel}</MenuItem>
                 {categorias?.map((categoria)=>{
                     return(
-                        <MenuItem value={categoria.id}>{categoria.name}</MenuItem>
+                        <MenuItem key={"select-cat-option-"+categoria.id} value={categoria.id}>{categoria.name}</MenuItem>
                     );
                 })}
             </Select>
+            {optionsEnable&&
+                <ButtonModal onClick={()=>{setCategoriaName("")}} faIcon={faPlus} textButton="Crear Categoría" sx={{whiteSpace: "nowrap", ml: 2}} saveDisabled={!categoriaName} operation={()=>{addNewCategoria()}}>
+                    <Box>
+                        <Divider sx={{pb:2}}>Nueva Categoría</Divider>
+                        <TextField fullWidth id="dojo-name-input" label="Nombre" variant="outlined" value={categoriaName} onChange={(e)=>setCategoriaName(e?.target?.value)} />                         
+                    </Box>
+                </ButtonModal>
+            }
         </FormControl>
     )
 }

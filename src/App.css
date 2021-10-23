@@ -32,6 +32,12 @@
   color: #61dafb;
 }
 
+.scroll-flex-fix::before , 
+.scroll-flex-fix::after {
+  content:'';
+  flex:1;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

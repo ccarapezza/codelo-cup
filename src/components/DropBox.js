@@ -2,10 +2,10 @@ import { Divider, Paper } from "@mui/material";
 import { useDrop } from "react-dnd";
 import { yellow } from '@mui/material/colors';
 
-export const DropBox = function DropBox({ name, children, sx, displayName }) {
+export const DropBox = function DropBox({ name, children, sx, displayName, data }) {
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
         accept: "box",
-        drop: () => ({ name: name }),
+        drop: () => ({ name: name, data: data }),
         collect: (monitor) => ({
             isOver: monitor.isOver(),
             canDrop: monitor.canDrop(),

@@ -16,7 +16,6 @@ export default function SelectDojo({id="select-dojo", label="Dojo", value, onCha
         axios.post("/api/dojo/create", {
             name: dojoName,
         }).then(function (response) {
-            console.log(response);
             if (response.status === 200) {
                 const dojo = response.data;
                 context.showMessage("Dojo creado correctamente!", "success");
@@ -67,7 +66,7 @@ export default function SelectDojo({id="select-dojo", label="Dojo", value, onCha
                 <MenuItem value="">{blankLabel}</MenuItem>
                 {dojos?.map((dojo)=>{
                     return(
-                        <MenuItem value={dojo.id}>{dojo.name}</MenuItem>
+                        <MenuItem key={"select-opt-"+dojo.id} value={dojo.id}>{dojo.name}</MenuItem>
                     );
                 })}
             </Select>

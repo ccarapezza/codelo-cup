@@ -36,8 +36,7 @@ export default function CreateParticipante() {
       muestras: muestras,
       dojoId: dojo?dojo:null,
       grow: grow?grow:null
-    }).then(function (response) {
-      console.log(response);
+    }).then(function (response) {     
       if(response.status === 200){
         context.showMessage("Participante creado correctamente!", "success");
         clearForm();
@@ -124,7 +123,7 @@ export default function CreateParticipante() {
         <Stack width="100%" spacing={2}>
           <TextField {...register("name-input", { required: true })} error={errors["name-input"]} fullWidth id="name-input" label="Nombre" variant="outlined" value={nombre} onChange={(e)=>setNombre(e?.target?.value)} />
           <Box sx={{display:"flex", flexDirection: "row" }}>
-            <FormControlLabel control={<Switch defaultChecked checked={esGrow} onChange={(e)=>setEsGrow(e.target.checked)} />} label="Es Grow?" sx={{whiteSpace:"nowrap"}}/>
+            <FormControlLabel control={<Switch checked={esGrow} onChange={(e)=>setEsGrow(e.target.checked)} />} label="Es Grow?" sx={{whiteSpace:"nowrap"}}/>
             {esGrow&&
               <TextField {...register("grow-name-input", { required: true })} error={errors["grow-name-input"]} fullWidth id="grow-name-input" label="Nombre" variant="outlined" value={grow} onChange={(e)=>setGrow(e?.target?.value)} />
             }
@@ -147,7 +146,7 @@ export default function CreateParticipante() {
                       </Box>
                       <TextField {...register("muestra-name-input"+index, { required: true })} error={errors["muestra-name-input"+index]} label="Nombre" variant="outlined" value={muestras[index]?.name} onChange={(e)=>setNombreMuestra(index, e?.target?.value)}/>
                       <TextField id="muestra-desc-input" label="Banco/Criador" variant="outlined" value={muestras[index]?.description} onChange={(e)=>setDescripcionMuestra(index, e?.target?.value)}/>
-                      <SelectCategoria selectProps={{...register("categoria-input"+index, { required: true })}} error={errors["categoria-input"+index]?true:false} value={muestras[index]?.categoriaId} onChange={(e)=>setCategoriaMuestra(index, e?.target?.value)}/>
+                      <SelectCategoria optionsEnable={true} selectProps={{...register("categoria-input"+index, { required: true })}} error={errors["categoria-input"+index]?true:false} value={muestras[index]?.categoriaId} onChange={(e)=>setCategoriaMuestra(index, e?.target?.value)}/>
                     </Stack>
                   </ListItem>
                   <Divider/>

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { faCannabis, faChair, faClock, faListAlt, faPollH, faQrcode, faSignOutAlt, faSquare, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faChair, faClock, faDatabase, faGavel, faListAlt, faPollH, faQrcode, faSearch, faSignOutAlt, faSquare, faTags, faUser, faUserPlus, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Chip, Divider, Grid, InputLabel, Paper, Rating, Stack } from "@mui/material";
 import { useHistory } from "react-router";
@@ -28,9 +28,6 @@ export default function Home() {
       // handle error
       console.log(error);
     })
-    .then(function () {
-      // always executed
-    });
   };
 
   useEffect(() => {
@@ -42,7 +39,6 @@ export default function Home() {
   return (
     <Page title="Home">
       <Stack spacing={2}>
-        
         {context.isLogged?
           <>
             <Divider>
@@ -59,6 +55,30 @@ export default function Home() {
                 <FontAwesomeIcon icon={faListAlt} transform="shrink-6 left-1"/>
               </span>
               <span>Listado Participantes</span>
+            </Button>
+            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/participante/create-jurado")}}>
+              <span className="fa-layers fa-fw fa-6x">
+                <FontAwesomeIcon icon={faGavel} transform="shrink-6 left-1"/>
+              </span>
+              <span>Nuevo Jurado</span>
+            </Button>
+            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/participante/jurado-list")}}>
+              <span className="fa-layers fa-fw fa-6x">
+                <FontAwesomeIcon icon={faListAlt} transform="shrink-6 left-1"/>
+              </span>
+              <span>Listado Jurados</span>
+            </Button>
+            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/dojo/list")}}>
+              <span className="fa-layers fa-fw fa-6x">
+                <FontAwesomeIcon icon={faVihara} transform="shrink-6 left-1"/>
+              </span>
+              <span>Listado Dojos</span>
+            </Button>
+            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/categoria/list")}}>
+              <span className="fa-layers fa-fw fa-6x">
+                <FontAwesomeIcon icon={faTags} transform="shrink-6 left-1"/>
+              </span>
+              <span>Listado Categorias</span>
             </Button>
             <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/participante/qr-list")}}>
               <span className="fa-layers fa-fw fa-6x">
@@ -82,11 +102,25 @@ export default function Home() {
               </span>
               <span>Resultados</span>
             </Button>
+            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/calificaciones/muestra")}}>
+                <span className="fa-layers fa-fw fa-6x">
+                  <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-3"/>
+                  <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4 left-2"/>
+                  <FontAwesomeIcon icon={faSearch} inverse transform="shrink-12 down-4 right-4 left-2"/>
+                </span>
+              <span>Consultar Muestras</span>
+            </Button>
             <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/mesas-manager")}}>
               <span className="fa-layers fa-fw fa-6x">
                 <FontAwesomeIcon icon={faChair} transform="shrink-6 left-1"/>
               </span>
               <span>Mesas</span>
+            </Button>
+            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/summary")}}>
+              <span className="fa-layers fa-fw fa-6x">
+                <FontAwesomeIcon icon={faDatabase} transform="shrink-6 left-1"/>
+              </span>
+              <span>Summary</span>
             </Button>
             <Button variant="outlined" fullWidth onClick={(e)=>{context.logout()}}>
               <span className="fa-layers fa-fw fa-6x">
@@ -105,6 +139,16 @@ export default function Home() {
                 </span>
                 <span>Calificar Muestra</span>
               </Button>
+              {context.isJuradoLogged&&
+                <Button variant="outlined" sx={{alignItems: "center", flexDirection: "column"}} onClick={(e)=>{history.push("/calificaciones/muestra")}}>
+                  <span className="fa-layers fa-fw fa-6x">
+                    <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-1"/>
+                    <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4"/>
+                    <FontAwesomeIcon icon={faSearch} inverse transform="shrink-12 down-4 right-4"/>
+                  </span>
+                  <span>Consultar Muestras</span>
+                </Button>
+              }
               <Divider>Calificaciones realizadas</Divider>
               {calificaciones?.length?
                 <Grid container>

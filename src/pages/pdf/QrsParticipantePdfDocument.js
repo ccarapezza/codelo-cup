@@ -40,7 +40,7 @@ export default function QrsParticipantePdfDocument({participantes}){
             style={styles.image}
             src={participante.qrHash}
           />
-          <Text style={styles.name}>{"#"+participante.id+" - "+participante.name}</Text>
+          <Text style={styles.name}>{"#"+participante.n+" - "+participante.name}</Text>
         </View>);
       })}
     </Page>

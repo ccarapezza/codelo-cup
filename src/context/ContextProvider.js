@@ -128,6 +128,7 @@ function ContextProvider({ children }) {
         userData: userData,
         isLogged: isLogged,
         participanteData: participanteData,
+        isJuradoLogged: participanteData?.esJurado?true:false,
         isParticipanteLogged: isParticipanteLogged,
         showMessage: (message, severity = "info") => {
           showMessage(message, severity);

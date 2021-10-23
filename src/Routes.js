@@ -15,6 +15,12 @@ import QrListParticipantes from "./pages/participante/QrListParticipantes";
 import QrListMuestra from "./pages/participante/QrListMuestra";
 import MesasManager from "./pages/mesa/MesasManager";
 import EditParticipante from "./pages/participante/EditParticipante";
+import ConsultaCalificacion from "./pages/calificacion/ConsultaCalificacion";
+import ListDojo from "./pages/dojo/ListDojo";
+import ListCategoria from "./pages/categoria/ListCategoria";
+import Summary from "./pages/Summary";
+import CreateJurado from "./pages/participante/CreateJurado";
+import ListJurado from "./pages/participante/ListJurado";
 
 //axios.defaults.baseURL = "https://codelo-cup-api.herokuapp.com/";
 axios.defaults.baseURL = "http://localhost:8080/";
@@ -32,7 +38,6 @@ export default function Routes() {
         <Login />
       </Route>
       <Route path="/calificacion/:calificacionHash?">
-        
         {context.isParticipanteLogged?
           <Calificacion />
         :
@@ -46,6 +51,20 @@ export default function Routes() {
           <Redirect to="/404" />
         }
       </Route>
+      <Route path="/participante/create-jurado">
+        {context.isLogged?
+          <CreateJurado />
+        :
+          <Redirect to="/404" />
+        }
+      </Route>
+      <Route path="/participante/jurado-list">
+        {context.isLogged?
+          <ListJurado />
+        :
+          <Redirect to="/404" />
+        }
+      </Route>      
       <Route path="/participante/edit/:id?">
         {context.isLogged?
           <EditParticipante />
@@ -60,6 +79,13 @@ export default function Routes() {
           <Redirect to="/404" />
         }
       </Route>
+      <Route path="/calificaciones/muestra">
+        {context.isLogged||context.isJuradoLogged?
+          <ConsultaCalificacion />
+        :
+          <Redirect to="/404" />
+        }
+      </Route>
       <Route path="/participante/list">
         {context.isLogged?
           <ListParticipante />
@@ -67,9 +93,30 @@ export default function Routes() {
           <Redirect to="/404" />
         }
       </Route>
+      <Route path="/dojo/list">
+        {context.isLogged?
+          <ListDojo />
+        :
+          <Redirect to="/404" />
+        }
+      </Route>
+      <Route path="/categoria/list">
+        {context.isLogged?
+          <ListCategoria />
+        :
+          <Redirect to="/404" />
+        }
+      </Route>
       <Route path="/participante/qr-list">
         {context.isLogged?
           <QrListParticipantes />
+        :
+          <Redirect to="/404" />
+        }
+      </Route>
+      <Route path="/summary">
+        {context.isLogged?
+          <Summary />
         :
           <Redirect to="/404" />
         }

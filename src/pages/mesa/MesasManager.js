@@ -206,10 +206,10 @@ export default function MesasManager() {
           </Paper>
           <List sx={{paddingTop: "0", marginTop: 0}}>
             {searchFieldParticipante && participantes?.filter(participante => (parseInt(participante.id)===(!isNaN(searchFieldParticipante)?parseInt(searchFieldParticipante):0) || participante.name?.toLowerCase().includes(searchFieldParticipante?.toLowerCase())) && !isParticipanteExistInMesas(participante.id)).map((participante, index)=>{
-              return(<DraggableBox key={"participante"+participante.id} onUpdate={()=>listAllMesas()} name={"participante-"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "start", backgroundColor: orange[500], borderRadius: 1, margin: 1}}>
+              return(<DraggableBox key={"participante"+participante.id} data={{muestras: participante.muestras}} onUpdate={()=>listAllMesas()} name={"participante-"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "start", backgroundColor: orange[500], borderRadius: 1, margin: 1}}>
                   <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
                     <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
-                    <Chip size="small" label={"#"+participante.id} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
+                    <Chip size="small" label={"#"+participante.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
                     <Typography>{participante.name}</Typography>
                   </Box>
                 </DraggableBox>)
@@ -241,7 +241,7 @@ export default function MesasManager() {
               return(<DraggableBox key={"muestras"+muestra.id} onUpdate={()=>listAllMesas()} name={"muestra-"+muestra.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: green[500], borderRadius: 1, margin: 1, ml: 1, mr: 1}}>
                   <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
                     <FontAwesomeIcon icon={faCannabis} style={{paddingLeft: 10}}/>
-                    <Chip size="small" label={"#"+muestra.id} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: green[200]}}/>
+                    <Chip size="small" label={"#"+muestra.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: green[200]}}/>
                     <Typography>{muestra.name}</Typography>
                     <Chip size="small" label={muestra.categoria?.name} sx={{ml: 1, backgroundColor: CategoriaColors[muestra.categoria?.id], fontWeight: "bold"}}/>
                     {isMuestraExistInMesas(muestra.id)&&
@@ -254,13 +254,13 @@ export default function MesasManager() {
           <Grid container>
             {mesas.map((mesa)=>{
               return(<Grid key={"mesa"+mesa.id} item xs={12} sm={6} sx={{padding: 1}}>
-                <DropBox name={"mesa-"+mesa.id} displayName={mesa.name} sx={{minHeight: "250pt", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+                <DropBox name={"mesa-"+mesa.id} displayName={mesa.name} data={{participantes: mesa.participantes, muestras: mesa.muestras}} sx={{minHeight: "250pt", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
                     <Box sx={{pr: 4, pl: 4}}>
                       {mesa.participantes.map((participante)=>
                         <Box key={"mesa"+mesa.id+"participante"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: orange[500], borderRadius: 1, margin: 1}}>
                           <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
                             <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
-                            <Chip size="small" label={"#"+participante.id} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
+                            <Chip size="small" label={"#"+participante.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
                             <Typography>{participante.name}</Typography>
                           </Box>
                           <IconButton sx={{justifySelf:"end"}} onClick={()=>{deleteParticipanteOfMesa(participante.id, mesa.id)}}>
@@ -272,7 +272,7 @@ export default function MesasManager() {
                         <Box key={"mesa"+mesa.id+"muestra"+muestra.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: green[500], borderRadius: 1, margin: 1, ml: 5, mr: 5}}>
                           <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
                             <FontAwesomeIcon icon={faCannabis} style={{paddingLeft: 10}}/>
-                            <Chip size="small" label={"#"+muestra.id} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: green[200]}}/>
+                            <Chip size="small" label={"#"+muestra.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: green[200]}}/>
                             <Typography>{muestra.name}</Typography>
                             <Chip size="small" label={muestra.categoria?.name} sx={{ml: 1, backgroundColor: CategoriaColors[muestra.categoria?.id], fontWeight: "bold"}}/>
                             {muestraCountInMesas(muestra.id)>1&&

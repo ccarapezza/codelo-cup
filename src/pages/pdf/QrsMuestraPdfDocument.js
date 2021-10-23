@@ -40,7 +40,7 @@ export default function QrsMuestraPdfDocument({muestras}){
             style={styles.image}
             src={muestra.qrHash}
           />
-          <Text style={styles.id}>{"#"+muestra.id}</Text>
+          <Text style={styles.id}>{"#"+muestra.n}</Text>
         </View>);
       })}
     </Page>

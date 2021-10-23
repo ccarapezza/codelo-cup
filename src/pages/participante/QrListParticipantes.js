@@ -20,19 +20,26 @@ export default function QrListParticipantes() {
   const listAllParticipantes = () => {
     setParticipantes();
     axios.get("/api/participante/list")
-    .then(function (response) {
+    .then(function (responseParticipante) {
       // handle success
-      if(response.status === 200){
-        setParticipantes(response.data);
+      if(responseParticipante.status === 200){
+        axios.get("/api/participante/jurado-list")
+        .then(function (responseJurado) {
+          // handle success
+          if(responseJurado.status === 200){
+            setParticipantes(responseParticipante.data.concat(responseJurado.data));
+          }
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
       }
     })
     .catch(function (error) {
       // handle error
       console.log(error);
     })
-    .then(function () {
-      // always executed
-    });
   };
 
   useEffect(() => {
@@ -91,7 +98,7 @@ export default function QrListParticipantes() {
                 <ListItem key={index} sx={{pt:0}}>
                   <ListItemAvatar>
                     <Avatar sx={{ width: 62, height: 62 }}>
-                      <h2>{"#"+participante.id}</h2>
+                      <h2>{"#"+participante.n}</h2>
                     </Avatar>
                   </ListItemAvatar>
                   <img src={participante.qrHash} alt={participante.hash} style={{width: "250px"}}/>

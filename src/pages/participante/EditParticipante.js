@@ -1,4 +1,4 @@
-import { faCannabis, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faEdit, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Save } from "@material-ui/icons";
 import { Button, Chip, Divider, Stack, TextField } from "@mui/material";
@@ -7,7 +7,8 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
+import CategoriaColors from "../../CategoriaColors";
 import ButtonModal from "../../components/ButtonModal";
 import ConfirmModal from "../../components/ConfirmModal";
 import SelectCategoria from "../../components/SelectCategoria";
@@ -15,10 +16,12 @@ import Context from "../../context/Context";
 import Page from "../Page";
 
 export default function EditParticipante() {
+  let history = useHistory();
   const context = useContext(Context);
   const [nombre, setNombre] = useState("");
   const { id } = useParams();
 
+  const [n, setN] = useState("");
   const [muestraName, setMuestraName] = useState("");
   const [muestraDescription, setMuestraDescription] = useState("");
   const [muestraCategoria, setMuestraCategoria] = useState("");
@@ -39,10 +42,10 @@ export default function EditParticipante() {
           id: id
         },
       }).then(function (response) {
-        console.log(response);
         if(response.status === 200){
           context.showMessage("Participante cargado correctamente!", "success");
           const data = response?.data;
+          setN(data?.n);
           setNombre(data?.name);
           setMuestras(data?.muestras);
         }else{
@@ -64,10 +67,10 @@ export default function EditParticipante() {
         id: id
       },
     }).then(function (response) {
-      console.log(response);
       if(response.status === 200){
         context.showMessage("Participante cargado correctamente!", "success");
         const data = response?.data;
+        setN(data?.n);
         setNombre(data?.name);
         setMuestras(data?.muestras);
       }else{
@@ -90,10 +93,9 @@ export default function EditParticipante() {
       id: id,
       name: nombre,
     }).then(function (response) {
-      console.log(response);
       if(response.status === 200){
         context.showMessage("Participante actualizado correctamente!", "success");
-        reloadParticipante();
+        history.push("/participante/list")
       }else{
         context.showMessage("No se ha actualizado el Participante. Contacte con el administrador.", "error");
         console.error(response);  
@@ -112,7 +114,27 @@ export default function EditParticipante() {
       description: muestraDescription,
       categoriaId: muestraCategoria,
     }).then(function (response) {
-      console.log(response);
+      if(response.status === 200){
+        context.showMessage("Participante actualizado correctamente!", "success");
+        reloadParticipante();
+      }else{
+        context.showMessage("No se ha actualizado el Participante. Contacte con el administrador.", "error");
+        console.error(response);  
+      }
+    })
+    .catch(function (error) {
+      context.showMessage("No se ha actualizado el Participante. Contacte con el administrador.", "error");
+      console.error(error);
+    })
+  };
+
+  const updateMuestra = (muestraId) => {
+    axios.put("/api/participante/update-muestra",{
+      id: muestraId,
+      name: muestraName,
+      description: muestraDescription,
+      categoriaId: muestraCategoria,
+    }).then(function (response) {
       if(response.status === 200){
         context.showMessage("Participante actualizado correctamente!", "success");
         reloadParticipante();
@@ -146,7 +168,7 @@ export default function EditParticipante() {
   };
   
   return (
-    <Page title={"Actualizar Participante - #"+id} footer={false}>
+    <Page title={"Actualizar Participante - #"+n} footer={false}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack width="100%" spacing={2}>
           <TextField {...register("name-input", { required: true })} error={errors["name-input"]} fullWidth id="name-input" label="Nombre" variant="outlined" value={nombre} onChange={(e)=>setNombre(e?.target?.value)} />
@@ -159,14 +181,22 @@ export default function EditParticipante() {
                 key={muestra.hash}
                 component="span"
                 sx={{pl: "5px", mr: 1, backgroundColor: green[500]}}
-                icon={<FontAwesomeIcon icon={faCannabis} />}
+                icon={<FontAwesomeIcon icon={faCannabis} style={{color:"black"}} />}
                 label={
-                  <>
-                    <Chip size="small" label={"#"+muestra.id} sx={{mr: 1, backgroundColor: green[300]}}/>
-                    {muestra.name+(muestra.description?(" ("+muestra.description+")"):"")}
-                    <Chip size="small" label={muestra.categoria?.name} sx={{ml: 1, backgroundColor: [muestra.categoria.id], fontWeight: "bold"}}/>
-                  </>
+                  <Box sx={{display: "flex", alignItems: "center"}}>
+                    <Chip size="small" label={"#"+muestra.n} sx={{mr: 1, backgroundColor: green[300], fontWeight: "bold"}}/>
+                    <h3><strong>{muestra.name+(muestra.description?(" ("+muestra.description+")"):"")}</strong></h3>
+                    <Chip size="small" label={muestra.categoria?.name} sx={{ml: 1, backgroundColor: CategoriaColors[muestra.categoria?.id], fontWeight: "bold"}}/>
+                  </Box>
                 } />
+              <ButtonModal onClick={()=>{setMuestraName(muestra.name); setMuestraDescription(muestra.description); setMuestraCategoria(muestra.categoriaId);}} faIcon={faEdit} textButton="" sx={{whiteSpace: "nowrap", mr: 1}} saveDisabled={!muestraName||!muestraCategoria} operation={()=>{updateMuestra(muestra.id)}}>
+                <Box>
+                    <Divider sx={{pb:2}}>Editar Muestra</Divider>
+                    <TextField fullWidth id="name-input" label="Nombre" variant="outlined" value={muestraName} onChange={(e)=>setMuestraName(e?.target?.value)} />
+                    <TextField fullWidth id="description-input" label="Descripción" variant="outlined" sx={{mt: 2}} value={muestraDescription} onChange={(e)=>setMuestraDescription(e?.target?.value)} />
+                    <SelectCategoria value={muestraCategoria} onChange={(e)=>setMuestraCategoria(e?.target?.value)}/>
+                </Box>
+              </ButtonModal>
               <ConfirmModal faIcon={faTrash} buttonColor="error" message="Esta seguro que desea eliminar la muestra?" operation={()=>{deleteMuestra(muestra.id)}}/>
             </Box>
           )}

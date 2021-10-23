@@ -3,22 +3,47 @@ import axios from "axios";
 import { useContext } from "react";
 import { useDrag } from "react-dnd";
 import Context from "../context/Context";
-export const DraggableBox = function DraggableBox({ name, children, sx, onUpdate }) {
+export const DraggableBox = function DraggableBox({ name, data, children, sx, onUpdate }) {
     const context = useContext(Context);
     const [{ isDragging }, drag] = useDrag(() => ({
         type: "box",
-        item: { name },
+        item: { name, data },
         end: (item, monitor) => {
             const dropResult = monitor.getDropResult();
             if (item && dropResult) {
                 const objectType = item.name.split("-")[0];
                 const objectId = item.name.split("-")[1];
                 const mesaId = dropResult.name.split("-")[1];
+                let forbidden = false;
+                
                 if(objectType==="participante"){
-                    addParticipante(objectId, mesaId)
+                    const muestrasDelParticipante = item.data?.muestras;
+                    const muestrasDeLaMesa = dropResult.data?.muestras;
+
+                    for (const muestraDelParticipante of muestrasDelParticipante) {
+                        for (const muestraDeLaMesa of muestrasDeLaMesa) {
+                            forbidden = forbidden || muestraDeLaMesa.id === muestraDelParticipante.id;
+                        }
+                    }
+                    if(!forbidden){
+                        addParticipante(objectId, mesaId)
+                    }else{
+                        context.showMessage("No se puede agregar el participante a esta mesa.", "error");
+                    }
                 }
                 if(objectType==="muestra"){
-                    addMuestra(objectId, mesaId)
+                    const participantesDeLaMesa = dropResult.data?.participantes;
+                    for (const participanteDeLaMesa of participantesDeLaMesa) {
+                        for (const muestra of participanteDeLaMesa.muestras) {
+                            forbidden = forbidden || muestra.id===parseInt(objectId);
+                        }
+                    }
+
+                    if(!forbidden){
+                        addMuestra(objectId, mesaId)
+                    }else{
+                        context.showMessage("No se puede agregar la muestra a esta mesa.", "error");
+                    }
                 }
             }
         },

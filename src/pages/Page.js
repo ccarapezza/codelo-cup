@@ -9,8 +9,8 @@ import { useContext, useState } from "react";
 import { useHistory } from "react-router";
 import Context from "../context/Context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCannabis, faChair, faHome, faListAlt, faPollH, faQrcode, faSignOutAlt, faSquare, faSyncAlt, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
-import { deepOrange } from "@mui/material/colors";
+import { faCannabis, faChair, faGavel, faHome, faKey, faListAlt, faPollH, faQrcode, faSearch, faSignOutAlt, faSquare, faSyncAlt, faTags, faUser, faUserPlus, faVihara } from "@fortawesome/free-solid-svg-icons";
+import { deepOrange, indigo, yellow } from "@mui/material/colors";
 
 export default function Page({ title, children, footer = true, style }) {
   const context = useContext(Context);
@@ -27,8 +27,20 @@ export default function Page({ title, children, footer = true, style }) {
           >
             <Menu />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div" sx={{display: "flex", alignItems: "center", flexGrow: 1 }}>
             {title}
+            {context.isJuradoLogged&&
+              <Chip size="small" sx={{mx: 1, color: "white", backgroundColor: indigo[500]}} label={<Box sx={{display: "flex", alignItems: "center"}}>
+                <FontAwesomeIcon icon={faGavel} style={{marginRight: 5, fontSize: "0.6rem"}}/>
+                <Typography sx={{fontSize: "0.6rem"}}>Juez</Typography>
+              </Box>}/>
+            }
+            {context.isLogged&&
+              <Chip size="small" sx={{mx: 1, color: "white", backgroundColor: yellow[900]}} label={<Box sx={{display: "flex", alignItems: "center"}}>
+                <FontAwesomeIcon icon={faKey} style={{marginRight: 5, fontSize: "0.6rem"}}/>
+                <Typography sx={{fontSize: "0.6rem"}}>Admin</Typography>
+              </Box>}/>
+            }
           </Typography>
         </Toolbar>
       </AppBar>
@@ -76,6 +88,18 @@ export default function Page({ title, children, footer = true, style }) {
                   </ListItemIcon>
                   <ListItemText primary={"Calificar Muestra"} />
                 </ListItem>
+                {context.isJuradoLogged&&
+                  <ListItem button key={"consultar-muestra"} onClick={(e)=>history.push("/calificaciones/muestra")}>
+                    <ListItemIcon>
+                      <span className="fa-layers fa-fw fa-3x">
+                        <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-3"/>
+                        <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4 left-2"/>
+                        <FontAwesomeIcon icon={faSearch} inverse transform="shrink-12 down-4 right-4 left-2"/>
+                      </span>
+                    </ListItemIcon>
+                    <ListItemText primary={"Consultar Muestra"} />
+                  </ListItem>
+                }
                 <ListItem button key={"logout"} onClick={(e)=>context.logout()}>
                   <ListItemIcon>
                     <span className="fa-layers fa-fw fa-3x">
@@ -111,13 +135,45 @@ export default function Page({ title, children, footer = true, style }) {
                 </ListItemIcon>
                 <ListItemText primary={"Nuevo Participante"} />
               </ListItem>
-              <ListItem button key={"new-player"} onClick={(e)=>{history.push("/participante/list")}}>
+              <ListItem button key={"participante-list"} onClick={(e)=>{history.push("/participante/list")}}>
                 <ListItemIcon>
                   <span className="fa-layers fa-fw fa-3x">
                     <FontAwesomeIcon icon={faListAlt} transform="shrink-6 left-1"/>
                   </span>
                 </ListItemIcon>
                 <ListItemText primary={"Listado Participantes"} />
+              </ListItem>
+              <ListItem button key={"create-jurado"} onClick={(e)=>{history.push("/participante/create-jurado")}}>
+                <ListItemIcon>
+                  <span className="fa-layers fa-fw fa-3x">
+                    <FontAwesomeIcon icon={faGavel} transform="shrink-6 left-1"/>
+                  </span>
+                </ListItemIcon>
+                <ListItemText primary={"Nuevo Jurado"} />
+              </ListItem>
+              <ListItem button key={"jurado-list"} onClick={(e)=>{history.push("/participante/jurado-list")}}>
+                <ListItemIcon>
+                  <span className="fa-layers fa-fw fa-3x">
+                    <FontAwesomeIcon icon={faListAlt} transform="shrink-6 left-1"/>
+                  </span>
+                </ListItemIcon>
+                <ListItemText primary={"Listado Jurados"} />
+              </ListItem>
+              <ListItem button key={"dojo-list"} onClick={(e)=>{history.push("/dojo/list")}}>
+                <ListItemIcon>
+                  <span className="fa-layers fa-fw fa-3x">
+                    <FontAwesomeIcon icon={faVihara} transform="shrink-6 left-1"/>
+                  </span>
+                </ListItemIcon>
+                <ListItemText primary={"Listado Dojos"} />
+              </ListItem>
+              <ListItem button key={"categoria-list"} onClick={(e)=>{history.push("/categoria/list")}}>
+                <ListItemIcon>
+                  <span className="fa-layers fa-fw fa-3x">
+                    <FontAwesomeIcon icon={faTags} transform="shrink-6 left-1"/>
+                  </span>
+                </ListItemIcon>
+                <ListItemText primary={"Listado Categorias"} />
               </ListItem>
               <ListItem button key={"participante-qr-list"} onClick={(e)=>{history.push("/participante/qr-list")}}>
                 <ListItemIcon>
@@ -147,6 +203,16 @@ export default function Page({ title, children, footer = true, style }) {
                 </ListItemIcon>
                 <ListItemText primary={"Resultados"} />
               </ListItem>
+              <ListItem button key={"consultar-muestra"} onClick={(e)=>{history.push("/calificaciones/muestra")}}>
+                <ListItemIcon>
+                  <span className="fa-layers fa-fw fa-3x">
+                    <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-3"/>
+                    <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4 left-2"/>
+                    <FontAwesomeIcon icon={faSearch} inverse transform="shrink-12 down-4 right-4 left-2"/>
+                  </span>
+                </ListItemIcon>
+                <ListItemText primary={"Consultar Muestra"} />
+              </ListItem>
               <ListItem button key={"mesas-manager"} onClick={(e)=>{history.push("/mesas-manager")}}>
                 <ListItemIcon>
                   <span className="fa-layers fa-fw fa-3x">
@@ -171,11 +237,19 @@ export default function Page({ title, children, footer = true, style }) {
       {footer && context.isParticipanteLogged &&
         <AppBar position="fixed" color="secondary" sx={{ top: "auto", bottom: 0 }}>
           <Box sx={{ p: 1 }}>
-            <Typography sx={{ fontSize: "1rem", fontWeight: "bold" }}>
-              Participante
-            </Typography>
+            {context.isJuradoLogged?
+              <Chip variant="outlined" size="small" sx={{color: "white"}} label={<Box sx={{display: "flex", alignItems: "center", px: 1}}>
+                <FontAwesomeIcon icon={faGavel} style={{marginRight: 5, fontSize: "1rem"}}/>
+                <Typography sx={{fontSize: "1rem"}}>Juez</Typography>
+              </Box>}/>
+              :
+              <Typography sx={{ fontSize: "1rem", fontWeight: "bold" }}>
+                Participante
+              </Typography>
+
+            }
             <Typography variant="h5" component="div">
-              <Chip variant={"outlined"} label={"#"+context.participanteData?.id} sx={{ mr: 1, bgcolor: deepOrange[500], color:"white!important" }}/>{context.participanteData?.name}
+              <Chip variant={"outlined"} label={"#"+context.participanteData?.n} sx={{ mr: 1, bgcolor: deepOrange[500], color:"white!important" }}/>{context.participanteData?.name}
             </Typography>
             {context.participanteData?.mesa&&
               <Paper variant={"outlined"} sx={{width: "fit-content", mt: 1, px: 1, bgcolor: "transparent", borderColor:"white!important"}}>

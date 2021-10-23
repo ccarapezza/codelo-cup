@@ -30,9 +30,6 @@ export default function QrListMuestra() {
       // handle error
       console.log(error);
     })
-    .then(function () {
-      // always executed
-    });
   };
 
   useEffect(() => {
@@ -90,7 +87,7 @@ export default function QrListMuestra() {
                   <ListItem key={index}>
                     <ListItemAvatar>
                       <Avatar sx={{ width: 62, height: 62 }}>
-                        <h2>{"#"+muestra.id}</h2>
+                        <h2>{"#"+muestra.n}</h2>
                       </Avatar>
                     </ListItemAvatar>
                     <img src={muestra.qrHash} alt={muestra.hash} style={{width: "250px"}}/>

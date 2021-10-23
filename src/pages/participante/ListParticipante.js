@@ -1,17 +1,27 @@
 
-import { Avatar, Button, Chip, Divider, List, ListItem, ListItemAvatar, ListItemText, Stack, Typography } from "@mui/material";
+import { Avatar, Button, Chip, Divider, IconButton, InputBase, List, ListItem, ListItemAvatar, ListItemText, Paper, Stack, Typography } from "@mui/material";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Page from "../Page";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCannabis, faChair, faEdit, faStoreAlt, faVihara } from '@fortawesome/free-solid-svg-icons'
+import { faCannabis, faChair, faEdit, faStoreAlt, faTrash, faVihara } from '@fortawesome/free-solid-svg-icons'
 import { orange, green, deepPurple, lightGreen } from '@mui/material/colors';
 import { useHistory } from "react-router";
 import { Box } from "@mui/system";
 import CategoriaColors from "../../CategoriaColors";
+import { Search } from "@material-ui/icons";
+import ConfirmModal from "../../components/ConfirmModal";
+import Context from "../../context/Context";
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 export default function ListParticipante() {
+  const context = useContext(Context);
   const [participantes, setParticipantes] = useState([]);
+  const [searchField, setSearchField] = useState("");
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up('sm'));
+  
   let history = useHistory();
 
   const listAllParticipantes = () => {
@@ -27,9 +37,24 @@ export default function ListParticipante() {
       // handle error
       console.log(error);
     })
-    .then(function () {
-      // always executed
-    });
+  };
+
+  const deleteParticipante = (idParticipante) => {
+    axios.delete("/api/participante/delete",{
+      data:{
+        id: idParticipante,
+      }
+    })
+    .then(function (response) {
+      if(response.status === 200){
+        context.showMessage("Categoría eliminada","success");
+        listAllParticipantes();
+      }
+    })
+    .catch(function (error) {
+      context.showMessage("No se pudo eliminar la Categoría","error");
+      console.log(error);
+    })
   };
 
   useEffect(() => {
@@ -39,65 +64,88 @@ export default function ListParticipante() {
   return (
     <Page title="Listado Participantes" footer={false}>
       {participantes?.length!==0?
-        <List sx={{paddingTop: "0", marginTop: 0}}>
-          {participantes?.map((participante)=>{
-            return(
-              <div key={participante.hash}>
-                <ListItem sx={{display: "flex", justifyContent: "space-between"}}>
-                  <Box sx={{display: "flex"}}>
-                    <ListItemAvatar sx={{display: "flex", alignItems: "center"}}>
-                      <Avatar sx={{backgroundColor: orange[500]}}>
-                        {"#"+participante.id}
-                      </Avatar>
-                    </ListItemAvatar>
-                    <Stack>
-                      <ListItemText
-                        primary={
-                          <Box sx={{display: "flex", alignItems: "center", mb: 1}}>
-                            <Typography variant="h5" sx={{mr:1, fontWeight: "bold"}}>{participante.name}</Typography>
-                            {participante.dojo&&
-                              <Chip icon={<FontAwesomeIcon icon={faVihara} style={{color: "white"}}/>} size="small" label={participante.dojo?.name} sx={{mr: 1, backgroundColor: deepPurple[400], color: "white"}}/>
-                            }
-                            {participante.grow&&
-                              <Chip title="Es Grow" icon={
-                                <span className="fa-layers fa-fw" style={{color: "black", marginLeft:10}}>
-                                  <FontAwesomeIcon icon={faCannabis} transform="shrink-4 up-8"/>
-                                  <FontAwesomeIcon icon={faStoreAlt} transform="shrink-3 down-5"/>
-                                </span>
+        <>
+          <Box sx={{display: 'flex', alignItems: 'center'}}>
+            <Paper
+              component="form"
+              sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width:"100%" }}
+            >
+              <InputBase
+                sx={{ ml: 1, flex: 1 }}
+                placeholder={"Buscar..."}
+                inputProps={{ 'aria-label': 'Buscar Participante'}}
+                value={searchField}
+                onChange={(e)=>setSearchField(e.target.value)}
+              />
+              <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+                <Search />
+              </IconButton>
+            </Paper>
+          </Box>
+          <Divider sx={{my: 1}}/>
+          <List sx={{paddingTop: "0", marginTop: 0}}>
+            {participantes?.filter(dojo => (dojo.name?.toLowerCase().includes(searchField?.toLowerCase()))).map((participante)=>{
+              return(
+                <div key={participante.hash}>
+                  <ListItem sx={{display: "flex", justifyContent: "space-between", m:0, p:0}}>
+                    <Box sx={{display: "flex"}}>
+                      <ListItemAvatar sx={{display: "flex", alignItems: "center", m:0, p:0}}>
+                        <Avatar sx={{backgroundColor: orange[500]}}>
+                          <h6>{"#"+participante.n}</h6>
+                        </Avatar>
+                      </ListItemAvatar>
+                      <Stack>
+                        <ListItemText
+                          primary={
+                            <Box sx={{display: "flex", alignItems: "center", mb: 1}}>
+                              <Typography variant="h5" sx={{mr:1, fontWeight: "bold"}}>{participante.name}</Typography>
+                              {participante.dojo&&
+                                <Chip component="div" icon={<FontAwesomeIcon icon={faVihara} style={{color: "white"}}/>} size="small" label={participante.dojo?.name} sx={{mr: 1, backgroundColor: deepPurple[400], color: "white"}}/>
                               }
-                              sx={{backgroundColor: lightGreen[400], fontWeight: "bold"}}
-                              label={participante.grow}
-                              />
-                            }
-                          </Box>
-                        } 
-                        secondary={participante.muestras?.map((muestra)=>
-                          <Chip
-                            key={muestra.hash}
-                            component="span"
-                            sx={{pl: "5px", mr: 1, backgroundColor: green[200], fontWeight: "bold"}}
-                            icon={<FontAwesomeIcon icon={faCannabis} style={{color: "black"}}/>}
-                            label={
-                            <>
-                              <Chip size="small" label={"#"+muestra.id} sx={{mr: 1, backgroundColor: green[400]}}/>
-                              {muestra.name+(muestra.description?(" ("+muestra.description+")"):"")}
-                              <Chip size="small" label={muestra.categoria?.name} sx={{ml: 1, backgroundColor: CategoriaColors[muestra.categoria.id-1], fontWeight: "bold", color:"white"}}/>
-                            </>
-                          } />
-                        )}
-                      />
-                      {participante.mesa&&
-                        <Chip icon={<FontAwesomeIcon icon={faChair} style={{color: "black", marginLeft:"10px"}}/>} variant="outlined" label={participante.mesa?.name} sx={{mr: 1, width: "fit-content", fontWeight: "bold"}}/>
-                      }
-                    </Stack>
-                  </Box>
-                  <Button variant="outlined" sx={{justifySelf: "end"}} onClick={()=>{history.push("/participante/edit/"+participante.id)}}><FontAwesomeIcon icon={faEdit}/></Button>
-                </ListItem>
-                <Divider />
-              </div>
-            )
-          })}
-        </List>
+                              {participante.grow&&
+                                <Chip title="Es Grow" icon={
+                                  <span className="fa-layers fa-fw" style={{color: "black", marginLeft:10}}>
+                                    <FontAwesomeIcon icon={faCannabis} transform="shrink-4 up-8"/>
+                                    <FontAwesomeIcon icon={faStoreAlt} transform="shrink-3 down-5"/>
+                                  </span>
+                                }
+                                sx={{backgroundColor: lightGreen[400], fontWeight: "bold"}}
+                                label={participante.grow}
+                                />
+                              }
+                            </Box>
+                          } 
+                          secondary={participante.muestras?.map((muestra)=>
+                            <Chip
+                              key={muestra.hash}
+                              component="span"
+                              sx={{pl: "5px", mr: 1, mb: 1, backgroundColor: green[200], fontWeight: "bold", height: "auto", p: 1}}
+                              icon={<FontAwesomeIcon icon={faCannabis} style={{color: "black"}}/>}
+                              label={
+                              <Box sx={{display: "flex", flexDirection: matches?"row":"column", alignItems: "center", m:0, p:0}}>
+                                <Chip size="small" label={"#"+muestra.n} sx={{mx: 1, backgroundColor: green[400]}}/>
+                                <Typography sx={{fontWeight: "bold", maxWidth:matches?"auto":"150px", overflow: "hidden", textOverflow: "ellipsis"}}>{muestra.name+(muestra.description?(" ("+muestra.description+")"):"")}</Typography>
+                                <Chip size="small" label={muestra.categoria?.name} sx={{mx: 1, backgroundColor: CategoriaColors[muestra.categoria.id-1], fontWeight: "bold", color:"white"}}/>
+                              </Box>
+                            } />
+                          )}
+                        />
+                        {participante.mesa&&
+                          <Chip icon={<FontAwesomeIcon icon={faChair} style={{color: "black", marginLeft:"10px"}}/>} variant="outlined" label={participante.mesa?.name} sx={{mr: 1, width: "fit-content", fontWeight: "bold"}}/>
+                        }
+                      </Stack>
+                    </Box>
+                    <Box>
+                      <Button variant="outlined" sx={{justifySelf: "end", mr: 1}} onClick={()=>{history.push("/participante/edit/"+participante.id)}}><FontAwesomeIcon icon={faEdit}/></Button>
+                      <ConfirmModal faIcon={faTrash} buttonColor="error" message="Esta seguro que desea eliminar el Participante?" operation={()=>{deleteParticipante(participante.id)}}/>
+                    </Box>
+                  </ListItem>
+                  <Divider sx={{mt:1}} />
+                </div>
+              )
+            })}
+          </List>
+        </>
         :
         <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <h2><Chip label="No se encontraron participantes"/></h2>

@@ -1,5 +1,5 @@
 
-import { Avatar, Button, Chip, Divider, InputLabel, List, ListItem, ListItemAvatar, Paper, Rating, Stack, Typography} from "@mui/material";
+import { Avatar, Button, Chip, Divider, FormControlLabel, InputLabel, List, ListItem, ListItemAvatar, Paper, Rating, Stack, Switch, Typography, useMediaQuery} from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -10,10 +10,12 @@ import { deepOrange, green } from '@mui/material/colors';
 import SelectCategoria from "../../components/SelectCategoria";
 import CategoriaColors from "../../CategoriaColors";
 import { deepPurple, lightGreen } from "@material-ui/core/colors";
+import { useTheme } from "@emotion/react";
 
 export default function Resultados() {
   const [resultados, setResultados] = useState([]);
   const [muestraCategoriaFilter, setMuestraCategoriaFilter] = useState("")
+  const matches = useMediaQuery(useTheme().breakpoints.up('sm'));
 
   useEffect(() => {
     axios.get("/api/calificaciones/resultados")
@@ -44,46 +46,52 @@ export default function Resultados() {
       // handle error
       console.log(error);
     })
-    .then(function () {
-      // always executed
-    });
   }, []);
   //Custom Table End
 
   const [showDetails, setShowDetails] = useState(false);
   const [orderValue, setOrderValue] = useState("presentacion");
   const [sortOrder, setSortOrder] = useState(0);
+  const [dojoFilter, setDojoFilter] = useState(false);
+  const [growFilter, setGrowFilter] = useState(false)
 
   return (
     <Page title="Resultados" footer={false}>
-        <Divider>Ordenar por:</Divider>
-        <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", flexWrap: "wrap", margin: 2}} direction="row" spacing={1}>
+        <Divider sx={{m: 0}}>Ordenar por:</Divider>
+        <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", flexWrap: "wrap", margin: 0}} direction="row" spacing={1}>
           <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="presentacion"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("presentacion"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="presentacion"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
-            Presentación
+            <small>Presentación</small>
           </Button>
           <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="aromaApagado"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("aromaApagado"); setSortOrder(sortOrder?0:1)}}>
           {orderValue==="aromaApagado"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
-            Aroma Apagado
+            <small>Aroma (En flor)</small>
           </Button>
           <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="aromaPrendido"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("aromaPrendido"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="aromaPrendido"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
-            Aroma Prendido
+            <small>Aroma (Picadura)</small>
           </Button>
           <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="saborPrendido"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("saborPrendido"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="saborPrendido"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
-            Sabor Prendido
+            <small>Sabor Prendido</small>
           </Button>
           <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="saborApagado"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("saborApagado"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="saborApagado"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
-            Sabor Apagado
+            <small>Sabor Apagado</small>
           </Button>
           <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="promedioTotal"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("promedioTotal"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="promedioTotal"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
-            Promedio Total
+            <small>Promedio Total</small>
           </Button>
         </Stack>
-        <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", margin: 2}} direction="row" spacing={1}>
+        <Divider>Filtrar por:</Divider>
+          <Box sx={{display:"flex", flexDirection:matches?"row":"column"}}>
+            <SelectCategoria sx={{flexGrow: 1, whiteSpace:"nowrap", width: "auto", mx:1, mb:1}} blankLabel="Todas" value={muestraCategoriaFilter} onChange={(e)=>setMuestraCategoriaFilter(e?.target?.value)}/>
+            <FormControlLabel sx={{flexGrow: 1, whiteSpace:"nowrap", mx:1, textAlign: "center", display: "inline", alignSelf: "center"}} control={<Switch checked={dojoFilter} onChange={(e)=>{setDojoFilter(e.target.checked); setGrowFilter(e.target.checked?false:growFilter);}} />} label={<><FontAwesomeIcon icon={faVihara}/>Categoria Dojos</>}/>
+            <FormControlLabel sx={{flexGrow: 1, whiteSpace:"nowrap", mx:1, textAlign: "center", display: "inline", alignSelf: "center"}} control={<Switch checked={growFilter} onChange={(e)=>{setGrowFilter(e.target.checked); setDojoFilter(e.target.checked?false:dojoFilter);}} />} label={<><span className="fa-layers fa-fw" style={{color: "black", marginLeft:10}}><FontAwesomeIcon icon={faCannabis} transform="shrink-4 up-8"/><FontAwesomeIcon icon={faStoreAlt} transform="shrink-3 down-5"/></span>Categoria Grows</>}/>
+          </Box>
+        <Divider/>
+        <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", margin: 1}} direction="row" spacing={1}>
           {showDetails?
             <Button variant="outlined" onClick={()=>{setShowDetails(false)}}>
               <FontAwesomeIcon icon={faEyeSlash} style={{marginRight: 15}} />
@@ -96,10 +104,6 @@ export default function Resultados() {
             </Button>
           }
         </Stack>
-        <Divider>Filtrar por:</Divider>
-          <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", margin: 2}} direction="row" spacing={1}>
-            <SelectCategoria blankLabel="Todas" value={muestraCategoriaFilter} onChange={(e)=>setMuestraCategoriaFilter(e?.target?.value)}/>
-          </Stack>
         <Divider/>
         <List sx={{paddingTop: 0, marginTop: 0}}>
           {Object.keys(resultados).map((k)=>resultados[k])
@@ -127,6 +131,15 @@ export default function Resultados() {
               return 0;
             })
             .filter((resultado)=>{
+              if(dojoFilter){
+                return resultado.muestra?.participante?.dojo?true:false;
+              }else if(growFilter){
+                return resultado.muestra?.participante?.grow?true:false;
+              }else{
+                return resultado;
+              }
+            })
+            .filter((resultado)=>{
               if(resultado.muestra?.categoria && muestraCategoriaFilter){
                 return parseInt(resultado.muestra.categoria.id) === muestraCategoriaFilter
               }else{
@@ -136,19 +149,20 @@ export default function Resultados() {
             .map((resultado)=>{
               return(
                 <div key={resultado.muestraId}>
-                  <ListItem sx={{display:"flex", alignItems:"center", justifyContent: showDetails?"start":"center", overflowX: "auto"}}>
-                    <ListItemAvatar sx={{display:"flex", flexDirection:"column", alignItems:"center", margin: 2}}>
+                  <ListItem className="scroll-flex-fix" sx={{display:"flex", alignItems:"center", overflowX: "auto"}}>
+                    
+                  <ListItemAvatar sx={{display:"flex", flexDirection:"column", alignItems:"center", margin: 2}}>
                       <Avatar sx={{ width: 74, height: 74, bgcolor: green[500] }}>
                         <Stack sx={{display:"flex", flexDirection:"column", alignItems:"center"}}>
                           <FontAwesomeIcon icon={faCannabis}/>
-                          <h2 style={{padding:0, margin: 0}}>{"#"+resultado.muestraId}</h2>
+                          <h2 style={{padding:0, margin: 0}}>{"#"+resultado.muestra.n}</h2>
                         </Stack>
                       </Avatar>
                       <h3 style={{padding:0, margin: 0}}>{resultado?.muestra?.name}</h3>
                       <Chip size="small" label={resultado?.muestra.categoria?.name} sx={{backgroundColor: CategoriaColors[resultado?.muestra.categoria.id], fontWeight: "bold"}}/>
                       <Paper variant="outlined" sx={{display:"flex", flexDirection:"column", alignItems:"center", padding: 1, marginTop: 2, bgcolor: deepOrange[500]}}>
                         <h6 style={{padding:0, margin:0}}><FontAwesomeIcon icon={faUserAlt} style={{marginRight: 5}}/>Participante</h6>
-                        <Typography variant="h6" component="div">{"#"+resultado?.muestra?.participante?.id+" - "+resultado?.muestra?.participante?.name}</Typography>
+                        <Typography variant="h6" component="div" sx={{whiteSpace: "nowrap"}}>{"#"+resultado?.muestra?.participante?.n+" - "+resultado?.muestra?.participante?.name}</Typography>
                         {resultado?.muestra?.participante?.dojo&&
                           <Chip icon={<FontAwesomeIcon icon={faVihara} style={{color: "white"}}/>} size="small" label={resultado?.muestra?.participante?.dojo?.name} sx={{backgroundColor: deepPurple[400], color: "white"}}/>
                         }
@@ -165,8 +179,7 @@ export default function Resultados() {
                         }
                       </Paper>
                     </ListItemAvatar>
-                    
-                    <Paper sx={{padding:"5px", marginRight: "20px"}} elevation={4}>
+                    <Paper sx={{padding:"5px", marginRight: 2}} elevation={4}>
                       <Divider sx={{pb:"5px"}}><Chip color="success" label={"PROMEDIO"}/></Divider>
                       <InputLabel htmlFor="presentacion-input"><span>Presentación: </span><strong style={{paddingLeft:"5px"}}>{resultado.presentacion}</strong></InputLabel>
                       <Rating name="presentacion-input" value={resultado.presentacion} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
@@ -189,7 +202,7 @@ export default function Resultados() {
                     {showDetails&&resultado.calificaciones?.map((calificacion)=>{
                       const updatedAt = new Date(Date.parse(calificacion.updatedAt));
                       return(<Paper sx={{padding:"5px", mr: 1}} elevation={4} key={"calificacion-"+calificacion.id}>
-                          <Divider sx={{pb:"5px"}}><Chip sx={{textOverflow: "ellipsis"}} color="secondary" label={`#${calificacion.participante?.id} - ${calificacion.participante?.name}`}/></Divider>
+                          <Divider sx={{pb:"5px"}}><Chip sx={{textOverflow: "ellipsis"}} color="secondary" label={`#${calificacion.participante?.n} - ${calificacion.participante?.name}`}/></Divider>
                           <InputLabel htmlFor="presentacion-input"><span>Presentación: </span><strong style={{paddingLeft:"5px"}}>{calificacion.presentacion}</strong></InputLabel>
                           <Rating name="presentacion-input" value={calificacion.presentacion} max={10} readOnly sx={{fontSize: "1rem"}}/>
                           <Divider/>
@@ -203,7 +216,8 @@ export default function Resultados() {
                           <InputLabel htmlFor="saborApagado-input">Sabor (Apagado): <strong style={{paddingLeft:"5px"}}>{calificacion.saborApagado}</strong></InputLabel>
                           <Rating name="saborApagado-input" value={calificacion.saborApagado} max={10} readOnly sx={{fontSize: "1rem"}}/>
                           <Divider sx={{marginBottom: "5px"}}/>
-                          <Box sx={{display: "flex", justifyContent: "end", alignItems: "center"}}>
+                          <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                            <Chip variant="outlined" label={calificacion.participante.mesa?.name?calificacion.participante.mesa?.name:"SIN MESA"} />
                             <div><FontAwesomeIcon icon={faClock} transform="shrink-6" style={{color: "grey"}}/><span style={{color: "grey"}}>{updatedAt.toLocaleTimeString().substr(0, updatedAt.toLocaleTimeString().lastIndexOf(":"))}</span></div>
                           </Box>
                         </Paper>)

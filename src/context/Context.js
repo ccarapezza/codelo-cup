@@ -3,6 +3,7 @@ const initial = {
     userData: { },
     isLogged: false,
     participanteData: { },
+    isJuradoLogged: false,
     isParticipanteLogged: false,
     showMessage: (message, severity = "info") => { },
     login: (username, password) => { },
