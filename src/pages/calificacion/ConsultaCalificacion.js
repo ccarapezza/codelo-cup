@@ -112,32 +112,38 @@ export default function ConsultaCalificacion() {
                     m.calificaciones.push(d);
                     return m;
                 },null)].map((calificacion)=>{
-                    return({
-                      ...calificacion,
-                      presentacion: Math.round(calificacion.presentacion/calificacion.count * 10) / 10,
-                      aromaPrendido: Math.round(calificacion.aromaPrendido/calificacion.count * 10) / 10,
-                      aromaApagado: Math.round(calificacion.aromaApagado/calificacion.count * 10) / 10,
-                      saborPrendido: Math.round(calificacion.saborPrendido/calificacion.count * 10) / 10,
-                      saborApagado: Math.round(calificacion.saborApagado/calificacion.count * 10) / 10,
-                      promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
-                    })
+                    if(calificacion){
+                        return({
+                          ...calificacion,
+                          presentacion: Math.round(calificacion.presentacion/calificacion.count * 10) / 10,
+                          aromaPrendido: Math.round(calificacion.aromaPrendido/calificacion.count * 10) / 10,
+                          aromaApagado: Math.round(calificacion.aromaApagado/calificacion.count * 10) / 10,
+                          saborPrendido: Math.round(calificacion.saborPrendido/calificacion.count * 10) / 10,
+                          saborApagado: Math.round(calificacion.saborApagado/calificacion.count * 10) / 10,
+                          promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
+                        })
+                    }else{
+                        return(null);
+                    }
                 })[0];
 
-                setPromedioData(promedioData.concat(promedioDataResponse));
-
-                addMuestra({
-                    label: 'Muestra #'+muestraId,
-                    data: [promedioDataResponse.presentacion, promedioDataResponse.aromaPrendido, promedioDataResponse.aromaApagado, promedioDataResponse.saborPrendido, promedioDataResponse.saborApagado],
-                    backgroundColor: alpha(ComparatorColors[promedio?.datasets.length], 0.2),
-                    borderColor: ComparatorColors[promedio?.datasets.length],
-                    lineTension: 0.1,
-                    pointBackgroundColor: ComparatorColors[promedio?.datasets.length],
-                    pointBorderColor: "rgba(255, 255, 255, 1)",
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                });
-
-                context.showMessage("Muestra identificada!", "success");
+                if(promedioDataResponse){
+                    setPromedioData(promedioData.concat(promedioDataResponse));
+                    addMuestra({
+                        label: 'Muestra #'+muestraId,
+                        data: [promedioDataResponse.presentacion, promedioDataResponse.aromaPrendido, promedioDataResponse.aromaApagado, promedioDataResponse.saborPrendido, promedioDataResponse.saborApagado],
+                        backgroundColor: alpha(ComparatorColors[promedio?.datasets.length], 0.2),
+                        borderColor: ComparatorColors[promedio?.datasets.length],
+                        lineTension: 0.1,
+                        pointBackgroundColor: ComparatorColors[promedio?.datasets.length],
+                        pointBorderColor: "rgba(255, 255, 255, 1)",
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                    });
+                    context.showMessage("Muestra identificada!", "success");
+                }else{
+                    context.showMessage("Muestra identificada pero aun no posee calificaciones", "warning");
+                }
             } else {
                 context.showMessage("No se ha podido validar la muestra.", "error");
                 console.error(response);
@@ -196,7 +202,7 @@ export default function ConsultaCalificacion() {
                         <Button fullWidth variant="outlined" color="primary" onClick={()=>setVerGrafico(false)}>Comparar</Button>
                         <Divider sx={{mt: 2, mb:2}}/>
                         {promedioData.map((currentPromedio, index)=>{
-                            return(<div key={"promedio-"+index}>
+                            return(currentPromedio&&<div key={"promedio-"+index}>
                                 <Accordion variant="outlined">
                                     <AccordionSummary expandIcon={<ExpandMore />}>
                                         <FontAwesomeIcon icon={faCircle} color={ComparatorColors[index]} style={{alignSelf: "center", marginRight: 10}}/><Typography color={ComparatorColors[index]}>Detalles Muestra #{currentPromedio.muestra.id}</Typography>
