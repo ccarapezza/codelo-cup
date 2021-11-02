@@ -156,7 +156,7 @@ export default function Home() {
                     const updatedAt = new Date(Date.parse(calificacion.updatedAt));
                     return(<Grid item xs={12} key={calificacion?.muestra?.hash} paddingBottom="10px">
                       <Paper sx={{padding:"5px"}} elevation={3}>
-                        <Divider sx={{pb:"5px"}}><Chip color="secondary" label={`Muestra #${calificacion.muestra.id}`}/></Divider>
+                        <Divider sx={{pb:"5px"}}><Chip color="secondary" label={`Muestra #${calificacion.muestra.n}`}/></Divider>
                         <InputLabel htmlFor="presentacion-input"><span>Presentación: </span><strong style={{paddingLeft:"5px"}}>{calificacion.presentacion}</strong></InputLabel>
                         <Rating name="presentacion-input" value={calificacion.presentacion} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                         <Divider/>

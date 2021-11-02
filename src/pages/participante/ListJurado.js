@@ -86,6 +86,11 @@ export default function ListJurado() {
         console.error(error);
     })
   };
+  useEffect(() => {
+    if(name===""){
+      setGarompa("hola");
+    }
+  }, [])
 
   useEffect(() => {
     listAllJurados();
@@ -111,12 +116,14 @@ export default function ListJurado() {
                 <Search />
               </IconButton>
             </Paper>
-            <ButtonModal onClick={()=>{setName("")}} faIcon={faPlus} textButton="Crear Jurado" sx={{whiteSpace: "nowrap", ml: 2}} saveDisabled={!name} operation={()=>{createJurado()}}>
-                <Box>
-                    <Divider sx={{pb:2}}>Nuevo Jurado</Divider>
-                    <TextField fullWidth id="edit-jurado-name-input" label="Nombre" variant="outlined" value={name} onChange={(e)=>setName(e?.target?.value)} />                         
-                </Box>
-            </ButtonModal>
+            {garompa==="hola"&&
+              <ButtonModal onClick={()=>{setName("")}} faIcon={faPlus} textButton="Crear Jurado" sx={{whiteSpace: "nowrap", ml: 2}} saveDisabled={!name} operation={()=>{createJurado()}}>
+                  <Box>
+                      <Divider sx={{pb:2}}>Nuevo Jurado</Divider>
+                      <TextField fullWidth id="edit-jurado-name-input" label="Nombre" variant="outlined" value={name} onChange={(e)=>setName(e?.target?.value)} />                         
+                  </Box>
+              </ButtonModal>
+            }
           </Box>
           <Divider sx={{my: 1}}/>
           <List sx={{paddingTop: "0", marginTop: 0}}>

@@ -205,7 +205,7 @@ export default function ConsultaCalificacion() {
                             return(currentPromedio&&<div key={"promedio-"+index}>
                                 <Accordion variant="outlined">
                                     <AccordionSummary expandIcon={<ExpandMore />}>
-                                        <FontAwesomeIcon icon={faCircle} color={ComparatorColors[index]} style={{alignSelf: "center", marginRight: 10}}/><Typography color={ComparatorColors[index]}>Detalles Muestra #{currentPromedio.muestra.id}</Typography>
+                                        <FontAwesomeIcon icon={faCircle} color={ComparatorColors[index]} style={{alignSelf: "center", marginRight: 10}}/><Typography color={ComparatorColors[index]}>Detalles Muestra #{currentPromedio.muestra.n}</Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Stack>

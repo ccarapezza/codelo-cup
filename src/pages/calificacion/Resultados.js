@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Page from "../Page";
-import { faCannabis, faClock, faEye, faEyeSlash, faSortAmountDown, faSortAmountUp, faStoreAlt, faUserAlt, faVihara } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faClock, faEye, faEyeSlash, faGavel, faSortAmountDown, faSortAmountUp, faStoreAlt, faUserAlt, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { deepOrange, green } from '@mui/material/colors';
 import SelectCategoria from "../../components/SelectCategoria";
@@ -23,23 +23,7 @@ export default function Resultados() {
       // handle success
       if(response.status === 200){
         const calificaciones = response.data?.calificaciones;
-        setResultados(calificaciones.reduce(function(m, d){
-          if(!m[d.muestraId]){
-            m[d.muestraId] = {...d, count: 1, calificaciones: []};
-            delete d.muestra;
-            m[d.muestraId].calificaciones.push(d);
-            return m;
-          }
-          m[d.muestraId].presentacion += d.presentacion;
-          m[d.muestraId].aromaPrendido += d.aromaPrendido;
-          m[d.muestraId].aromaApagado += d.aromaApagado;
-          m[d.muestraId].saborPrendido += d.saborPrendido;
-          m[d.muestraId].saborApagado += d.saborApagado;
-          m[d.muestraId].count += 1;
-          delete d.muestra;
-          m[d.muestraId].calificaciones.push(d);
-          return m;
-       },{}));
+        setResultados(calificaciones);
       }
     })
     .catch(function (error) {
@@ -53,7 +37,8 @@ export default function Resultados() {
   const [orderValue, setOrderValue] = useState("presentacion");
   const [sortOrder, setSortOrder] = useState(0);
   const [dojoFilter, setDojoFilter] = useState(false);
-  const [growFilter, setGrowFilter] = useState(false)
+  const [growFilter, setGrowFilter] = useState(false);
+  const [juradoFilter, setJuradoFilter] = useState(false);
 
   return (
     <Page title="Resultados" footer={false}>
@@ -89,6 +74,7 @@ export default function Resultados() {
             <SelectCategoria sx={{flexGrow: 1, whiteSpace:"nowrap", width: "auto", mx:1, mb:1}} blankLabel="Todas" value={muestraCategoriaFilter} onChange={(e)=>setMuestraCategoriaFilter(e?.target?.value)}/>
             <FormControlLabel sx={{flexGrow: 1, whiteSpace:"nowrap", mx:1, textAlign: "center", display: "inline", alignSelf: "center"}} control={<Switch checked={dojoFilter} onChange={(e)=>{setDojoFilter(e.target.checked); setGrowFilter(e.target.checked?false:growFilter);}} />} label={<><FontAwesomeIcon icon={faVihara}/>Categoria Dojos</>}/>
             <FormControlLabel sx={{flexGrow: 1, whiteSpace:"nowrap", mx:1, textAlign: "center", display: "inline", alignSelf: "center"}} control={<Switch checked={growFilter} onChange={(e)=>{setGrowFilter(e.target.checked); setDojoFilter(e.target.checked?false:dojoFilter);}} />} label={<><span className="fa-layers fa-fw" style={{color: "black", marginLeft:10}}><FontAwesomeIcon icon={faCannabis} transform="shrink-4 up-8"/><FontAwesomeIcon icon={faStoreAlt} transform="shrink-3 down-5"/></span>Categoria Grows</>}/>
+            <FormControlLabel sx={{flexGrow: 1, whiteSpace:"nowrap", mx:1, textAlign: "center", display: "inline", alignSelf: "center"}} control={<Switch checked={juradoFilter} onChange={(e)=>{setJuradoFilter(e.target.checked);}} />} label={<><FontAwesomeIcon icon={faGavel}/>Solo Jurados</>}/>
           </Box>
         <Divider/>
         <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", margin: 1}} direction="row" spacing={1}>
@@ -106,7 +92,30 @@ export default function Resultados() {
         </Stack>
         <Divider/>
         <List sx={{paddingTop: 0, marginTop: 0}}>
-          {Object.keys(resultados).map((k)=>resultados[k])
+          {Object.keys(
+                resultados
+                .filter((resultado)=>{
+                  console.log("resultado", resultado);
+                  return true;
+                })
+                .reduce(function(m, d){
+                  if(!m[d.muestraId]){
+                    m[d.muestraId] = {...d, count: 1, calificaciones: []};
+                    delete d.muestra;
+                    m[d.muestraId].calificaciones.push(d);
+                    return m;
+                  }
+                  m[d.muestraId].presentacion += d.presentacion;
+                  m[d.muestraId].aromaPrendido += d.aromaPrendido;
+                  m[d.muestraId].aromaApagado += d.aromaApagado;
+                  m[d.muestraId].saborPrendido += d.saborPrendido;
+                  m[d.muestraId].saborApagado += d.saborApagado;
+                  m[d.muestraId].count += 1;
+                  delete d.muestra;
+                  m[d.muestraId].calificaciones.push(d);
+                  return m;
+              },{})
+            ).map((k)=>resultados[k])
             .map((e)=>{return({
               ...e,
               promedioTotal: ((e.presentacion+e.aromaApagado+e.aromaPrendido+e.saborPrendido+e.saborApagado)/5)
