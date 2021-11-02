@@ -32,6 +32,10 @@
   color: #61dafb;
 }
 
+.max-150 {
+  max-width: "150px";
+}
+
 .scroll-flex-fix::before , 
 .scroll-flex-fix::after {
   content:'';

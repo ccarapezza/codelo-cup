@@ -11,8 +11,9 @@ import Context from "../context/Context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCannabis, faChair, faGavel, faHome, faKey, faListAlt, faPollH, faQrcode, faSearch, faSignOutAlt, faSquare, faSyncAlt, faTags, faUser, faUserPlus, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { deepOrange, indigo, yellow } from "@mui/material/colors";
+import Loading from "../components/Loading";
 
-export default function Page({ title, children, footer = true, style }) {
+export default function Page({ title, children, footer = true, style, loading = false }) {
   const context = useContext(Context);
   const [menuOpen, setMenuOpen] = useState(false);
   const history = useHistory();
@@ -32,7 +33,7 @@ export default function Page({ title, children, footer = true, style }) {
             {context.isJuradoLogged&&
               <Chip size="small" sx={{mx: 1, color: "white", backgroundColor: indigo[500]}} label={<Box sx={{display: "flex", alignItems: "center"}}>
                 <FontAwesomeIcon icon={faGavel} style={{marginRight: 5, fontSize: "0.6rem"}}/>
-                <Typography sx={{fontSize: "0.6rem"}}>Juez</Typography>
+                <Typography sx={{fontSize: "0.6rem"}}>Jurado</Typography>
               </Box>}/>
             }
             {context.isLogged&&
@@ -233,14 +234,20 @@ export default function Page({ title, children, footer = true, style }) {
           }
         </Box>
       </Drawer>
-      <Container sx={{ p: 2, mb:footer && context.isParticipanteLogged?8:2, ...style }}>{children}</Container>
+      <Container sx={{ p: 2, mb:footer && context.isParticipanteLogged?8:2, ...style }}>
+        {loading?
+          <Loading/>
+        :
+          children
+        }
+      </Container>
       {footer && context.isParticipanteLogged &&
         <AppBar position="fixed" color="secondary" sx={{ top: "auto", bottom: 0 }}>
           <Box sx={{ p: 1 }}>
             {context.isJuradoLogged?
               <Chip variant="outlined" size="small" sx={{color: "white"}} label={<Box sx={{display: "flex", alignItems: "center", px: 1}}>
                 <FontAwesomeIcon icon={faGavel} style={{marginRight: 5, fontSize: "1rem"}}/>
-                <Typography sx={{fontSize: "1rem"}}>Juez</Typography>
+                <Typography sx={{fontSize: "1rem"}}>Jurado</Typography>
               </Box>}/>
               :
               <Typography sx={{ fontSize: "1rem", fontWeight: "bold" }}>

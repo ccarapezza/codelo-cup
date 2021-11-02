@@ -51,7 +51,7 @@ export default function SelectCategoria({id="select-categoria", label="Categorí
     }, [])
 
     return (
-        <FormControl fullWidth sx={{mt: 2, display:"flex", flexDirection: "row", ...sx}}>
+        <FormControl fullWidth sx={{my: 2, display:"flex", flexDirection: "row", ...sx}}>
             <InputLabel id={id+"-label"}>{label}</InputLabel>
             <Select 
                 {...selectProps}
@@ -61,6 +61,7 @@ export default function SelectCategoria({id="select-categoria", label="Categorí
                 label={label}
                 labelId={id+"-label"}
                 onChange={(e)=>onChange(e)}
+                sx={{m: 0}}
             >
                 <MenuItem value="">{blankLabel}</MenuItem>
                 {categorias?.map((categoria)=>{
