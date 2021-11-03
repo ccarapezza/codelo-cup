@@ -1,12 +1,13 @@
-import { faCannabis, faClock, faQuestion, faSquare, faStoreAlt, faUser, faVihara, faVoteYea } from '@fortawesome/free-solid-svg-icons'
+import { faCannabis, faClock, faGavel, faQuestion, faSquare, faStoreAlt, faUser, faVihara, faVoteYea } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Avatar, Card, CardContent, Divider, LinearProgress, List, ListItem, ListItemAvatar, ListItemText, Stack, Typography } from '@mui/material'
-import { blue, deepOrange, deepPurple, green, lightGreen, yellow } from '@mui/material/colors';
+import { Avatar, Card, CardContent, Chip, Divider, Grid, LinearProgress, List, ListItem, ListItemAvatar, ListItemText, Paper, Stack, Typography } from '@mui/material'
+import { blue, deepOrange, deepPurple, green, indigo, lightGreen, orange, yellow } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Bar } from 'react-chartjs-2';
 import CategoriaColors from "../CategoriaColors";
+import { DropBox } from '../components/DropBox';
 import useInterval from '../hooks/useInterval';
 
 export default function Summary() {
@@ -118,16 +119,36 @@ export default function Summary() {
                     return valorAnterior + valorActual;
                 },0);
 
-                const calificacionesCount = data.calificaciones.count;
+                const mesaDataCalificaciones = data.mesaData.map((mesa)=>{
+                    const calificacionesMesaCount = mesa.participantes.reduce(function(calificacionesCount, participante){
+                        return calificacionesCount + participante.calificaciones.length;
+                    },0);
+                    return ({
+                        name: mesa.name,
+                        calificacionesRealizadas:  calificacionesMesaCount,
+                        calificacionesEsperadas: mesa.participantes.length*mesa.muestras.length,
+                        participantes: mesa.participantes,
+                        muestras: mesa.muestras
+                    });
+                });
+
+                console.log(mesaDataCalificaciones)
+
+                const calificacionesCount = data.calificaciones.length;
+                const calificacionesJuradoCount = data.calificacionesJurado.length;
                 const muestrasCount = data.muestras.count;
                 const participantesCount = data.participantes.count;
+                const juradosCount = data.jurados.count;
                 const lastUpdated = new Date();
 
                 setDataCup({
+                    mesaDataCalificaciones,
                     cantidadDeVotosEsperados,
                     calificacionesCount,
+                    calificacionesJuradoCount,
                     muestrasCount,
                     participantesCount,
+                    juradosCount,
                     ultimaActualizacion: lastUpdated.toLocaleTimeString().substr(0, lastUpdated.toLocaleTimeString().lastIndexOf(":"))
                 })
             }
@@ -137,28 +158,13 @@ export default function Summary() {
         })
     };
 
-    useInterval(() => {
+    useEffect(() => {
         getDataCup();
         listAllDojos();
         listAllParticipantes();
-    }, 60*1);
-
-    useEffect(() => {
-        
     }, [])
 
     return (<Box>
-        <Card elevation={4} sx={{ minWidth: 275, alignSelf: "center", margin: 2 }}>
-            <CardContent sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-                <Box sx={{ width: '100%', mr: 1, display: "block" }}>
-                    <Typography component="div" sx={{ fontSize: 20, textAlign: "center" }} color="text.primary" gutterBottom>
-                        <h2 style={{margin: 0}}>Calificaciones totales</h2>
-                        <h1 style={{margin: 0}}>{parseInt(dataCup.calificacionesCount/dataCup.cantidadDeVotosEsperados*100)}%</h1>
-                    </Typography>
-                    <LinearProgress sx={{height:"1rem", borderRadius: "5px"}} color="success" variant="determinate" value={dataCup.calificacionesCount/dataCup.cantidadDeVotosEsperados*100} />
-                </Box>
-            </CardContent>
-        </Card>
         <Box sx={{display: "flex", justifyContent: "space-around", alignItems: "stretch"}}>
             
             <Card elevation={4} sx={{ minWidth: 275, width:"fit-content", alignSelf: "center", margin: 2 }}>
@@ -183,12 +189,28 @@ export default function Summary() {
                         Muestras
                     </Typography>
                     <Divider/>
+                    <Typography variant="h5" component="div" sx={{display:"flex", alignItems: "center", color: indigo[500], fontSize:"2.5rem"}}>
+                        <FontAwesomeIcon icon={faGavel} style={{padding: 10, paddingTop:5, paddingBottom:5}}/>
+                        {dataCup.juradosCount}
+                    </Typography>
+                    <Typography sx={{ mb: 1.5, fontWeight: "bold", fontSize:"1.3rem" }} color="text.secondary">
+                        Jurados
+                    </Typography>
+                    <Divider/>
                     <Typography variant="h5" component="div" sx={{display:"flex", alignItems: "center", color: blue[500], fontSize:"2.5rem"}}>
                         <FontAwesomeIcon icon={faVoteYea} style={{padding: 10, paddingTop:5, paddingBottom:5}}/>
                         {dataCup.calificacionesCount}
                     </Typography>
                     <Typography sx={{ mb: 1.5, fontWeight: "bold", fontSize:"1.3rem" }} color="text.secondary">
-                        Calificaciones realizadas
+                        Calificaciones (Participantes)
+                    </Typography>
+                    <Divider/>
+                    <Typography variant="h5" component="div" sx={{display:"flex", alignItems: "center", color: blue[500], fontSize:"2.5rem"}}>
+                        <FontAwesomeIcon icon={faVoteYea} style={{padding: 10, paddingTop:5, paddingBottom:5}}/>
+                        {dataCup.calificacionesCount}
+                    </Typography>
+                    <Typography sx={{ mb: 1.5, fontWeight: "bold", fontSize:"1.3rem" }} color="text.secondary">
+                        Calificaciones (Jurados)
                     </Typography>
                     <Divider/>
                     <Typography variant="h5" component="div" sx={{display:"flex", alignItems: "center", color: yellow[700], fontSize:"2.5rem"}}>

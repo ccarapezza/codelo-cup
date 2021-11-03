@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { faCannabis, faChair, faClock, faDatabase, faGavel, faListAlt, faPollH, faQrcode, faSearch, faSignOutAlt, faSquare, faTags, faUser, faUserPlus, faVihara } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faChair, faClock, faDatabase, faGavel, faListAlt, faPollH, faQrcode, faSearch, faServer, faSignOutAlt, faSquare, faTags, faUser, faUserPlus, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Chip, Divider, Grid, InputLabel, Paper, Rating, Stack } from "@mui/material";
 import { useHistory } from "react-router";
@@ -14,8 +14,10 @@ export default function Home() {
   const context = useContext(Context);
   let history = useHistory();
   const [calificaciones, setCalificaciones] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const listCalificaciones = () => {
+    setLoading(true);
     setCalificaciones();
     axios.get("/api/participante/calificaciones")
     .then(function (response) {
@@ -27,6 +29,8 @@ export default function Home() {
     .catch(function (error) {
       // handle error
       console.log(error);
+    }).then(function() {
+      setLoading(false);
     })
   };
 
@@ -37,7 +41,7 @@ export default function Home() {
   }, [context.isParticipanteLogged]);
 
   return (
-    <Page title="Home">
+    <Page title="Home" loading={loading}>
       <Stack spacing={2}>
         {context.isLogged?
           <>
@@ -121,6 +125,12 @@ export default function Home() {
                 <FontAwesomeIcon icon={faDatabase} transform="shrink-6 left-1"/>
               </span>
               <span>Summary</span>
+            </Button>
+            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/summary-calificaciones")}}>
+              <span className="fa-layers fa-fw fa-6x">
+                <FontAwesomeIcon icon={faServer} transform="shrink-6 left-1"/>
+              </span>
+              <span>Summary Calificaciones</span>
             </Button>
             <Button variant="outlined" fullWidth onClick={(e)=>{context.logout()}}>
               <span className="fa-layers fa-fw fa-6x">

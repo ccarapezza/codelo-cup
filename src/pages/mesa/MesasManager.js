@@ -282,7 +282,11 @@ export default function MesasManager() {
             </>
           }
           <Grid container>
-            {mesas.map((mesa)=>{
+            {mesas.sort(function(a, b) {
+              const nameA = a.name.toUpperCase();
+              const nameB = b.name.toUpperCase();
+              return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+            }).map((mesa)=>{
               return(<Grid key={"mesa"+mesa.id} item xs={12} sm={6} sx={{padding: 1}}>
                 <DropBox name={"mesa-"+mesa.id} displayName={mesa.name} data={{participantes: mesa.participantes, muestras: mesa.muestras}} sx={{minHeight: "250pt", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
                     <Box sx={{pr: 4, pl: 4}}>
