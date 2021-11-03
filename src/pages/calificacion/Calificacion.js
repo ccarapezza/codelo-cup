@@ -34,7 +34,7 @@ export default function Calificacion() {
             if (response.status === 200) {
                 const data = response.data;
                 const calificacion = data?.calificacion;
-                setIdMuestra(data.n);
+                setIdMuestra(data.muestraN);
                 if(calificacion){
                     setPresentacion(calificacion.presentacion);
                     setAromaApagado(calificacion.aromaApagado);
