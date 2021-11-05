@@ -71,9 +71,9 @@ export default function SummaryCalificaciones() {
                 <Box sx={{ width: '100%', mr: 1, display: "block" }}>
                     <Typography component="div" sx={{ fontSize: 20, textAlign: "center" }} color="text.primary" gutterBottom>
                         <h2 style={{margin: 0}}>Calificaciones totales</h2>
-                        <h1 style={{margin: 0}}>{parseInt(dataCup.calificacionesCount/dataCup.cantidadDeVotosEsperados*100)}%</h1>
+                        <h1 style={{margin: 0}}>{parseInt(dataCup.cantidadDeVotosEsperados?dataCup.calificacionesCount/dataCup.cantidadDeVotosEsperados*100:0)}%</h1>
                     </Typography>
-                    <LinearProgress  sx={{height:"1rem", borderRadius: "5px", marginBottom: 2}} color="success" variant="determinate" value={dataCup.calificacionesCount/dataCup.cantidadDeVotosEsperados*100} />
+                    <LinearProgress  sx={{height:"1rem", borderRadius: "5px", marginBottom: 2}} color="success" variant="determinate" value={dataCup.cantidadDeVotosEsperados?dataCup.calificacionesCount/dataCup.cantidadDeVotosEsperados*100:0} />
                     <Typography component="div" sx={{ fontSize: 20, textAlign: "center" }} color="text.primary" gutterBottom>
                         <p style={{margin:1}}><small style={{fontWeight: "bold"}}>Cal. realizadas: {dataCup.calificacionesCount}</small></p>
                         <p style={{margin:1}}><small style={{fontWeight: "bold"}}>Cal. restantes: {dataCup.cantidadDeVotosEsperados-dataCup.calificacionesCount}</small></p>
@@ -94,7 +94,7 @@ export default function SummaryCalificaciones() {
                             <Divider><h3 style={{margin:10}}>{mesa.name}</h3></Divider>
                             <Box sx={{px: 1}}>
                                 <Box sx={{ position: 'relative'}}>
-                                    <LinearProgress sx={{height:"1.1rem", borderRadius: "5px", marginBottom: 1}} color="success" variant="determinate" value={mesa.calificacionesRealizadas/mesa.calificacionesEsperadas*100} />
+                                    <LinearProgress sx={{height:"1.1rem", borderRadius: "5px", marginBottom: 1}} color="success" variant="determinate" value={mesa.calificacionesEsperadas?mesa.calificacionesRealizadas/mesa.calificacionesEsperadas*100:0} />
                                     <Box sx={{
                                         top: 0,
                                         left: 0,
@@ -106,7 +106,7 @@ export default function SummaryCalificaciones() {
                                         justifyContent: 'center',
                                         fontWeight: 'bold'
                                     }}>
-                                        {parseInt(mesa.calificacionesRealizadas/mesa.calificacionesEsperadas*100)}%
+                                        {parseInt(mesa.calificacionesEsperadas?mesa.calificacionesRealizadas/mesa.calificacionesEsperadas*100:0)}%
                                     </Box>
                                 </Box>
                                 <p style={{margin:1}}><small style={{fontWeight: "bold"}}>Cal. realizadas: {mesa.calificacionesRealizadas}</small></p>

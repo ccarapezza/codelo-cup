@@ -1,14 +1,12 @@
 import { faCannabis, faClock, faGavel, faQuestion, faSquare, faStoreAlt, faUser, faVihara, faVoteYea } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Avatar, Card, CardContent, Chip, Divider, Grid, LinearProgress, List, ListItem, ListItemAvatar, ListItemText, Paper, Stack, Typography } from '@mui/material'
-import { blue, deepOrange, deepPurple, green, indigo, lightGreen, orange, yellow } from '@mui/material/colors';
+import { Avatar, Card, CardContent, Divider,List, ListItem, ListItemAvatar, ListItemText, Stack, Typography } from '@mui/material'
+import { blue, deepOrange, deepPurple, green, indigo, lightGreen, yellow } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Bar } from 'react-chartjs-2';
 import CategoriaColors from "../CategoriaColors";
-import { DropBox } from '../components/DropBox';
-import useInterval from '../hooks/useInterval';
 
 export default function Summary() {
     const [dataCup, setDataCup] = useState({});
@@ -310,7 +308,9 @@ export default function Summary() {
 
             <Card elevation={4} sx={{ minWidth: 275, alignSelf: "center", margin: 2 }}>
                 <CardContent sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-                    <Bar data={muestasPorCategoriaGraphData} options={options} height={500}/>
+                    {muestasPorCategoriaGraphData?.datasets?.length>0&&
+                        <Bar data={muestasPorCategoriaGraphData} options={options} height={500}/>
+                    }
                 </CardContent>
             </Card>
         </Box>
