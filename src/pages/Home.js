@@ -180,8 +180,8 @@ export default function Home() {
                         <InputLabel htmlFor="saborApagado-input">Sabor (Apagado): <strong style={{paddingLeft:"5px"}}>{calificacion.saborApagado}</strong></InputLabel>
                         <Rating name="saborApagado-input" value={calificacion.saborApagado} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                         <Divider sx={{marginBottom: "5px"}}/>
-                        <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                          <Button startIcon={<Edit/>} color="secondary" variant="contained" size="small" onClick={()=>history.push("/calificacion/"+calificacion?.muestra?.hash)}>Editar</Button>
+                        <Box sx={{display: "flex", justifyContent: "end", alignItems: "center"}}>
+                          {/*<Button startIcon={<Edit/>} color="secondary" variant="contained" size="small" onClick={()=>history.push("/calificacion/"+calificacion?.muestra?.hash)}>Editar</Button>*/}
                           <div><FontAwesomeIcon icon={faClock} transform="shrink-6" style={{color: "grey"}}/><span style={{color: "grey"}}>{updatedAt.toLocaleTimeString().substr(0, updatedAt.toLocaleTimeString().lastIndexOf(":"))}</span></div>
                         </Box>
                       </Paper>
