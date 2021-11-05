@@ -64,7 +64,7 @@ export default function Summary() {
                 }
                 return categorias;
             },[])
-            
+
             const data = {
                 labels: ["Muestras"],
                 datasets: Object.keys(muestrasPorCategoriaAux).map((categoria)=>{
@@ -193,34 +193,6 @@ export default function Summary() {
                     </Typography>
                     <Typography sx={{ mb: 1.5, fontWeight: "bold", fontSize:"1.3rem" }} color="text.secondary">
                         Jurados
-                    </Typography>
-                    <Divider/>
-                    <Typography variant="h5" component="div" sx={{display:"flex", alignItems: "center", color: blue[500], fontSize:"2.5rem"}}>
-                        <FontAwesomeIcon icon={faVoteYea} style={{padding: 10, paddingTop:5, paddingBottom:5}}/>
-                        {dataCup.calificacionesCount}
-                    </Typography>
-                    <Typography sx={{ mb: 1.5, fontWeight: "bold", fontSize:"1.3rem" }} color="text.secondary">
-                        Calificaciones (Participantes)
-                    </Typography>
-                    <Divider/>
-                    <Typography variant="h5" component="div" sx={{display:"flex", alignItems: "center", color: blue[500], fontSize:"2.5rem"}}>
-                        <FontAwesomeIcon icon={faVoteYea} style={{padding: 10, paddingTop:5, paddingBottom:5}}/>
-                        {dataCup.calificacionesCount}
-                    </Typography>
-                    <Typography sx={{ mb: 1.5, fontWeight: "bold", fontSize:"1.3rem" }} color="text.secondary">
-                        Calificaciones (Jurados)
-                    </Typography>
-                    <Divider/>
-                    <Typography variant="h5" component="div" sx={{display:"flex", alignItems: "center", color: yellow[700], fontSize:"2.5rem"}}>
-                    <span className="fa-layers fa-fw" style={{padding: 10, paddingTop:5, paddingBottom:5}}>
-                        <FontAwesomeIcon icon={faSquare} transform="shrink-6 up-1"/>
-                        <FontAwesomeIcon icon={faVoteYea} transform=""/>
-                        <FontAwesomeIcon icon={faQuestion} style={{color: "white"}} transform="shrink-8 up-1"/>
-                    </span>
-                    {dataCup.cantidadDeVotosEsperados}
-                    </Typography>
-                    <Typography sx={{ mb: 1.5, fontWeight: "bold", fontSize:"1.3rem" }} color="text.secondary">
-                    Calificaciones estimadas
                     </Typography>
                     <Divider/>
                     <div><FontAwesomeIcon icon={faClock} transform="shrink-6" style={{color: "grey"}}/><span style={{color: "grey"}}>{dataCup.ultimaActualizacion}</span></div>

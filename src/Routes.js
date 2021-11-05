@@ -2,7 +2,6 @@ import "./App.css";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import axios from "axios";
 import Calificacion from "./pages/calificacion/Calificacion";
 import CreateParticipante from "./pages/participante/CreateParticipante";
 import ListParticipante from "./pages/participante/ListParticipante";
@@ -22,10 +21,6 @@ import Summary from "./pages/Summary";
 import CreateJurado from "./pages/participante/CreateJurado";
 import ListJurado from "./pages/participante/ListJurado";
 import SummaryCalificaciones from "./pages/SummaryCalificaciones";
-
-//axios.defaults.baseURL = "https://codelo-cup-api.herokuapp.com/";
-axios.defaults.baseURL = "http://localhost:8080/";
-axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
 export default function Routes() {
   const context = useContext(Context);

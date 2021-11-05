@@ -1,7 +1,7 @@
 import { faCannabis, faEdit, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Save } from "@material-ui/icons";
-import { Button, Chip, Divider, Stack, TextField } from "@mui/material";
+import { Button, Chip, Divider, FormControlLabel, Stack, Switch, TextField } from "@mui/material";
 import { green } from "@mui/material/colors";
 import { Box } from "@mui/system";
 import axios from "axios";
@@ -12,13 +12,16 @@ import CategoriaColors from "../../CategoriaColors";
 import ButtonModal from "../../components/ButtonModal";
 import ConfirmModal from "../../components/ConfirmModal";
 import SelectCategoria from "../../components/SelectCategoria";
+import SelectDojo from "../../components/SelectDojo";
 import Context from "../../context/Context";
 import Page from "../Page";
 
 export default function EditParticipante() {
   let history = useHistory();
   const context = useContext(Context);
+  const [loading, setLoading] = useState(false);
   const [nombre, setNombre] = useState("");
+  const [dojo, setDojo] = useState("");
   const { id } = useParams();
 
   const [n, setN] = useState("");
@@ -35,8 +38,13 @@ export default function EditParticipante() {
   ]);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
+  const [grow, setGrow] = useState("");
+
+  const [esGrow, setEsGrow] = useState(false);
+
   useEffect(() => {
     if(id){
+      setLoading(true);
       axios.get("/api/participante",{
         params:{
           id: id
@@ -47,6 +55,9 @@ export default function EditParticipante() {
           const data = response?.data;
           setN(data?.n);
           setNombre(data?.name);
+          setGrow(data?.grow);
+          setEsGrow(data?.grow?true:false)
+          setDojo(data?.dojoId)
           setMuestras(data?.muestras);
         }else{
           context.showMessage("No se ha cargado el Participante. Contacte con el administrador.", "error");
@@ -56,7 +67,10 @@ export default function EditParticipante() {
       .catch(function (error) {
         context.showMessage("No se ha cargado el Participante. Contacte con el administrador.", "error");
         console.error(error);
+      }).then(function () {
+        setLoading(false);
       })
+
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
@@ -92,6 +106,8 @@ export default function EditParticipante() {
     axios.put("/api/participante/update",{
       id: id,
       name: nombre,
+      grow: grow,
+      dojoId: dojo?dojo:null
     }).then(function (response) {
       if(response.status === 200){
         context.showMessage("Participante actualizado correctamente!", "success");
@@ -168,10 +184,17 @@ export default function EditParticipante() {
   };
   
   return (
-    <Page title={"Actualizar Participante - #"+n} footer={false}>
+    <Page title={"Actualizar Participante - #"+n} footer={false} loading={loading}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack width="100%" spacing={2}>
           <TextField {...register("name-input", { required: true })} error={errors["name-input"]} fullWidth id="name-input" label="Nombre" variant="outlined" value={nombre} onChange={(e)=>setNombre(e?.target?.value)} />
+          <Box sx={{display:"flex", flexDirection: "row" }}>
+            <FormControlLabel control={<Switch checked={esGrow} onChange={(e)=>setEsGrow(e.target.checked)} />} label="Es Grow?" sx={{whiteSpace:"nowrap"}}/>
+            {esGrow&&
+              <TextField {...register("grow-name-input", { required: true })} error={errors["grow-name-input"]} fullWidth id="grow-name-input" label="Nombre" variant="outlined" value={grow} onChange={(e)=>setGrow(e?.target?.value)} />
+            }
+          </Box>
+          <SelectDojo value={dojo} onChange={(e)=>setDojo(e?.target?.value)}/>
           <Divider>
             <Chip label="Muestras" />
           </Divider>

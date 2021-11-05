@@ -78,6 +78,8 @@ export default function SummaryCalificaciones() {
                         <p style={{margin:1}}><small style={{fontWeight: "bold"}}>Cal. realizadas: {dataCup.calificacionesCount}</small></p>
                         <p style={{margin:1}}><small style={{fontWeight: "bold"}}>Cal. restantes: {dataCup.cantidadDeVotosEsperados-dataCup.calificacionesCount}</small></p>
                     </Typography>
+                    <Divider/>
+                    <p style={{margin:1}}><small style={{fontWeight: "bold"}}><i>Cal. de jurados: {dataCup.calificacionesJuradoCount}</i></small></p>
                 </Box>
             </CardContent>
         </Card>

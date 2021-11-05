@@ -7,10 +7,10 @@ import Context from "./Context";
 function ContextProvider({ children }) {
   let history = useHistory();
   const [isLogged, setIsLogged] = useState(false);
-  const [userData, setUserDataState] = useState(JSON.parse(sessionStorage.getItem('userdata')?sessionStorage.getItem('userdata'):null));
+  const [userData, setUserDataState] = useState(JSON.parse(localStorage.getItem('userdata')?localStorage.getItem('userdata'):null));
 
   const [isParticipanteLogged, setIsParticipanteLogged] = useState(false);
-  const [participanteData, setParticipanteDataState] = useState(JSON.parse(sessionStorage.getItem('participantedata')?sessionStorage.getItem('participantedata'):null));
+  const [participanteData, setParticipanteDataState] = useState(JSON.parse(localStorage.getItem('participantedata')?localStorage.getItem('participantedata'):null));
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -31,20 +31,20 @@ function ContextProvider({ children }) {
 
   const setUserData = (newUserData) => {
     if(newUserData){
-      sessionStorage.setItem('userdata', JSON.stringify(newUserData));
+      localStorage.setItem('userdata', JSON.stringify(newUserData));
     }
     setUserDataState(newUserData);
   }
 
   const setParticipanteData = (newParticipanteData) => {
     if(newParticipanteData){
-      sessionStorage.setItem('participantedata', JSON.stringify(newParticipanteData));
+      localStorage.setItem('participantedata', JSON.stringify(newParticipanteData));
     }
     setParticipanteDataState(newParticipanteData);
   }
 
   const login = (username, password) => {
-    sessionStorage.clear();
+    localStorage.clear();
     setUserData(null);
     setIsLogged(false);
     axios.post("/api/auth/signin",{
@@ -67,7 +67,7 @@ function ContextProvider({ children }) {
   }
 
   const logout = () => {
-    sessionStorage.clear();
+    localStorage.clear();
     setUserData(null);
     setParticipanteData(null);
     showMessage("Sesión cerrada.", "success");
@@ -75,7 +75,7 @@ function ContextProvider({ children }) {
   }
 
   const participanteLogin = (hash) => {
-    sessionStorage.clear();
+    localStorage.clear();
     setParticipanteData(null);
     setIsParticipanteLogged(false);
     axios.post("/api/participante/login",{

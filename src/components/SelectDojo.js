@@ -6,7 +6,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import Context from '../context/Context';
 import ButtonModal from './ButtonModal';
 
-export default function SelectDojo({id="select-dojo", label="Dojo", value, onChange, selectProps, error, blankLabel=""}) {
+export default function SelectDojo({id="select-dojo", label="Dojo", value, onChange, selectProps, error, blankLabel="-"}) {
     const context = useContext(Context)
     const [dojos, setDojos] = useState([]);
 

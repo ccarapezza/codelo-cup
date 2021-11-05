@@ -17,6 +17,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 export default function ListParticipante() {
   const context = useContext(Context);
+  const [loading, setLoading] = useState(false);
   const [participantes, setParticipantes] = useState([]);
   const [searchField, setSearchField] = useState("");
   const theme = useTheme();
@@ -25,6 +26,7 @@ export default function ListParticipante() {
   let history = useHistory();
 
   const listAllParticipantes = () => {
+    setLoading(true);
     setParticipantes();
     axios.get("/api/participante/list")
     .then(function (response) {
@@ -36,6 +38,9 @@ export default function ListParticipante() {
     .catch(function (error) {
       // handle error
       console.log(error);
+    })
+    .then(function () {
+      setLoading(false);
     })
   };
 
@@ -62,7 +67,7 @@ export default function ListParticipante() {
   }, []);
 
   return (
-    <Page title="Listado Participantes" footer={false}>
+    <Page title="Listado Participantes" footer={false} loading={loading}>
       {participantes?.length!==0?
         <>
           <Box sx={{display: 'flex', alignItems: 'center'}}>

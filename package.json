@@ -1,7 +1,7 @@
 {
   "name": "codelo-cup",
   "version": "0.1.0",
-  "homepage": ".",
+  "homepage": "https://www.cogollosdeloeste.com.ar/codelo-cup",
   "private": true,
   "dependencies": {
     "@denorg/qrcode": "^2.0.0",

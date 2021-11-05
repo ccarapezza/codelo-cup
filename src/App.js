@@ -1,7 +1,6 @@
 import "./App.css";
 import axios from "axios";
 import ContextProvider from "./context/ContextProvider";
-import { BrowserRouter as Router } from "react-router-dom";
 import Routes from "./Routes";
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from "@emotion/react";
@@ -53,11 +52,11 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Router basename={'/codelo-cup'}>
+      
         <ContextProvider>
           <Routes/>
         </ContextProvider>
-      </Router>
+      
     </ThemeProvider>
   );
 }
