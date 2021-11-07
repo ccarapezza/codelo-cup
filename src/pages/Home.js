@@ -7,7 +7,6 @@ import Context from "../context/Context";
 import Page from "./Page";
 import axios from "axios";
 import { Box } from "@mui/system";
-import { Edit } from "@material-ui/icons";
 import copaLogo from './../assets/copa-logo.png'
 
 export default function Home() {

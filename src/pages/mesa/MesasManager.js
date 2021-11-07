@@ -7,7 +7,7 @@ import { Search } from "@material-ui/icons";
 import { Box } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCannabis, faEdit, faExclamationCircle, faPlus, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
-import { orange, green, red } from '@mui/material/colors';
+import { orange, green, red, indigo } from '@mui/material/colors';
 import { DropBox } from "../../components/DropBox";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -101,6 +101,23 @@ export default function MesasManager() {
     })
   };
 
+  const deleteParticipanteSecOfMesa = (idParticipante, idMesa) => {
+    axios.post("/api/mesas/remove-participante-secundario",{
+      idParticipante: idParticipante,
+      idMesa: idMesa,
+    })
+    .then(function (response) {
+      if(response.status === 200){
+        context.showMessage("Mesa actualizada","success");
+        listAllMesas();
+      }
+    })
+    .catch(function (error) {
+      context.showMessage("No se pudo actualizar la mesa","error");
+      console.log(error);
+    })
+  };
+
   const deleteMuestraOfMesa = (idMuestra, idMesa) => {
     axios.post("/api/mesas/remove-muestra",{
       idMuestra: idMuestra,
@@ -179,6 +196,10 @@ export default function MesasManager() {
     return mesas.map((mesa)=>mesa.participantes.map((participante)=>participante.id)).flat().includes(idParticipante);
   }
 
+  const isParticipanteSecExistInMesas = (idParticipante) => {
+    return mesas.map((mesa)=>mesa.participantesSecundarios.map((participante)=>participante.id)).flat().includes(idParticipante);
+  }
+
   const isMuestraExistInMesas = (idMuestra) => {
     return mesas.map((mesa)=>mesa.muestras.map((muestra)=>muestra.id)).flat().includes(idMuestra);
   }
@@ -203,6 +224,9 @@ export default function MesasManager() {
           <Box>
             <Button variant="outlined" onClick={()=>{mode==="participante"?setMode(""):setMode("participante")}} sx={{mx: 1, backgroundColor: orange[500], p:mode==="participante"?2:1}}>
               <FontAwesomeIcon icon={faUser}/><span style={{ marginLeft: 5 }}>Agregar Participantes</span>
+            </Button>
+            <Button variant="outlined" onClick={()=>{mode==="participanteSecundario"?setMode(""):setMode("participanteSecundario")}} sx={{mx: 1, backgroundColor: indigo[300], p:mode==="participanteSecundario"?2:1}}>
+              <FontAwesomeIcon icon={faUser}/><span style={{ marginLeft: 5 }}>Agregar Participantes Sec.</span>
             </Button>
             <Button variant="outlined" onClick={()=>{mode==="muestra"?setMode(""):setMode("muestra")}} sx={{mx: 1, backgroundColor: green[500], p:mode==="muestra"?2:1}}>
               <FontAwesomeIcon icon={faCannabis}/><span style={{ marginLeft: 5 }}>Agregar Muestras</span>
@@ -237,6 +261,50 @@ export default function MesasManager() {
                       <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", width: "45%"}}>
                         <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
                         <Chip size="small" label={"#"+participante.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
+                        <Typography>{participante.name}</Typography>
+                        {participante.muestras?.map((muestra)=>
+                          <Chip
+                            key={muestra.hash}
+                            component="span"
+                            sx={{pl: "5px", mr: 1, mb: 1, backgroundColor: green[200], fontWeight: "bold", height: "auto", p: "3px", mt: 1, mx: 1}}
+                            icon={<FontAwesomeIcon icon={faCannabis} style={{color: "black"}}/>}
+                            label={
+                            <Box sx={{display: "flex", flexDirection: matches?"row":"column", alignItems: "center", m:0, p:0, fontSize:".5rem!important"}}>
+                              <Chip size="small" label={"#"+muestra.n} sx={{mx: 0, backgroundColor: green[400]}}/>
+                              <Typography title={muestra.name+(muestra.description?(" ("+muestra.description+")"):"")} sx={{fontSize:".8rem!important", fontWeight: "bold", maxWidth:"50px", overflow: "hidden", textOverflow: "ellipsis", px: "5px"}}>{muestra.name+(muestra.description?(" ("+muestra.description+")"):"")}</Typography>
+                              <Chip size="small" label={muestra.categoria?.name} sx={{mx: 0, backgroundColor: CategoriaColors[muestra.categoria.id-1], fontWeight: "bold", color:"white"}}/>
+                            </Box>
+                          } />
+                        )}
+                      </Box>
+                    </DraggableBox>)
+                })}
+              </List>
+            </>
+          }
+          {mode==="participanteSecundario"&&
+            <>
+              <Paper
+                component="form"
+                sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}
+              >
+                <InputBase
+                  sx={{ ml: 1, flex: 1 }}
+                  placeholder={"Buscar Participante Sec. - ("+participantes?.filter(participante => !isParticipanteSecExistInMesas(participante.id)).length+" Restantes)"}
+                  inputProps={{ 'aria-label': 'Buscar Participante Sec.'}}
+                  value={searchFieldParticipante}
+                  onChange={(e)=>setSearchFieldParticipante(e.target.value)}
+                />
+                <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                  <Search />
+                </IconButton>
+              </Paper>
+              <List sx={{paddingTop: "0", marginTop: 0,display:"flex", flexWrap:"wrap"}}>
+                {participantes?.filter(participante => (parseInt(participante.id)===(!isNaN(searchFieldParticipante)?parseInt(searchFieldParticipante):0) || participante.name?.toLowerCase().includes(searchFieldParticipante?.toLowerCase()) || participante.muestras.find(e=>e.categoria?.name?.toLowerCase().includes(searchFieldParticipante?.toLowerCase()))) && !isParticipanteSecExistInMesas(participante.id)).map((participante, index)=>{
+                  return(<DraggableBox key={"participante"+participante.id} data={{muestras: participante.muestras}} onUpdate={()=>listAllMesas()} name={"participanteSecundario-"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "start", backgroundColor: indigo[300], borderRadius: 1, margin: 1, width:"45%", overflow: "hidden"}}>
+                      <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", width: "45%"}}>
+                        <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
+                        <Chip size="small" label={"#"+participante.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: indigo[200]}}/>
                         <Typography>{participante.name}</Typography>
                         {participante.muestras?.map((muestra)=>
                           <Chip
@@ -305,17 +373,29 @@ export default function MesasManager() {
               return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
             }).map((mesa)=>{
               return(<Grid key={"mesa"+mesa.id} item xs={12} sm={3} sx={{padding: 1}}>
-                <DropBox name={"mesa-"+mesa.id} displayName={mesa.name} data={{participantes: mesa.participantes, muestras: mesa.muestras}} sx={{minHeight: "250pt", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+                <DropBox name={"mesa-"+mesa.id} displayName={mesa.name} data={{participantes: mesa.participantes, participantesSecundarios: mesa.participantesSecundarios, muestras: mesa.muestras}} sx={{minHeight: "250pt", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
                     <Box sx={{pr: 4, pl: 4}}>
                       {mesa.participantes.map((participante)=>
                         <Box key={"mesa"+mesa.id+"participante"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: orange[500], borderRadius: 1, margin: 1}}>
                           <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
                             <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
-                            <Chip size="small" label={"#"+participante.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
+                            <Chip size="small" label={"#"+participante.n} sx={{margin: "2px", fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
                             <Typography>{participante.name}</Typography>
                           </Box>
                           <IconButton sx={{justifySelf:"end"}} onClick={()=>{deleteParticipanteOfMesa(participante.id, mesa.id)}}>
-                            <FontAwesomeIcon icon={faTrash}/>
+                            <FontAwesomeIcon icon={faTrash} style={{fontSize: ".8rem"}}/>
+                          </IconButton>
+                        </Box>
+                      )}
+                      {mesa.participantesSecundarios.map((participante)=>
+                        <Box key={"mesa"+mesa.id+"participante"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: indigo[300], borderRadius: 1, margin: 1}}>
+                          <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
+                            <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
+                            <Chip size="small" label={"#"+participante.n} sx={{margin: "2px", p:"0px", fontSize: ".7rem", fontWeight: "bold", backgroundColor: indigo[200]}}/>
+                            <Typography>{participante.name}</Typography>
+                          </Box>
+                          <IconButton sx={{justifySelf:"end"}} onClick={()=>{deleteParticipanteSecOfMesa(participante.id, mesa.id)}}>
+                            <FontAwesomeIcon icon={faTrash} style={{fontSize: ".8rem"}}/>
                           </IconButton>
                         </Box>
                       )}
@@ -331,7 +411,7 @@ export default function MesasManager() {
                             }
                           </Box>
                           <IconButton sx={{justifySelf:"end"}} onClick={()=>{deleteMuestraOfMesa(muestra.id, mesa.id)}}>
-                            <FontAwesomeIcon icon={faTrash}/>
+                            <FontAwesomeIcon icon={faTrash} style={{fontSize: ".8rem"}}/>
                           </IconButton>
                         </Box>
                       )}

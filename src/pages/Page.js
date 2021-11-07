@@ -261,7 +261,7 @@ export default function Page({ title, children, footer = true, style, loading = 
             {context.participanteData?.mesa&&
               <Paper variant={"outlined"} sx={{width: "fit-content", mt: 1, px: 1, bgcolor: "transparent", borderColor:"white!important"}}>
                 <Typography sx={{ fontSize: ".9rem", fontWeight: "bold", color:"white!important"}} color="text.secondary">
-                  {context.participanteData?.mesa?.name}
+                  {context.participanteData?.mesa?.name}<small>{context.participanteData?.mesaSecundaria?"("+context.participanteData?.mesaSecundaria?.name+")":""}</small>
                 </Typography>
               </Paper>
             }

@@ -1,7 +1,7 @@
-import { faCannabis, faClock, faGavel, faQuestion, faSquare, faStoreAlt, faUser, faVihara, faVoteYea } from '@fortawesome/free-solid-svg-icons'
+import { faCannabis, faClock, faGavel, faStoreAlt, faUser, faVihara } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Avatar, Card, CardContent, Divider,List, ListItem, ListItemAvatar, ListItemText, Stack, Typography } from '@mui/material'
-import { blue, deepOrange, deepPurple, green, indigo, lightGreen, yellow } from '@mui/material/colors';
+import { deepOrange, deepPurple, green, indigo, lightGreen } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'

@@ -31,8 +31,23 @@ export const DraggableBox = function DraggableBox({ name, data, children, sx, on
                         context.showMessage("No se puede agregar el participante a esta mesa.", "error");
                     }
                 }
+                if(objectType==="participanteSecundario"){
+                    const muestrasDelParticipante = item.data?.muestras;
+                    const muestrasDeLaMesa = dropResult.data?.muestras;
+
+                    for (const muestraDelParticipante of muestrasDelParticipante) {
+                        for (const muestraDeLaMesa of muestrasDeLaMesa) {
+                            forbidden = forbidden || muestraDeLaMesa.id === muestraDelParticipante.id;
+                        }
+                    }
+                    if(!forbidden){
+                        addParticipanteSecundario(objectId, mesaId)
+                    }else{
+                        context.showMessage("No se puede agregar el participante a esta mesa.", "error");
+                    }
+                }
                 if(objectType==="muestra"){
-                    const participantesDeLaMesa = dropResult.data?.participantes;
+                    const participantesDeLaMesa = dropResult.data?.participantes.concat(dropResult.data?.participantesSecundarios);
                     for (const participanteDeLaMesa of participantesDeLaMesa) {
                         for (const muestra of participanteDeLaMesa.muestras) {
                             forbidden = forbidden || muestra.id===parseInt(objectId);
@@ -70,6 +85,27 @@ export const DraggableBox = function DraggableBox({ name, data, children, sx, on
         })
         .catch(function (error) {
             context.showMessage("Error al agregar el participante.", "error");
+            console.error(error);
+        })
+    }
+
+    const addParticipanteSecundario = (idParticipante, idMesa) => {
+        axios.post("/api/mesas/add-participante-secundario",{
+            idParticipante: idParticipante,
+            idMesa: idMesa,
+        }).then(function (response) {
+            if(response.status === 200){
+                context.showMessage("Participante Sec. agregado correctamente!", "success");
+                if(onUpdate){
+                    onUpdate();
+                }
+            }else{
+                context.showMessage("Error al agregar el participante sec.", "error");
+                console.error(response);
+            }
+        })
+        .catch(function (error) {
+            context.showMessage("Error al agregar el participante sec.", "error");
             console.error(error);
         })
     }

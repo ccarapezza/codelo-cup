@@ -135,9 +135,14 @@ export default function ListParticipante() {
                             } />
                           )}
                         />
-                        {participante.mesa&&
-                          <Chip icon={<FontAwesomeIcon icon={faChair} style={{color: "black", marginLeft:"10px"}}/>} variant="outlined" label={participante.mesa?.name} sx={{mr: 1, width: "fit-content", fontWeight: "bold"}}/>
-                        }
+                        <Box sx={{display:"flex"}}>
+                          {participante.mesa&&
+                            <Chip icon={<FontAwesomeIcon icon={faChair} style={{color: "black", marginLeft:"10px"}}/>} variant="outlined" label={participante.mesa?.name} sx={{mr: 1, width: "fit-content", fontWeight: "bold"}}/>
+                          }
+                          {participante.mesaSecundaria&&
+                            <Chip icon={<FontAwesomeIcon icon={faChair} style={{color: "lightGray", marginLeft:"10px"}}/>} variant="outlined" label={participante.mesaSecundaria?.name} sx={{mr: 1, p:0, fontSize: ".7rem", color: "lightGray", width: "fit-content", fontWeight: "bold"}}/>
+                          }
+                        </Box>
                       </Stack>
                     </Box>
                     <Box>
