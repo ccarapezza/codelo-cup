@@ -197,7 +197,7 @@ export default function MesasManager() {
   }, []);
 
   return (
-    <Page title="Mesas" footer={false} loading={loading}>
+    <Page title="Mesas" footer={false} loading={loading} containerMaxWidth="xl">
       <DndProvider backend={HTML5Backend}>
         <Stack sx={{textAlign: "center"}} spacing={2}>
           <Box>
@@ -231,10 +231,10 @@ export default function MesasManager() {
                   <Search />
                 </IconButton>
               </Paper>
-              <List sx={{paddingTop: "0", marginTop: 0}}>
+              <List sx={{paddingTop: "0", marginTop: 0,display:"flex", flexWrap:"wrap"}}>
                 {participantes?.filter(participante => (parseInt(participante.id)===(!isNaN(searchFieldParticipante)?parseInt(searchFieldParticipante):0) || participante.name?.toLowerCase().includes(searchFieldParticipante?.toLowerCase()) || participante.muestras.find(e=>e.categoria?.name?.toLowerCase().includes(searchFieldParticipante?.toLowerCase()))) && !isParticipanteExistInMesas(participante.id)).map((participante, index)=>{
-                  return(<DraggableBox key={"participante"+participante.id} data={{muestras: participante.muestras}} onUpdate={()=>listAllMesas()} name={"participante-"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "start", backgroundColor: orange[500], borderRadius: 1, margin: 1}}>
-                      <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
+                  return(<DraggableBox key={"participante"+participante.id} data={{muestras: participante.muestras}} onUpdate={()=>listAllMesas()} name={"participante-"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "start", backgroundColor: orange[500], borderRadius: 1, margin: 1, width:"45%", overflow: "hidden"}}>
+                      <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", width: "45%"}}>
                         <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
                         <Chip size="small" label={"#"+participante.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
                         <Typography>{participante.name}</Typography>
@@ -304,7 +304,7 @@ export default function MesasManager() {
               const nameB = b.name.toUpperCase();
               return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
             }).map((mesa)=>{
-              return(<Grid key={"mesa"+mesa.id} item xs={12} sm={6} sx={{padding: 1}}>
+              return(<Grid key={"mesa"+mesa.id} item xs={12} sm={3} sx={{padding: 1}}>
                 <DropBox name={"mesa-"+mesa.id} displayName={mesa.name} data={{participantes: mesa.participantes, muestras: mesa.muestras}} sx={{minHeight: "250pt", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
                     <Box sx={{pr: 4, pl: 4}}>
                       {mesa.participantes.map((participante)=>

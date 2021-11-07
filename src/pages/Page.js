@@ -13,7 +13,7 @@ import { faCannabis, faChair, faGavel, faHome, faKey, faListAlt, faPollH, faQrco
 import { deepOrange, indigo, yellow } from "@mui/material/colors";
 import Loading from "../components/Loading";
 
-export default function Page({ title, children, footer = true, style, loading = false }) {
+export default function Page({ title, children, footer = true, style, loading = false, containerMaxWidth }) {
   const context = useContext(Context);
   const [menuOpen, setMenuOpen] = useState(false);
   const history = useHistory();
@@ -234,7 +234,7 @@ export default function Page({ title, children, footer = true, style, loading = 
           }
         </Box>
       </Drawer>
-      <Container sx={{ p: 2, mb:footer && context.isParticipanteLogged?16:2, ...style }}>
+      <Container maxWidth={containerMaxWidth} sx={{p: 2, mb:footer && context.isParticipanteLogged?16:2, ...style }}>
         {loading?
           <Loading/>
         :
