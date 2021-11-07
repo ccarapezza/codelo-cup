@@ -2,7 +2,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import Page from "../Page";
-import { Button, Chip, Divider, Grid, IconButton, InputBase, List, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Button, Chip, Divider, Grid, IconButton, InputBase, List, Paper, Stack, TextField, Typography, useMediaQuery } from "@mui/material";
 import { Search } from "@material-ui/icons";
 import { Box } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,7 +16,7 @@ import Context from "../../context/Context";
 import ConfirmModal from "../../components/ConfirmModal";
 import ButtonModal from "../../components/ButtonModal";
 import CategoriaColors from "../../CategoriaColors";
-
+import { useTheme } from "@emotion/react";
 
 export default function MesasManager() {
   const [loading, setLoading] = useState(false);
@@ -26,6 +26,9 @@ export default function MesasManager() {
   const [searchFieldMuestra, setSearchFieldMuestra] = useState("");
   const [searchFieldParticipante, setSearchFieldParticipante] = useState("");
   const [mesaName, setMesaName] = useState("");
+
+  const matches = useMediaQuery(useTheme().breakpoints.up('sm'));
+
 
   const [mode, setMode] = useState("");
 
@@ -229,12 +232,26 @@ export default function MesasManager() {
                 </IconButton>
               </Paper>
               <List sx={{paddingTop: "0", marginTop: 0}}>
-                {participantes?.filter(participante => (parseInt(participante.id)===(!isNaN(searchFieldParticipante)?parseInt(searchFieldParticipante):0) || participante.name?.toLowerCase().includes(searchFieldParticipante?.toLowerCase())) && !isParticipanteExistInMesas(participante.id)).map((participante, index)=>{
+                {participantes?.filter(participante => (parseInt(participante.id)===(!isNaN(searchFieldParticipante)?parseInt(searchFieldParticipante):0) || participante.name?.toLowerCase().includes(searchFieldParticipante?.toLowerCase()) || participante.muestras.find(e=>e.categoria?.name?.toLowerCase().includes(searchFieldParticipante?.toLowerCase()))) && !isParticipanteExistInMesas(participante.id)).map((participante, index)=>{
                   return(<DraggableBox key={"participante"+participante.id} data={{muestras: participante.muestras}} onUpdate={()=>listAllMesas()} name={"participante-"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "start", backgroundColor: orange[500], borderRadius: 1, margin: 1}}>
                       <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
                         <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
                         <Chip size="small" label={"#"+participante.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
                         <Typography>{participante.name}</Typography>
+                        {participante.muestras?.map((muestra)=>
+                          <Chip
+                            key={muestra.hash}
+                            component="span"
+                            sx={{pl: "5px", mr: 1, mb: 1, backgroundColor: green[200], fontWeight: "bold", height: "auto", p: "3px", mt: 1, mx: 1}}
+                            icon={<FontAwesomeIcon icon={faCannabis} style={{color: "black"}}/>}
+                            label={
+                            <Box sx={{display: "flex", flexDirection: matches?"row":"column", alignItems: "center", m:0, p:0, fontSize:".5rem!important"}}>
+                              <Chip size="small" label={"#"+muestra.n} sx={{mx: 0, backgroundColor: green[400]}}/>
+                              <Typography title={muestra.name+(muestra.description?(" ("+muestra.description+")"):"")} sx={{fontSize:".8rem!important", fontWeight: "bold", maxWidth:"50px", overflow: "hidden", textOverflow: "ellipsis", px: "5px"}}>{muestra.name+(muestra.description?(" ("+muestra.description+")"):"")}</Typography>
+                              <Chip size="small" label={muestra.categoria?.name} sx={{mx: 0, backgroundColor: CategoriaColors[muestra.categoria.id-1], fontWeight: "bold", color:"white"}}/>
+                            </Box>
+                          } />
+                        )}
                       </Box>
                     </DraggableBox>)
                 })}

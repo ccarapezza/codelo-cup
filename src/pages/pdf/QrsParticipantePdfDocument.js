@@ -12,7 +12,9 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 12,
-    textTransform: "uppercase"
+    textTransform: "uppercase",
+    paddingLeft: "5pt",
+    paddingRight: "5pt",
   },
   image: {
     width: "150pt",
