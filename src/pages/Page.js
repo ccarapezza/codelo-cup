@@ -234,7 +234,7 @@ export default function Page({ title, children, footer = true, style, loading = 
           }
         </Box>
       </Drawer>
-      <Container sx={{ p: 2, mb:footer && context.isParticipanteLogged?8:2, ...style }}>
+      <Container sx={{ p: 2, mb:footer && context.isParticipanteLogged?16:2, ...style }}>
         {loading?
           <Loading/>
         :
