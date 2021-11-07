@@ -92,7 +92,7 @@ export default function QrListParticipantes() {
             </IconButton>
           </Paper>
           <List sx={{paddingTop: "0", marginTop: 0}}>
-            {searchField && participantesWithQrs.filter(participante => parseInt(participante.id)===(!isNaN(searchField)?parseInt(searchField):0) || participante.name?.toLowerCase().includes(searchField?.toLowerCase())).map((participante, index)=>{
+            {searchField && participantesWithQrs.filter(participante => parseInt(participante.n)===(!isNaN(searchField)?parseInt(searchField):0) || participante.name?.toLowerCase().includes(searchField?.toLowerCase())).map((participante, index)=>{
               return(index===0&&<Stack>
                 <Typography variant="h4">{participante.name}</Typography>
                 <ListItem key={index} sx={{pt:0}}>

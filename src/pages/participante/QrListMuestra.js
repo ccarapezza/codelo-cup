@@ -82,7 +82,7 @@ export default function QrListMuestra() {
             </IconButton>
           </Paper>
           <List sx={{paddingTop: "0", marginTop: 0}}>
-              {searchField && !isNaN(searchField) && muestrasWithQrs.filter(muestra => parseInt(muestra.id)===parseInt(searchField)).map((muestra, index)=>{
+              {searchField && !isNaN(searchField) && muestrasWithQrs.filter(muestra => parseInt(muestra.n)===parseInt(searchField)).map((muestra, index)=>{
                 return(<>
                   <ListItem key={index}>
                     <ListItemAvatar>

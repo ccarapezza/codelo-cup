@@ -89,9 +89,9 @@ export default function ListParticipante() {
           </Box>
           <Divider sx={{my: 1}}/>
           <List sx={{paddingTop: "0", marginTop: 0}}>
-            {participantes?.filter(dojo => (dojo.name?.toLowerCase().includes(searchField?.toLowerCase()))).map((participante)=>{
+            {participantes?.filter(participante => (parseInt(participante.n)===(!isNaN(searchField)?parseInt(searchField):0) || participante.name?.toLowerCase().includes(searchField?.toLowerCase()))).map((participante)=>{
               return(
-                <div key={participante.hash}>
+                <div key={"participante-hash-"+participante.hash}>
                   <ListItem sx={{display: "flex", justifyContent: "space-between", m:0, p:0}}>
                     <Box sx={{display: "flex"}}>
                       <ListItemAvatar sx={{display: "flex", alignItems: "center", m:0, p:0}}>
@@ -122,7 +122,7 @@ export default function ListParticipante() {
                           } 
                           secondary={participante.muestras?.map((muestra)=>
                             <Chip
-                              key={muestra.hash}
+                              key={"muestra-hash-"+muestra.hash}
                               component="span"
                               sx={{pl: "5px", mr: 1, mb: 1, backgroundColor: green[200], fontWeight: "bold", height: "auto", p: 1}}
                               icon={<FontAwesomeIcon icon={faCannabis} style={{color: "black"}}/>}
