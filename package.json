@@ -1,7 +1,7 @@
 {
   "name": "codelo-cup",
   "version": "0.1.0",
-  "homepage": "http://localhost:3000/codelo-cup",
+  "homepage": "https://copa-del-eden.herokuapp.com/codelo-cup",
   "private": true,
   "dependencies": {
     "@denorg/qrcode": "^2.0.0",
