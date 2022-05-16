@@ -6,7 +6,8 @@ import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from "@emotion/react";
 import { blueGrey, deepOrange } from "@mui/material/colors";
 
-axios.defaults.baseURL = "https://codelo-cup-api.herokuapp.com/";
+//axios.defaults.baseURL = "https://codelo-cup-api.herokuapp.com/";
+axios.defaults.baseURL = "https://copa-del-eden-api.herokuapp.com/";
 //axios.defaults.baseURL = "http://localhost:8080/";
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 

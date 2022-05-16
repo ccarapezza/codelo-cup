@@ -70,7 +70,7 @@ export default function SelectDojo({id="select-dojo", label="Dojo", value, onCha
                     );
                 })}
             </Select>
-            <ButtonModal onClick={()=>{setDojoName("")}} faIcon={faPlus} textButton="Crear Dojo" sx={{whiteSpace: "nowrap", ml: 2}} saveDisabled={!dojoName} operation={()=>{addNewDojo()}}>
+            <ButtonModal onClick={()=>{setDojoName("")}} faIcon={faPlus} sx={{whiteSpace: "nowrap", ml: 2}} saveDisabled={!dojoName} operation={()=>{addNewDojo()}}>
                 <Box>
                     <Divider sx={{pb:2}}>Nuevo dojo</Divider>
                     <TextField fullWidth id="dojo-name-input" label="Nombre" variant="outlined" value={dojoName} onChange={(e)=>setDojoName(e?.target?.value)} />                         

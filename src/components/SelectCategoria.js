@@ -71,7 +71,7 @@ export default function SelectCategoria({id="select-categoria", label="Categorí
                 })}
             </Select>
             {optionsEnable&&
-                <ButtonModal onClick={()=>{setCategoriaName("")}} faIcon={faPlus} textButton="Crear Categoría" sx={{whiteSpace: "nowrap", ml: 2}} saveDisabled={!categoriaName} operation={()=>{addNewCategoria()}}>
+                <ButtonModal onClick={()=>{setCategoriaName("")}} faIcon={faPlus} sx={{whiteSpace: "nowrap", ml: 2}} saveDisabled={!categoriaName} operation={()=>{addNewCategoria()}}>
                     <Box>
                         <Divider sx={{pb:2}}>Nueva Categoría</Divider>
                         <TextField fullWidth id="dojo-name-input" label="Nombre" variant="outlined" value={categoriaName} onChange={(e)=>setCategoriaName(e?.target?.value)} />                         
