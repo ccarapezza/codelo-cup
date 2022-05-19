@@ -21,8 +21,8 @@ axios.interceptors.response.use(function (response) {
   // Do something with response error
   console.log("status", error.response.status);
   if(error.response.status===403){
-    if(!window.location.href.endsWith("/codelo-cup")){
-      window.location.href = "/codelo-cup";
+    if(!window.location.href.endsWith(".herokuapp.com/")){
+      window.location.href = "/";
     }
   }
   return Promise.reject(error);

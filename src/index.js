@@ -7,7 +7,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router basename={'/codelo-cup'}>
+    <Router basename={'/'}>
       <App />
     </Router>
   </React.StrictMode>,
