@@ -377,10 +377,10 @@ export default function MesasManager() {
                     <Box sx={{pr: 4, pl: 4}}>
                       {mesa.participantes.map((participante)=>
                         <Box key={"mesa"+mesa.id+"participante"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: orange[500], borderRadius: 1, margin: 1}}>
-                          <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
+                          <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", whiteSpace: "nowrap", overflow: "hidden"}}>
                             <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
-                            <Chip size="small" label={"#"+participante.n} sx={{margin: "2px", fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
-                            <Typography>{participante.name}</Typography>
+                            <Chip size="small" label={"#"+participante.n} sx={{margin: "2px 8px", p:"0px", fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
+                            <Typography sx={{overflow: "hidden", textOverflow: "ellipsis"}}>{participante.name}</Typography>
                           </Box>
                           <IconButton sx={{justifySelf:"end"}} onClick={()=>{deleteParticipanteOfMesa(participante.id, mesa.id)}}>
                             <FontAwesomeIcon icon={faTrash} style={{fontSize: ".8rem"}}/>
@@ -391,7 +391,7 @@ export default function MesasManager() {
                         <Box key={"mesa"+mesa.id+"participante"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: indigo[300], borderRadius: 1, margin: 1}}>
                           <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", whiteSpace: "nowrap", overflow: "hidden"}}>
                             <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
-                            <Chip size="small" label={"#"+participante.n} sx={{margin: 1, pt:"0px", pb:"0px", fontSize: ".8rem", fontWeight: "bold", backgroundColor: indigo[200]}}/>
+                            <Chip size="small" label={"#"+participante.n} sx={{margin: "2px 8px", p:"0px", fontSize: ".8rem", fontWeight: "bold", backgroundColor: indigo[200]}}/>
                             <Typography sx={{overflow: "hidden", textOverflow: "ellipsis"}}>{participante.name}</Typography>
                           </Box>
                           <IconButton sx={{justifySelf:"end"}} onClick={()=>{deleteParticipanteSecOfMesa(participante.id, mesa.id)}}>
@@ -403,9 +403,9 @@ export default function MesasManager() {
                         <Box key={"mesa"+mesa.id+"muestra"+muestra.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: green[500], borderRadius: 1, margin: 1}}>
                           <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", whiteSpace: "nowrap", overflow: "hidden"}}>
                             <FontAwesomeIcon icon={faCannabis} style={{paddingLeft: 10}}/>
-                            <Chip size="small" label={"#"+muestra.n} sx={{margin: 1, pt:"0px", pb:"0px", fontSize: ".8rem", fontWeight: "bold", backgroundColor: green[200]}}/>
+                            <Chip size="small" label={"#"+muestra.n} sx={{margin: "2px 8px", p:"0px", fontSize: ".8rem", fontWeight: "bold", backgroundColor: green[200]}}/>
                             <Typography sx={{overflow: "hidden", textOverflow: "ellipsis"}}>{muestra.name}</Typography>
-                            <Chip size="small" label={muestra.categoria?.name} sx={{ml: 1, pt:"0px", pb:"0px", backgroundColor: CategoriaColors[muestra.categoria?.id], fontWeight: "bold"}}/>
+                            <Chip size="small" label={muestra.categoria?.name} sx={{ml: 1, p:"0px", backgroundColor: CategoriaColors[muestra.categoria?.id], fontWeight: "bold"}}/>
                             {muestraCountInMesas(muestra.id)>1&&
                               <FontAwesomeIcon icon={faExclamationCircle} style={{paddingLeft: 10, color: red[700]}}/>
                             }
