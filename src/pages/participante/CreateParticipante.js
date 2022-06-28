@@ -12,6 +12,7 @@ import Page from "../Page";
 export default function CreateParticipante() {
   const context = useContext(Context);
   const [nombre, setNombre] = useState("");
+  const [dni, setDni] = useState("");
   const [dojo, setDojo] = useState("");
   const [muestras, setMuestras] = useState([
     {
@@ -33,6 +34,7 @@ export default function CreateParticipante() {
   const createParticipante = () => {
     axios.post("/api/participante/create",{
       name: nombre,
+      dni: dni,
       muestras: muestras,
       dojoId: dojo?dojo:null,
       grow: grow?grow:null
@@ -108,6 +110,7 @@ export default function CreateParticipante() {
 
   const clearForm = ()=>{ 
     setNombre("");
+    setDni("");
     setDojo("");
     setGrow("");
     setEsGrow(false);
@@ -125,6 +128,7 @@ export default function CreateParticipante() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack width="100%" spacing={2}>
           <TextField {...register("name-input", { required: true })} error={errors["name-input"]} fullWidth id="name-input" label="Nombre" variant="outlined" value={nombre} onChange={(e)=>setNombre(e?.target?.value)} />
+          <TextField type="number" {...register("dni-input", { required: true })} error={errors["dni-input"]} fullWidth id="dni-input" label="DNI" variant="outlined" value={dni} onChange={(e)=>setDni(e?.target?.value)} />
           <Box sx={{display:"flex", flexDirection: "row" }}>
             <FormControlLabel control={<Switch checked={esGrow} onChange={(e)=>setEsGrow(e.target.checked)} />} label="Es Grow?" sx={{whiteSpace:"nowrap"}}/>
             {esGrow&&

@@ -11,6 +11,7 @@ export default function CreateJurado() {
   let history = useHistory();
   const context = useContext(Context);
   const [nombre, setNombre] = useState("");
+  const [dni, setDni] = useState("");
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = () => {
@@ -19,7 +20,8 @@ export default function CreateJurado() {
 
   const createJurado = () => {
     axios.post("/api/participante/create-jurado",{
-      name: nombre
+      name: nombre,
+      dni: dni
     }).then(function (response) {
       if(response.status === 200){
         context.showMessage("Jurado creado correctamente!", "success");
@@ -40,6 +42,7 @@ export default function CreateJurado() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack width="100%" spacing={2}>
           <TextField {...register("name-input", { required: true })} error={errors["name-input"]} fullWidth id="name-input" label="Nombre" variant="outlined" value={nombre} onChange={(e)=>setNombre(e?.target?.value)} />
+          <TextField type="number" {...register("dni-input", { required: true })} error={errors["dni-input"]} fullWidth id="dni-input" label="DNI" variant="outlined" value={dni} onChange={(e)=>setDni(e?.target?.value)} />
           <Button type="submit" size="large" color="primary" variant="contained" startIcon={<Save />}>
             Guardar
           </Button>

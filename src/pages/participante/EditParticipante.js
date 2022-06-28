@@ -21,6 +21,7 @@ export default function EditParticipante() {
   const context = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [nombre, setNombre] = useState("");
+  const [dni, setDni] = useState("");
   const [dojo, setDojo] = useState("");
   const { id } = useParams();
 
@@ -55,6 +56,7 @@ export default function EditParticipante() {
           const data = response?.data;
           setN(data?.n);
           setNombre(data?.name);
+          setDni(data?.dni);
           setGrow(data?.grow);
           setEsGrow(data?.grow?true:false)
           setDojo(data?.dojoId)
@@ -86,6 +88,7 @@ export default function EditParticipante() {
         const data = response?.data;
         setN(data?.n);
         setNombre(data?.name);
+        setDni(data?.dni);
         setMuestras(data?.muestras);
       }else{
         context.showMessage("No se ha cargado el Participante. Contacte con el administrador.", "error");
@@ -106,6 +109,7 @@ export default function EditParticipante() {
     axios.put("/api/participante/update",{
       id: id,
       name: nombre,
+      dni: dni,
       grow: grow,
       dojoId: dojo?dojo:null
     }).then(function (response) {
@@ -188,6 +192,7 @@ export default function EditParticipante() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack width="100%" spacing={2}>
           <TextField {...register("name-input", { required: true })} error={errors["name-input"]} fullWidth id="name-input" label="Nombre" variant="outlined" value={nombre} onChange={(e)=>setNombre(e?.target?.value)} />
+          <TextField type="number" {...register("dni-input", { required: true })} error={errors["dni-input"]} fullWidth id="dni-input" label="DNI" variant="outlined" value={dni} onChange={(e)=>setDni(e?.target?.value)} />
           <Box sx={{display:"flex", flexDirection: "row" }}>
             <FormControlLabel control={<Switch checked={esGrow} onChange={(e)=>setEsGrow(e.target.checked)} />} label="Es Grow?" sx={{whiteSpace:"nowrap"}}/>
             {esGrow&&
