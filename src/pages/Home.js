@@ -7,8 +7,7 @@ import Context from "../context/Context";
 import Page from "./Page";
 import axios from "axios";
 import { Box } from "@mui/system";
-import copaLogo from './../assets/copa-eden-logo.png'
-//import copabackground from './../assets/copa-eden-mobile-logo.jpg'
+import copaLogo from './../assets/8va-copa-cata-codelo.jpeg'
 
 export default function Home() {
   const context = useContext(Context);
