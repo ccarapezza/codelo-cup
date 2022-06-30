@@ -35,14 +35,12 @@ export default function Calificacion() {
                 const data = response.data;
                 const calificacion = data?.calificacion;
                 setIdMuestra(data.muestraN);
+                setLabels(calificacion.labels);
                 if(calificacion){
-                    setPresentacion(calificacion.presentacion);
-                    setAromaApagado(calificacion.aromaApagado);
-                    setAromaPrendido(calificacion.aromaPrendido);
-                    setSaborApagado(calificacion.saborApagado);
-                    setSaborPrendido(calificacion.saborPrendido);
+                    setValores(JSON.parse("["+calificacion.valores.toString()+"]"))
                     context.showMessage("Muestra identificada! Ya calificó esta muestra pero puede actualizarla.", "warning");
                 }else{
+                    setValores(calificacion.labels.map(()=>5));
                     context.showMessage("Muestra identificada!", "success");
                 }
             } else {
@@ -62,11 +60,7 @@ export default function Calificacion() {
         setLoading(true);
         axios.post("/api/participante/calificar", {
             hashMuestra: hashMuestra,
-            presentacion: presentacion,
-            aromaPrendido: aromaPrendido,
-            aromaApagado: aromaApagado,
-            saborPrendido: saborPrendido,
-            saborApagado: saborApagado
+            valores: valores.toString()
         }).then(function (response) {
             if (response.status === 200) {
                 context.showMessage("Calificación guardada!", "success");
@@ -99,11 +93,16 @@ export default function Calificacion() {
         console.error(err);
     };
 
-    const [presentacion, setPresentacion] = useState(5);
-    const [aromaApagado, setAromaApagado] = useState(5);
-    const [aromaPrendido, setAromaPrendido] = useState(5);
-    const [saborApagado, setSaborApagado] = useState(5);
-    const [saborPrendido, setSaborPrendido] = useState(5);
+    const [labels, setLabels] = useState([]);
+    const [valores, setValores] = useState([]);
+
+    const setValor = (index, valor) => {
+        setValores(oldValores => {
+            oldValores[index] = valor;
+            return oldValores;
+        });
+
+    }
 
     const [starView, setStarView] = useState(true);
 
@@ -152,61 +151,23 @@ export default function Calificacion() {
                             </Box>
                         </Box>
                         <Divider sx={{ mt: 1, mb: 1 }} />
-                        <InputLabel htmlFor="presentacion-input">Presentación</InputLabel>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                            {starView?
-                                <Rating sx={{ display: "flex" }} name="presentacion-input" value={presentacion} onChange={(event, value) => { setPresentacion(value?value:presentacion) }} max={10} />
-                                :
-                                <Slider valueLabelDisplay="auto" step={.5} marks={marks} min={1} sx={{ display: "flex" }} name="presentacion-input" value={presentacion} onChange={(event, value) => { setPresentacion(value?value:presentacion) }} max={10} />
-                            }
-                            <Paper sx={{ p: 1, ml: 2, borderColor: "black", fontWeight: "bold", width: "2.1rem", textAlign: "center" }} variant="outlined">{presentacion.toFixed(1)}</Paper>
-                        </Box>
-                        <Divider sx={{ mt: 1, mb: 1 }} />
 
-                        <InputLabel htmlFor="aroma-a-input">Aroma (En flor)</InputLabel>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                            {starView?
-                                <Rating name="aroma-a-input" value={aromaApagado} onChange={(event, value) => { setAromaApagado(value?value:aromaApagado) }} max={10} />
-                                :
-                                <Slider valueLabelDisplay="auto" step={.5} marks={marks} min={1} name="aroma-a-input" value={aromaApagado} onChange={(event, value) => { setAromaApagado(value?value:aromaApagado) }} max={10} />
-                            }
-                            <Paper sx={{ p: 1, ml: 2, borderColor: "black", fontWeight: "bold", width: "2.1rem", textAlign: "center" }} variant="outlined">{aromaApagado.toFixed(1)}</Paper>
-                        </Box>
-                        <Divider sx={{ mt: 1, mb: 1 }} />
-
-                        <InputLabel htmlFor="aroma-p-input">Aroma (Picadura)</InputLabel>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                            {starView?
-                                <Rating name="aroma-p-input" value={aromaPrendido} onChange={(event, value) => { setAromaPrendido(value?value:aromaPrendido) }} max={10} />
-                            :
-                                <Slider valueLabelDisplay="auto" step={.5} marks={marks} min={1} name="aroma-p-input" value={aromaPrendido} onChange={(event, value) => { setAromaPrendido(value?value:aromaPrendido) }} max={10} />
-                            }
-                            <Paper sx={{ p: 1, ml: 2, borderColor: "black", fontWeight: "bold", width: "2.1rem", textAlign: "center" }} variant="outlined">{aromaPrendido.toFixed(1)}</Paper>
-                        </Box>
-                        <Divider sx={{ mt: 1, mb: 1 }} />
-
-                        <InputLabel htmlFor="sabor-a-input">Sabor (Apagado)</InputLabel>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                            {starView?
-                                <Rating name="sabor-a-input" value={saborApagado} onChange={(event, value) => { setSaborApagado(value?value:saborApagado) }} max={10} />
-                            :
-                                <Slider valueLabelDisplay="auto" step={.5} marks={marks} min={1} name="sabor-a-input" value={saborApagado} onChange={(event, value) => { setSaborApagado(value?value:saborApagado) }} max={10} />
-                            }
-                            <Paper sx={{ p: 1, ml: 2, borderColor: "black", fontWeight: "bold", width: "2.1rem", textAlign: "center" }} variant="outlined">{saborApagado.toFixed(1)}</Paper>
-                        </Box>
-                        <Divider sx={{ mt: 1, mb: 1 }} />
-
-
-                        <InputLabel htmlFor="sabor-p-input">Sabor (Encendido)</InputLabel>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                            {starView?
-                                <Rating name="sabor-p-input" value={saborPrendido} onChange={(event, value) => { setSaborPrendido(value?value:saborPrendido) }} max={10} />
-                            :
-                                <Slider valueLabelDisplay="auto" step={.5} marks={marks} min={1} name="sabor-p-input" value={saborPrendido} onChange={(event, value) => { setSaborPrendido(value?value:saborPrendido) }} max={10} />
-                            }
-                            <Paper sx={{ p: 1, ml: 2, borderColor: "black", fontWeight: "bold", width: "2.1rem", textAlign: "center" }} variant="outlined">{saborPrendido.toFixed(1)}</Paper>
-                        </Box>
-                        <Divider sx={{ mt: 1, mb: 1 }} />
+                        {labels.map((label, index)=>{
+                            const inputName = "value-"+index+"-input";
+                            return(<>
+                                <InputLabel htmlFor={inputName}>{label}</InputLabel>
+                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                    {starView?
+                                        <Rating sx={{ display: "flex" }} name={inputName} value={valores[index]} onChange={(event, value) => { setValor(index, value?value:valores[index]) }} max={10} />
+                                        :
+                                        <Slider valueLabelDisplay="auto" step={.5} marks={marks} min={1} sx={{ display: "flex" }} name={inputName} value={valores[index]} onChange={(event, value) => { setValor(index, value?value:valores[index]) }} max={10} />
+                                    }
+                                    <Paper sx={{ p: 1, ml: 2, borderColor: "black", fontWeight: "bold", width: "2.1rem", textAlign: "center" }} variant="outlined">{valores[index].toFixed(1)}</Paper>
+                                </Box>
+                                <Divider sx={{ mt: 1, mb: 1 }} />
+                            </>)
+                        })}
+                        
                         <Button size="large" color="primary" variant="contained" startIcon={<Star />} onClick={() => { calificarMuestra() }}>
                             Calificar
                         </Button>

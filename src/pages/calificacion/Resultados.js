@@ -48,16 +48,19 @@ export default function Resultados() {
             })
             .reduce(function(m, d){
               if(!m[d.muestraId]){
-                m[d.muestraId] = {...d, count: 1, calificaciones: []};
+                m[d.muestraId] = {
+                  ...d,
+                  count: 1,
+                  calificaciones: []
+                };
                 delete d.muestra;
                 m[d.muestraId].calificaciones.push(d);
                 return m;
               }
-              m[d.muestraId].presentacion += d.presentacion;
-              m[d.muestraId].aromaPrendido += d.aromaPrendido;
-              m[d.muestraId].aromaApagado += d.aromaApagado;
-              m[d.muestraId].saborPrendido += d.saborPrendido;
-              m[d.muestraId].saborApagado += d.saborApagado;
+
+              m[d.muestraId].valores.map((currentValor, index)=>{
+                currentValor.valor += d.valores[index].valor
+              })
               m[d.muestraId].count += 1;
               delete d.muestra;
               m[d.muestraId].calificaciones.push(d);
@@ -81,16 +84,17 @@ export default function Resultados() {
       .map((e)=>{
         return({
         ...e,
-        promedioTotal: ((e.presentacion+e.aromaApagado+e.aromaPrendido+e.saborPrendido+e.saborApagado)/5)
+        promedioTotal: (e.valores.reduce((previousValue, currentValue)=>previousValue+currentValue.valor) / e.valores.length)
       })})
       .map((calificacion)=>{
         return({
           ...calificacion,
-          presentacion: Math.round(calificacion.presentacion/calificacion.count * 10) / 10,
-          aromaPrendido: Math.round(calificacion.aromaPrendido/calificacion.count * 10) / 10,
-          aromaApagado: Math.round(calificacion.aromaApagado/calificacion.count * 10) / 10,
-          saborPrendido: Math.round(calificacion.saborPrendido/calificacion.count * 10) / 10,
-          saborApagado: Math.round(calificacion.saborApagado/calificacion.count * 10) / 10,
+          valores: calificacion.valores.map((currentValor)=>{
+            return({
+              ...currentValor,
+              valor: Math.round(currentValor.valor/calificacion.count * 10) / 10
+            })
+          }),
           promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
         })
       })
@@ -130,6 +134,8 @@ export default function Resultados() {
     <Page title="Resultados" footer={false} loading={loading}>
         <Divider sx={{m: 0}}>Ordenar por:</Divider>
         <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", flexWrap: "wrap", margin: 0}} direction="row" spacing={1}>
+          {/*
+          Agregar filtros segun categoria
           <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="presentacion"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("presentacion"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="presentacion"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
             <small>Presentación</small>
@@ -150,6 +156,8 @@ export default function Resultados() {
             {orderValue==="saborApagado"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
             <small>Sabor Apagado</small>
           </Button>
+          */}
+          
           <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="promedioTotal"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("promedioTotal"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="promedioTotal"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
             <small>Promedio Total</small>
@@ -192,11 +200,7 @@ export default function Resultados() {
               if(findedGrow){
                 let newGrow  = {
                   muestra: muestraGrow.muestra,
-                  presentacion: muestraGrow.presentacion,
-                  aromaPrendido: muestraGrow.aromaPrendido,
-                  aromaApagado: muestraGrow.aromaApagado,
-                  saborPrendido: muestraGrow.saborPrendido,
-                  saborApagado: muestraGrow.saborApagado,
+                  valores: muestraGrow.valores,
                   promedioTotal: muestraGrow.promedioTotal,
                   count: 1,
                   muestras: []
@@ -204,12 +208,9 @@ export default function Resultados() {
                 newGrow.muestras.push(muestraGrow);
                 grows.push(newGrow);
               }else{
-                grows[findedGrow].presentacion += muestraGrow.presentacion;
-                grows[findedGrow].aromaPrendido += muestraGrow.aromaPrendido;
-                grows[findedGrow].aromaApagado += muestraGrow.aromaApagado;
-                grows[findedGrow].saborPrendido += muestraGrow.saborPrendido;
-                grows[findedGrow].saborApagado += muestraGrow.saborApagado;
-                grows[findedGrow].promedioTotal += muestraGrow.promedioTotal;
+                grows[findedGrow].valores.map((currentValor, index)=>{
+                  currentValor.valor += muestraGrow.valores[index].valor
+                })
                 grows[findedGrow].count += 1;
                 grows[findedGrow].muestras.push(muestraGrow);
               }
@@ -218,11 +219,12 @@ export default function Resultados() {
             .map((calificacion)=>{
               return({
                 ...calificacion,
-                presentacion: Math.round(calificacion.presentacion/calificacion.count * 10) / 10,
-                aromaPrendido: Math.round(calificacion.aromaPrendido/calificacion.count * 10) / 10,
-                aromaApagado: Math.round(calificacion.aromaApagado/calificacion.count * 10) / 10,
-                saborPrendido: Math.round(calificacion.saborPrendido/calificacion.count * 10) / 10,
-                saborApagado: Math.round(calificacion.saborApagado/calificacion.count * 10) / 10,
+                valores: calificacion.valores.map((currentValor)=>{
+                  return({
+                    ...currentValor,
+                    valor: Math.round(currentValor.valor/calificacion.count * 10) / 10
+                  })
+                }),
                 promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
               })
             })
@@ -248,21 +250,14 @@ export default function Resultados() {
                                 label={resultado.muestra?.participante?.grow}
                                 /></Divider>
                   <Divider sx={{pb:"5px"}}><Chip color="success" label={"PROMEDIO"}/></Divider>
-                  <InputLabel htmlFor="presentacion-input"><span>Presentación: </span><strong style={{paddingLeft:"5px"}}>{resultado.presentacion}</strong></InputLabel>
-                  <Rating name="presentacion-input" value={resultado.presentacion} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                  <Divider/>
-                  <InputLabel htmlFor="aromaApagado-input">Aroma (En flor): <strong style={{paddingLeft:"5px"}}>{resultado.aromaApagado}</strong></InputLabel>
-                  <Rating name="aromaApagado-input" value={resultado.aromaApagado} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                  <InputLabel htmlFor="aromaPrendido-input">Aroma (Picadura): <strong style={{paddingLeft:"5px"}}>{resultado.aromaPrendido}</strong></InputLabel>
-                  <Rating name="aromaPrendido-input" value={resultado.aromaPrendido} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                  <Divider/>
-                  <InputLabel htmlFor="saborPrendido-input">Sabor (Prendido): <strong style={{paddingLeft:"5px"}}>{resultado.saborPrendido}</strong></InputLabel>
-                  <Rating name="saborPrendido-input" value={resultado.saborPrendido} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                  <InputLabel htmlFor="saborApagado-input">Sabor (Apagado): <strong style={{paddingLeft:"5px"}}>{resultado.saborApagado}</strong></InputLabel>
-                  <Rating name="saborApagado-input" value={resultado.saborApagado} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                  <Divider/>
-                  <InputLabel htmlFor="saborApagado-input"><strong>Promedio Total: {resultado.promedioTotal}</strong></InputLabel>
-                  <Rating name="saborApagado-input" value={resultado.promedioTotal} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+                    {resultado.valores.map((currentValor, index)=>{
+                      const idInput = "valores-grows-"+index+"-input"
+                      return(<>
+                          <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
+                          <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+                          <Divider/>
+                        </>)
+                    })}
                   <Divider sx={{marginBottom: "5px"}}/>
                   <InputLabel>Muestras: <strong style={{paddingLeft:"5px"}}>{resultado.count}</strong></InputLabel>
                 </Paper>
@@ -275,11 +270,7 @@ export default function Resultados() {
               if(!dojos[muestraDojo?.muestra?.participante?.dojo?.id]){
                 dojos[muestraDojo?.muestra?.participante?.dojo?.id] = {
                   muestra: muestraDojo.muestra,
-                  presentacion: muestraDojo.presentacion,
-                  aromaPrendido: muestraDojo.aromaPrendido,
-                  aromaApagado: muestraDojo.aromaApagado,
-                  saborPrendido: muestraDojo.saborPrendido,
-                  saborApagado: muestraDojo.saborApagado,
+                  valores: muestraDojo.valores,
                   promedioTotal: muestraDojo.promedioTotal,
                   count: 1,
                   muestras: []
@@ -287,12 +278,10 @@ export default function Resultados() {
                 dojos[muestraDojo?.muestra?.participante?.dojo?.id].muestras.push(muestraDojo);
                 return dojos;
               }
-              dojos[muestraDojo?.muestra?.participante?.dojo?.id].presentacion += muestraDojo.presentacion;
-              dojos[muestraDojo?.muestra?.participante?.dojo?.id].aromaPrendido += muestraDojo.aromaPrendido;
-              dojos[muestraDojo?.muestra?.participante?.dojo?.id].aromaApagado += muestraDojo.aromaApagado;
-              dojos[muestraDojo?.muestra?.participante?.dojo?.id].saborPrendido += muestraDojo.saborPrendido;
-              dojos[muestraDojo?.muestra?.participante?.dojo?.id].saborApagado += muestraDojo.saborApagado;
-              dojos[muestraDojo?.muestra?.participante?.dojo?.id].promedioTotal += muestraDojo.promedioTotal;
+
+              dojos[muestraDojo?.muestra?.participante?.dojo?.id].valores.map((currentValor, index)=>{
+                currentValor.valor += muestraDojo.valores[index].valor
+              })
               dojos[muestraDojo?.muestra?.participante?.dojo?.id].count += 1;
               dojos[muestraDojo?.muestra?.participante?.dojo?.id].muestras.push(muestraDojo);
               return dojos;
@@ -300,11 +289,12 @@ export default function Resultados() {
             .map((calificacion)=>{
               return({
                 ...calificacion,
-                presentacion: Math.round(calificacion.presentacion/calificacion.count * 10) / 10,
-                aromaPrendido: Math.round(calificacion.aromaPrendido/calificacion.count * 10) / 10,
-                aromaApagado: Math.round(calificacion.aromaApagado/calificacion.count * 10) / 10,
-                saborPrendido: Math.round(calificacion.saborPrendido/calificacion.count * 10) / 10,
-                saborApagado: Math.round(calificacion.saborApagado/calificacion.count * 10) / 10,
+                valores: calificacion.valores.map((currentValor)=>{
+                  return({
+                    ...currentValor,
+                    valor: Math.round(currentValor.valor/calificacion.count * 10) / 10
+                  })
+                }),
                 promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
               })
             })
@@ -322,21 +312,15 @@ export default function Resultados() {
                 <Paper sx={{padding:"5px", margin: 2}} elevation={4}>
                   <Divider sx={{pb:"5px"}}><Chip component="div" icon={<FontAwesomeIcon icon={faVihara} style={{color: "white"}}/>} label={resultado?.muestra?.participante?.dojo?.name} sx={{backgroundColor: deepPurple[400], color: "white", fontWeight: "bold", fontSize:"1.2rem"}}/></Divider>
                   <Divider sx={{pb:"5px"}}><Chip color="success" label={"PROMEDIO"}/></Divider>
-                  <InputLabel htmlFor="presentacion-input"><span>Presentación: </span><strong style={{paddingLeft:"5px"}}>{resultado.presentacion}</strong></InputLabel>
-                  <Rating name="presentacion-input" value={resultado.presentacion} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                  <Divider/>
-                  <InputLabel htmlFor="aromaApagado-input">Aroma (En flor): <strong style={{paddingLeft:"5px"}}>{resultado.aromaApagado}</strong></InputLabel>
-                  <Rating name="aromaApagado-input" value={resultado.aromaApagado} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                  <InputLabel htmlFor="aromaPrendido-input">Aroma (Picadura): <strong style={{paddingLeft:"5px"}}>{resultado.aromaPrendido}</strong></InputLabel>
-                  <Rating name="aromaPrendido-input" value={resultado.aromaPrendido} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                  <Divider/>
-                  <InputLabel htmlFor="saborPrendido-input">Sabor (Prendido): <strong style={{paddingLeft:"5px"}}>{resultado.saborPrendido}</strong></InputLabel>
-                  <Rating name="saborPrendido-input" value={resultado.saborPrendido} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                  <InputLabel htmlFor="saborApagado-input">Sabor (Apagado): <strong style={{paddingLeft:"5px"}}>{resultado.saborApagado}</strong></InputLabel>
-                  <Rating name="saborApagado-input" value={resultado.saborApagado} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                  <Divider/>
-                  <InputLabel htmlFor="saborApagado-input"><strong>Promedio Total: {resultado.promedioTotal}</strong></InputLabel>
-                  <Rating name="saborApagado-input" value={resultado.promedioTotal} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+
+                  {resultado.valores.map((currentValor, index)=>{
+                    const idInput = "valores-dojo-"+index+"-input"
+                    return(<>
+                        <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
+                        <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+                        <Divider/>
+                      </>)
+                  })}
                   <Divider sx={{marginBottom: "5px"}}/>
                   <InputLabel>Muestras: <strong style={{paddingLeft:"5px"}}>{resultado.count}</strong></InputLabel>
                 </Paper>
@@ -378,21 +362,14 @@ export default function Resultados() {
                     </ListItemAvatar>
                     <Paper sx={{padding:"5px", marginRight: 2}} elevation={4}>
                       <Divider sx={{pb:"5px"}}><Chip color="success" label={"PROMEDIO"}/></Divider>
-                      <InputLabel htmlFor="presentacion-input"><span>Presentación: </span><strong style={{paddingLeft:"5px"}}>{resultado.presentacion}</strong></InputLabel>
-                      <Rating name="presentacion-input" value={resultado.presentacion} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                      <Divider/>
-                      <InputLabel htmlFor="aromaApagado-input">Aroma (En flor): <strong style={{paddingLeft:"5px"}}>{resultado.aromaApagado}</strong></InputLabel>
-                      <Rating name="aromaApagado-input" value={resultado.aromaApagado} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                      <InputLabel htmlFor="aromaPrendido-input">Aroma (Picadura): <strong style={{paddingLeft:"5px"}}>{resultado.aromaPrendido}</strong></InputLabel>
-                      <Rating name="aromaPrendido-input" value={resultado.aromaPrendido} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                      <Divider/>
-                      <InputLabel htmlFor="saborPrendido-input">Sabor (Prendido): <strong style={{paddingLeft:"5px"}}>{resultado.saborPrendido}</strong></InputLabel>
-                      <Rating name="saborPrendido-input" value={resultado.saborPrendido} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                      <InputLabel htmlFor="saborApagado-input">Sabor (Apagado): <strong style={{paddingLeft:"5px"}}>{resultado.saborApagado}</strong></InputLabel>
-                      <Rating name="saborApagado-input" value={resultado.saborApagado} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                      <Divider/>
-                      <InputLabel htmlFor="saborApagado-input"><strong>Promedio Total: {resultado.promedioTotal}</strong></InputLabel>
-                      <Rating name="saborApagado-input" value={resultado.promedioTotal} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+                      {resultado.valores.map((currentValor, index)=>{
+                        const idInput = "valores-"+index+"-input"
+                        return(<>
+                            <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
+                            <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+                            <Divider/>
+                          </>)
+                      })}
                       <Divider sx={{marginBottom: "5px"}}/>
                       <InputLabel>Calificaciones: <strong style={{paddingLeft:"5px"}}>{resultado.count}</strong></InputLabel>
                     </Paper>
@@ -400,18 +377,14 @@ export default function Resultados() {
                       const updatedAt = new Date(Date.parse(calificacion.updatedAt));
                       return(<Paper sx={{padding:"5px", mr: 1}} elevation={4} key={"calificacion-"+calificacion.id}>
                           <Divider sx={{pb:"5px"}}><Chip sx={{textOverflow: "ellipsis"}} color="secondary" label={`#${calificacion.participante?.n} - ${calificacion.participante?.name}`}/></Divider>
-                          <InputLabel htmlFor="presentacion-input"><span>Presentación: </span><strong style={{paddingLeft:"5px"}}>{calificacion.presentacion}</strong></InputLabel>
-                          <Rating name="presentacion-input" value={calificacion.presentacion} max={10} readOnly sx={{fontSize: "1rem"}}/>
-                          <Divider/>
-                          <InputLabel htmlFor="aromaApagado-input">Aroma (En flor): <strong style={{paddingLeft:"5px"}}>{calificacion.aromaApagado}</strong></InputLabel>
-                          <Rating name="aromaApagado-input" value={calificacion.aromaApagado} max={10} readOnly sx={{fontSize: "1rem"}}/>
-                          <InputLabel htmlFor="aromaPrendido-input">Aroma (Picadura): <strong style={{paddingLeft:"5px"}}>{calificacion.aromaPrendido}</strong></InputLabel>
-                          <Rating name="aromaPrendido-input" value={calificacion.aromaPrendido} max={10} readOnly sx={{fontSize: "1rem"}}/>
-                          <Divider/>
-                          <InputLabel htmlFor="saborPrendido-input">Sabor (Prendido): <strong style={{paddingLeft:"5px"}}>{calificacion.saborPrendido}</strong></InputLabel>
-                          <Rating name="saborPrendido-input" value={calificacion.saborPrendido} max={10} readOnly sx={{fontSize: "1rem"}}/>
-                          <InputLabel htmlFor="saborApagado-input">Sabor (Apagado): <strong style={{paddingLeft:"5px"}}>{calificacion.saborApagado}</strong></InputLabel>
-                          <Rating name="saborApagado-input" value={calificacion.saborApagado} max={10} readOnly sx={{fontSize: "1rem"}}/>
+                          {resultado.valores.map((currentValor, index)=>{
+                            const idInput = "valores-details-"+index+"-input"
+                            return(<>
+                                <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
+                                <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+                                <Divider/>
+                              </>)
+                          })}
                           <Divider sx={{marginBottom: "5px"}}/>
                           <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                             <Chip variant="outlined" label={calificacion.participante.mesa?.name?calificacion.participante.mesa?.name:"SIN MESA"} />

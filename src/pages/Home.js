@@ -166,18 +166,16 @@ export default function Home() {
                     return(<Grid item xs={12} key={calificacion?.muestra?.hash} paddingBottom="10px">
                       <Paper sx={{padding:"5px"}} elevation={3}>
                         <Divider sx={{pb:"5px"}}><Chip color="secondary" label={`Muestra #${calificacion.muestra.n}`}/></Divider>
-                        <InputLabel htmlFor="presentacion-input"><span>Presentación: </span><strong style={{paddingLeft:"5px"}}>{calificacion.presentacion}</strong></InputLabel>
-                        <Rating name="presentacion-input" value={calificacion.presentacion} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                        <Divider/>
-                        <InputLabel htmlFor="aromaApagado-input">Aroma (En flor): <strong style={{paddingLeft:"5px"}}>{calificacion.aromaApagado}</strong></InputLabel>
-                        <Rating name="aromaApagado-input" value={calificacion.aromaApagado} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                        <InputLabel htmlFor="aromaPrendido-input">Aroma (Picadura): <strong style={{paddingLeft:"5px"}}>{calificacion.aromaPrendido}</strong></InputLabel>
-                        <Rating name="aromaPrendido-input" value={calificacion.aromaPrendido} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                        <Divider/>
-                        <InputLabel htmlFor="saborPrendido-input">Sabor (Prendido): <strong style={{paddingLeft:"5px"}}>{calificacion.saborPrendido}</strong></InputLabel>
-                        <Rating name="saborPrendido-input" value={calificacion.saborPrendido} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                        <InputLabel htmlFor="saborApagado-input">Sabor (Apagado): <strong style={{paddingLeft:"5px"}}>{calificacion.saborApagado}</strong></InputLabel>
-                        <Rating name="saborApagado-input" value={calificacion.saborApagado} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+
+                        {calificacion.valores.map((currentValor, index)=>{
+                          const idInput = "valores-dojo-"+index+"-input"
+                          return(<>
+                              <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
+                              <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+                              <Divider/>
+                            </>)
+                        })}
+
                         <Divider sx={{marginBottom: "5px"}}/>
                         <Box sx={{display: "flex", justifyContent: "end", alignItems: "center"}}>
                           {/*<Button startIcon={<Edit/>} color="secondary" variant="contained" size="small" onClick={()=>history.push("/calificacion/"+calificacion?.muestra?.hash)}>Editar</Button>*/}

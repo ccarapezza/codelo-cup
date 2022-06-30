@@ -27,7 +27,7 @@ export default function ConsultaCalificacion() {
     const [loading, setLoading] = useState(false);
 
     const [promedio, setPromedio] = useState({
-        labels: ["Presentación", ['Aroma', '(En flor)'], ['Aroma', '(Picadura)'], ['Sabor', '(Apagado)'], ['Sabor', '(Prendido)']],
+        labels: [],
         datasets: [],
     });
 
@@ -72,11 +72,26 @@ export default function ConsultaCalificacion() {
         }
     }
 
-    const addMuestra = (muestraData) => {
-        setPromedio({
-            labels: promedio.labels,
-            datasets: promedio.datasets.concat(muestraData)
-        })
+    const addMuestra = (muestraData, labels) => {
+        let equalLabels = true;
+        if(promedio.labels.length>0){
+            if (promedio.labels.length !== labels.length){
+                equalLabels = false;
+            }
+            for (var i = 0; i < promedio.labels.length; i++) {
+                if (promedio.labels[i] !== labels[i]){
+                    equalLabels = false;
+                }
+            }
+        }
+        if(equalLabels){
+            setPromedio({
+                labels: labels,
+                datasets: promedio.datasets.concat(muestraData)
+            })
+        }else{
+            context.showMessage("No se pueden comparar las muestras", "error");
+        }
     }
 
     const validarMuestra = (hash) => {
@@ -93,7 +108,7 @@ export default function ConsultaCalificacion() {
                         m = {
                             ...d,
                             count: 1,
-                            promedioTotal: ((d.presentacion+d.aromaApagado+d.aromaPrendido+d.saborPrendido+d.saborApagado)/5),
+                            promedioTotal: (d.valores.reduce((previousValue, currentValue)=>previousValue+currentValue.valor) / d.valores.length),
                             calificaciones: []
                         };
                         muestraId = d.muestra.id;
@@ -101,12 +116,10 @@ export default function ConsultaCalificacion() {
                         m.calificaciones.push(d);
                         return m;
                     }
-                    m.presentacion += d.presentacion;
-                    m.aromaPrendido += d.aromaPrendido;
-                    m.aromaApagado += d.aromaApagado;
-                    m.saborPrendido += d.saborPrendido;
-                    m.saborApagado += d.saborApagado;
-                    m.promedioTotal += ((d.presentacion+d.aromaApagado+d.aromaPrendido+d.saborPrendido+d.saborApagado)/5)
+                    m.valores = m.valores.map((currentValor, index)=>{
+                        currentValor.valor += d.valores[index].valor
+                    });
+                    m.promedioTotal = d.valores.reduce((previousValue, currentValue)=>previousValue+currentValue.valor) / d.valores.length;
                     m.count += 1;
                     delete d.muestra;
                     m.calificaciones.push(d);
@@ -115,11 +128,12 @@ export default function ConsultaCalificacion() {
                     if(calificacion){
                         return({
                           ...calificacion,
-                          presentacion: Math.round(calificacion.presentacion/calificacion.count * 10) / 10,
-                          aromaPrendido: Math.round(calificacion.aromaPrendido/calificacion.count * 10) / 10,
-                          aromaApagado: Math.round(calificacion.aromaApagado/calificacion.count * 10) / 10,
-                          saborPrendido: Math.round(calificacion.saborPrendido/calificacion.count * 10) / 10,
-                          saborApagado: Math.round(calificacion.saborApagado/calificacion.count * 10) / 10,
+                          valores: calificacion.valores.map((currentValor)=>{
+                            return({
+                              ...currentValor,
+                              valor: Math.round(currentValor.valor/calificacion.count * 10) / 10
+                            })
+                          }),
                           promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
                         })
                     }else{
@@ -129,17 +143,20 @@ export default function ConsultaCalificacion() {
 
                 if(promedioDataResponse){
                     setPromedioData(promedioData.concat(promedioDataResponse));
-                    addMuestra({
-                        label: 'Muestra #'+muestraId,
-                        data: [promedioDataResponse.presentacion, promedioDataResponse.aromaPrendido, promedioDataResponse.aromaApagado, promedioDataResponse.saborPrendido, promedioDataResponse.saborApagado],
-                        backgroundColor: alpha(ComparatorColors[promedio?.datasets.length], 0.2),
-                        borderColor: ComparatorColors[promedio?.datasets.length],
-                        lineTension: 0.1,
-                        pointBackgroundColor: ComparatorColors[promedio?.datasets.length],
-                        pointBorderColor: "rgba(255, 255, 255, 1)",
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                    });
+                    addMuestra(
+                        {
+                            label: 'Muestra #'+muestraId,
+                            data: promedioDataResponse.valores.map(currentValor=>currentValor.valor),
+                            backgroundColor: alpha(ComparatorColors[promedio?.datasets.length], 0.2),
+                            borderColor: ComparatorColors[promedio?.datasets.length],
+                            lineTension: 0.1,
+                            pointBackgroundColor: ComparatorColors[promedio?.datasets.length],
+                            pointBorderColor: "rgba(255, 255, 255, 1)",
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                        },
+                        promedioDataResponse.valores.map(currentValor=>currentValor.label)
+                    );
                     context.showMessage("Muestra identificada!", "success");
                 }else{
                     context.showMessage("Muestra identificada pero aun no posee calificaciones", "warning");
@@ -211,21 +228,14 @@ export default function ConsultaCalificacion() {
                                         <Stack>
                                             <Paper sx={{p:1, mt: 1}} variant="outlined">
                                                 <Divider sx={{pb:"5px"}}><Chip color="success" label={"PROMEDIO"}/></Divider>
-                                                <InputLabel htmlFor="presentacion-input"><span>Presentación: </span><strong style={{paddingLeft:"5px"}}>{currentPromedio.presentacion}</strong></InputLabel>
-                                                <Rating name="presentacion-input" value={currentPromedio.presentacion} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                                                <Divider/>
-                                                <InputLabel htmlFor="aromaApagado-input">Aroma (En flor): <strong style={{paddingLeft:"5px"}}>{currentPromedio.aromaApagado}</strong></InputLabel>
-                                                <Rating name="aromaApagado-input" value={currentPromedio.aromaApagado} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                                                <InputLabel htmlFor="aromaPrendido-input">Aroma (Picadura): <strong style={{paddingLeft:"5px"}}>{currentPromedio.aromaPrendido}</strong></InputLabel>
-                                                <Rating name="aromaPrendido-input" value={currentPromedio.aromaPrendido} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                                                <Divider/>
-                                                <InputLabel htmlFor="saborPrendido-input">Sabor (Prendido): <strong style={{paddingLeft:"5px"}}>{currentPromedio.saborPrendido}</strong></InputLabel>
-                                                <Rating name="saborPrendido-input" value={currentPromedio.saborPrendido} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                                                <InputLabel htmlFor="saborApagado-input">Sabor (Apagado): <strong style={{paddingLeft:"5px"}}>{currentPromedio.saborApagado}</strong></InputLabel>
-                                                <Rating name="saborApagado-input" value={currentPromedio.saborApagado} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
-                                                <Divider/>
-                                                <InputLabel htmlFor="saborApagado-input"><strong>Promedio Total: {currentPromedio.promedioTotal}</strong></InputLabel>
-                                                <Rating name="saborApagado-input" value={currentPromedio.promedioTotal} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+                                                {currentPromedio.valores.map((currentValor, index)=>{
+                                                    const idInput = "valores-promedio-"+index+"-input"
+                                                    return(<>
+                                                        <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
+                                                        <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+                                                        <Divider/>
+                                                    </>)
+                                                })}
                                                 <Divider sx={{marginBottom: "5px"}}/>
                                                 <InputLabel>Calificaciones: <strong style={{paddingLeft:"5px"}}>{currentPromedio.count}</strong></InputLabel>
                                             </Paper>
@@ -236,18 +246,14 @@ export default function ConsultaCalificacion() {
                                                         <Grid item xs={matches?6:12} key={"calificacion-"+calificacion?.id} >
                                                             <Paper sx={{p: 1, ml: matches?(index%2):0, mt: 1}} elevation={4} key={"calificacion-"+calificacion.id}>
                                                                 <Divider sx={{pb:"5px"}}><Chip sx={{textOverflow: "ellipsis"}} color="secondary" label={`#${calificacion.participante?.n} - ${calificacion.participante?.name}`}/></Divider>
-                                                                <InputLabel htmlFor="presentacion-input"><span>Presentación: </span><strong style={{paddingLeft:"5px"}}>{calificacion.presentacion}</strong></InputLabel>
-                                                                <Rating name="presentacion-input" value={calificacion.presentacion} max={10} readOnly sx={{fontSize: ".9rem"}}/>
-                                                                <Divider/>
-                                                                <InputLabel htmlFor="aromaApagado-input">Aroma (En flor): <strong style={{paddingLeft:"5px"}}>{calificacion.aromaApagado}</strong></InputLabel>
-                                                                <Rating name="aromaApagado-input" value={calificacion.aromaApagado} max={10} readOnly sx={{fontSize: ".9rem"}}/>
-                                                                <InputLabel htmlFor="aromaPrendido-input">Aroma (Picadura): <strong style={{paddingLeft:"5px"}}>{calificacion.aromaPrendido}</strong></InputLabel>
-                                                                <Rating name="aromaPrendido-input" value={calificacion.aromaPrendido} max={10} readOnly sx={{fontSize: ".9rem"}}/>
-                                                                <Divider/>
-                                                                <InputLabel htmlFor="saborPrendido-input">Sabor (Prendido): <strong style={{paddingLeft:"5px"}}>{calificacion.saborPrendido}</strong></InputLabel>
-                                                                <Rating name="saborPrendido-input" value={calificacion.saborPrendido} max={10} readOnly sx={{fontSize: ".9rem"}}/>
-                                                                <InputLabel htmlFor="saborApagado-input">Sabor (Apagado): <strong style={{paddingLeft:"5px"}}>{calificacion.saborApagado}</strong></InputLabel>
-                                                                <Rating name="saborApagado-input" value={calificacion.saborApagado} max={10} readOnly sx={{fontSize: ".9rem"}}/>
+                                                                {calificacion.valores.map((currentValor, indexCalificacion)=>{
+                                                                    const idInput = "valores-prom-cal-"+index+"-"+indexCalificacion+"-input";
+                                                                    return(<>
+                                                                        <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
+                                                                        <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+                                                                        <Divider/>
+                                                                    </>)
+                                                                })}
                                                                 <Divider sx={{marginBottom: "5px"}}/>
                                                                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                                                                     <Chip variant="outlined" label={calificacion.participante.mesa?.name?calificacion.participante.mesa?.name:"SIN MESA"} />
