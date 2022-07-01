@@ -21,6 +21,7 @@ axios.interceptors.response.use(function (response) {
   console.log("status", error.response.status);
   if(error.response.status===403){
     if(!window.location.href.endsWith(".herokuapp.com/")){
+      debugger
       localStorage.clear();
       window.location.href = "/";
     }

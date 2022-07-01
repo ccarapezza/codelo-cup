@@ -2,7 +2,7 @@
 import { Avatar, Button, Chip, Divider, FormControlLabel, InputLabel, List, ListItem, ListItemAvatar, Paper, Rating, Stack, Switch, Typography, useMediaQuery} from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import Page from "../Page";
 import { faCannabis, faClock, faEye, faEyeSlash, faGavel, faSortAmountDown, faSortAmountUp, faStoreAlt, faSync, faUser, faUserAlt, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -58,8 +58,9 @@ export default function Resultados() {
                 return m;
               }
 
-              m[d.muestraId].valores.map((currentValor, index)=>{
-                currentValor.valor += d.valores[index].valor
+              m[d.muestraId].valores = m[d.muestraId].valores.map((currentValor, index)=>{
+                currentValor.valor += d.valores[index].valor;
+                return currentValor;
               })
               m[d.muestraId].count += 1;
               delete d.muestra;
@@ -84,7 +85,7 @@ export default function Resultados() {
       .map((e)=>{
         return({
         ...e,
-        promedioTotal: (e.valores.reduce((previousValue, currentValue)=>previousValue+currentValue.valor) / e.valores.length)
+        promedioTotal: (e.valores.reduce((previousValue, currentValue)=>previousValue+currentValue.valor, 0) / e.valores.length)
       })})
       .map((calificacion)=>{
         return({
@@ -208,8 +209,9 @@ export default function Resultados() {
                 newGrow.muestras.push(muestraGrow);
                 grows.push(newGrow);
               }else{
-                grows[findedGrow].valores.map((currentValor, index)=>{
+                grows[findedGrow].valores = grows[findedGrow].valores.map((currentValor, index)=>{
                   currentValor.valor += muestraGrow.valores[index].valor
+                  return currentValor;
                 })
                 grows[findedGrow].count += 1;
                 grows[findedGrow].muestras.push(muestraGrow);
@@ -278,9 +280,9 @@ export default function Resultados() {
                 dojos[muestraDojo?.muestra?.participante?.dojo?.id].muestras.push(muestraDojo);
                 return dojos;
               }
-
               dojos[muestraDojo?.muestra?.participante?.dojo?.id].valores.map((currentValor, index)=>{
-                currentValor.valor += muestraDojo.valores[index].valor
+                currentValor.valor += muestraDojo.valores[index].valor;
+                return currentValor;
               })
               dojos[muestraDojo?.muestra?.participante?.dojo?.id].count += 1;
               dojos[muestraDojo?.muestra?.participante?.dojo?.id].muestras.push(muestraDojo);
@@ -364,12 +366,14 @@ export default function Resultados() {
                       <Divider sx={{pb:"5px"}}><Chip color="success" label={"PROMEDIO"}/></Divider>
                       {resultado.valores.map((currentValor, index)=>{
                         const idInput = "valores-"+index+"-input"
-                        return(<>
+                        return(<Fragment key={"valores-value"+index}>
                             <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
                             <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                             <Divider/>
-                          </>)
+                          </Fragment>)
                       })}
+                      <InputLabel htmlFor={"promedio-total-input-"+resultado.id}><strong>Promedio Total: {resultado.promedioTotal}</strong></InputLabel>
+                          <Rating name={"promedio-total-input-"+resultado.id} value={resultado.promedioTotal} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                       <Divider sx={{marginBottom: "5px"}}/>
                       <InputLabel>Calificaciones: <strong style={{paddingLeft:"5px"}}>{resultado.count}</strong></InputLabel>
                     </Paper>
@@ -377,14 +381,16 @@ export default function Resultados() {
                       const updatedAt = new Date(Date.parse(calificacion.updatedAt));
                       return(<Paper sx={{padding:"5px", mr: 1}} elevation={4} key={"calificacion-"+calificacion.id}>
                           <Divider sx={{pb:"5px"}}><Chip sx={{textOverflow: "ellipsis"}} color="secondary" label={`#${calificacion.participante?.n} - ${calificacion.participante?.name}`}/></Divider>
-                          {resultado.valores.map((currentValor, index)=>{
+                          {calificacion.valores.map((currentValor, index)=>{
                             const idInput = "valores-details-"+index+"-input"
-                            return(<>
+                            return(<Fragment key={"valores-details-value"+index}>
                                 <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
                                 <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                                 <Divider/>
-                              </>)
+                              </Fragment>)
                           })}
+                          <InputLabel htmlFor={"promedio-total-input-"+calificacion.id}><strong>Promedio Total: {resultado.promedioTotal}</strong></InputLabel>
+                          <Rating name={"promedio-total-input-"+calificacion.id} value={resultado.promedioTotal} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                           <Divider sx={{marginBottom: "5px"}}/>
                           <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                             <Chip variant="outlined" label={calificacion.participante.mesa?.name?calificacion.participante.mesa?.name:"SIN MESA"} />

@@ -21,7 +21,7 @@ export default function ConsultaCalificacion() {
 
     const [camera, setCamera] = useState("environment");
 
-    //const [hashMuestra, setHashMuestra] = useState();
+    const [hashMuestra, setHashMuestra] = useState();
     const [verGrafico, setVerGrafico] = useState(false);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -117,7 +117,8 @@ export default function ConsultaCalificacion() {
                         return m;
                     }
                     m.valores = m.valores.map((currentValor, index)=>{
-                        currentValor.valor += d.valores[index].valor
+                        currentValor.valor += d.valores[index].valor;
+                        return currentValor.valor;
                     });
                     m.promedioTotal = d.valores.reduce((previousValue, currentValue)=>previousValue+currentValue.valor) / d.valores.length;
                     m.count += 1;
@@ -162,11 +163,13 @@ export default function ConsultaCalificacion() {
                     context.showMessage("Muestra identificada pero aun no posee calificaciones", "warning");
                 }
             } else {
+                debugger
                 context.showMessage("No se ha podido validar la muestra.", "error");
                 console.error(response);
             }
         }).catch(function (error) {
             //setHashMuestra();
+            debugger
             context.showMessage("No se ha podido validar la muestra.", "error");
             console.error(error);
         }).then(function () {
@@ -286,13 +289,13 @@ export default function ConsultaCalificacion() {
                             } />
                         <CardContent>
                             {/*
+                            */}
                                 <div>
                                     <input type="text" value={hashMuestra} onChange={(e)=>{setHashMuestra(e.target.value)}} />
                                     <button onClick={(e)=>{validarMuestra(hashMuestra)}}>Login</button>
                                 </div>
                                 <div>QR RESULT:{hashMuestra}</div>
                                 <div>{JSON.stringify(error)}</div>
-                            */}
                             <QrReader
                                 facingMode={camera}
                                 delay={300}

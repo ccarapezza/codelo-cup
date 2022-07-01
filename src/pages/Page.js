@@ -19,7 +19,7 @@ export default function Page({ title, children, footer = true, style, loading = 
   const history = useHistory();
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="sticky">
         <Toolbar>
           <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}
             onClick={(e) => {

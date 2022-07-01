@@ -8,6 +8,7 @@ const styleDefault = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
+    maxWidth: "85%",
     width: 350,
     bgcolor: 'white',
     border: '1px solid #000',

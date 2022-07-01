@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useContext, useEffect, useState } from 'react'
 import { Button, Card, CardContent, CardHeader, Chip, Divider, IconButton, InputLabel, Paper, Rating, Stack, FormControlLabel, Slider, Switch } from '@mui/material'
 import { Star } from "@material-ui/icons";
 import Page from '../Page';
@@ -34,13 +34,13 @@ export default function Calificacion() {
             if (response.status === 200) {
                 const data = response.data;
                 const calificacion = data?.calificacion;
-                setIdMuestra(data.muestraN);
-                setLabels(calificacion.labels);
+                setIdMuestra(data?.muestraN);
+                setLabels(data?.labels);
                 if(calificacion){
                     setValores(JSON.parse("["+calificacion.valores.toString()+"]"))
                     context.showMessage("Muestra identificada! Ya calificó esta muestra pero puede actualizarla.", "warning");
                 }else{
-                    setValores(calificacion.labels.map(()=>5));
+                    setValores(data?.labels.map(()=>5));
                     context.showMessage("Muestra identificada!", "success");
                 }
             } else {
@@ -93,15 +93,11 @@ export default function Calificacion() {
         console.error(err);
     };
 
-    const [labels, setLabels] = useState([]);
-    const [valores, setValores] = useState([]);
+    const [labels, setLabels] = useState(["","","","",""]);
+    const [valores, setValores] = useState([5,5,5,5,5]);
 
     const setValor = (index, valor) => {
-        setValores(oldValores => {
-            oldValores[index] = valor;
-            return oldValores;
-        });
-
+        setValores(valores.map((currentValor, currentIndex)=>index===currentIndex?valor:currentValor));
     }
 
     const [starView, setStarView] = useState(true);
@@ -151,21 +147,38 @@ export default function Calificacion() {
                             </Box>
                         </Box>
                         <Divider sx={{ mt: 1, mb: 1 }} />
+                        {JSON.stringify(valores)}
 
                         {labels.map((label, index)=>{
                             const inputName = "value-"+index+"-input";
-                            return(<>
+                            return(<Fragment key={inputName}>
                                 <InputLabel htmlFor={inputName}>{label}</InputLabel>
                                 <Box sx={{ display: "flex", alignItems: "center" }}>
                                     {starView?
-                                        <Rating sx={{ display: "flex" }} name={inputName} value={valores[index]} onChange={(event, value) => { setValor(index, value?value:valores[index]) }} max={10} />
+                                        <Rating sx={{ display: "flex" }}
+                                            name={inputName}
+                                            value={valores[index]}
+                                            onChange={(event, value) => {
+                                                setValor(index, value)
+                                            }}
+                                            max={10} />
                                         :
-                                        <Slider valueLabelDisplay="auto" step={.5} marks={marks} min={1} sx={{ display: "flex" }} name={inputName} value={valores[index]} onChange={(event, value) => { setValor(index, value?value:valores[index]) }} max={10} />
+                                        <Slider valueLabelDisplay="auto"
+                                            step={.5}
+                                            marks={marks}
+                                            min={1}
+                                            sx={{ display: "flex" }}
+                                            name={inputName}
+                                            value={valores[index]}
+                                            onChange={(event, value) => {
+                                                setValor(index, value)
+                                            }}
+                                            max={10} />
                                     }
-                                    <Paper sx={{ p: 1, ml: 2, borderColor: "black", fontWeight: "bold", width: "2.1rem", textAlign: "center" }} variant="outlined">{valores[index].toFixed(1)}</Paper>
+                                    <Paper sx={{ p: 1, ml: 2, borderColor: "black", fontWeight: "bold", width: "2.1rem", textAlign: "center" }} variant="outlined">{valores[index]?.toFixed(1)}</Paper>
                                 </Box>
                                 <Divider sx={{ mt: 1, mb: 1 }} />
-                            </>)
+                            </Fragment>)
                         })}
                         
                         <Button size="large" color="primary" variant="contained" startIcon={<Star />} onClick={() => { calificarMuestra() }}>
@@ -188,13 +201,13 @@ export default function Calificacion() {
                             } />
                         <CardContent>
                             {/* 
+                            */}
                                 <div>
                                     <input type="text" value={hashMuestra} onChange={(e)=>{setHashMuestra(e.target.value)}} />
                                     <button onClick={(e)=>{validarMuestra()}}>Login</button>
                                 </div>
                                 <div>QR RESULT:{hashMuestra}</div>
                                 <div>{JSON.stringify(error)}</div>
-                            */}
                             <QrReader
                                 facingMode={camera}
                                 delay={300}

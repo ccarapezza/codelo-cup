@@ -102,7 +102,7 @@ function ContextProvider({ children }) {
       setIsParticipanteLogged(false);
       setParticipanteData(null);
       //Set id token
-      axios.defaults.headers.common["x-access-hash"] = null;
+      delete axios.defaults.headers.common["x-access-hash"];
       axios.defaults.headers.common["x-access-token"] = userData?.accessToken;
     }else{
       setIsLogged(false);
@@ -115,7 +115,7 @@ function ContextProvider({ children }) {
       setIsLogged(false);
       setUserData(null);
       //Set id hash
-      axios.defaults.headers.common["x-access-token"] = null;
+      delete axios.defaults.headers.common["x-access-token"];
       axios.defaults.headers.common["x-access-hash"] = participanteData?.hash;
     }else{
       setIsParticipanteLogged(false);

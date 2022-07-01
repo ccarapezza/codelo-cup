@@ -1,5 +1,5 @@
 
-import { Avatar, Chip, Divider, IconButton, InputBase, List, ListItem, ListItemAvatar, ListItemText, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Avatar, Button, Chip, Divider, IconButton, InputBase, List, ListItem, ListItemAvatar, ListItemText, Paper, Stack, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import Page from "../Page";
@@ -24,7 +24,12 @@ export default function ListCategoria() {
     .then(function (response) {
       // handle success
       if(response.status === 200){
-        setCategorias(response.data);
+        setCategorias(response.data.map((categoria)=>{
+          return({
+            ...categoria,
+            labels: categoria.labels?.split(",")
+          })
+        }));
       }
     })
     .catch(function (error) {
@@ -114,7 +119,7 @@ export default function ListCategoria() {
             <ButtonModal onClick={()=>{setCategoriaName("")}} faIcon={faPlus} sx={{whiteSpace: "nowrap", ml: 2}} saveDisabled={!categoriaName} operation={()=>{createCategoria()}}>
                 <Box>
                     <Divider sx={{pb:2}}>Nueva Categoría</Divider>
-                    <TextField fullWidth id="dojo-name-input" label="Nombre" variant="outlined" value={categoriaName} onChange={(e)=>setCategoriaName(e?.target?.value)} />                         
+                    <TextField fullWidth id="dojo-name-input" label="Nombre" variant="outlined" size="small" value={categoriaName} onChange={(e)=>setCategoriaName(e?.target?.value)} />                         
                 </Box>
             </ButtonModal>
           </Box>
@@ -132,13 +137,26 @@ export default function ListCategoria() {
                       </ListItemAvatar>
                       <Stack>
                         <ListItemText primary={<Typography variant="h5" sx={{mr:1, fontWeight: "bold"}}>{categoria.name}</Typography>} />
+                        {categoria.labels.map((label)=>
+                          <small sx={{pr:2}}>-{label}</small>
+                        )}
                       </Stack>
                     </Box>
                     <Box>
                       <ButtonModal onClick={()=>{setCategoriaName(categoria.name)}} faIcon={faEdit} textButton="" sx={{whiteSpace: "nowrap", mr: 1}} saveDisabled={!categoriaName} operation={()=>{updateCategoria(categoria.id)}}>
                         <Box>
                             <Divider sx={{pb:2}}>Editar Categoría</Divider>
-                            <TextField fullWidth id="dojo-name-input" label="Nombre" variant="outlined" value={categoriaName} onChange={(e)=>setCategoriaName(e?.target?.value)} />                         
+                            <TextField fullWidth id="categoria-name-input" label="Nombre" variant="outlined" size="small" value={categoriaName} onChange={(e)=>setCategoriaName(e?.target?.value)} />                         
+                            <Divider sx={{pb:2}}/>
+                            <Typography variant="subtitle2" sx={{pt:1}}>Valores:</Typography>
+                            {categoria.labels.map((label, index)=>
+                              <Box key={"categoria-valor-"+index} sx={{display:"flex", flexDirection: "row", pl:3}}>
+                                <TextField fullWidth id={"categoria-valor-input-"+index} label="Valor" variant="outlined" size="small" value={label} onChange={()=>{}} />
+                                <Button onClick={()=>{}}>
+                                    <FontAwesomeIcon icon={faTrash}/>
+                                </Button>
+                              </Box>
+                            )}
                         </Box>
                       </ButtonModal>
                       <ConfirmModal faIcon={faTrash} buttonColor="error" message="Esta seguro que desea eliminar el Dojo?" operation={()=>{deleteCategoria(categoria.id)}}/>
