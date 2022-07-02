@@ -182,6 +182,7 @@ export default function ListCategoria() {
                                   label="Valor"
                                   variant="outlined"
                                   size="small"
+                                  error={true}
                                   value={label}
                                   onChange={(e)=>{
                                     setCategoriaLabels(categoriaLabels.map((label, currentIndex)=>currentIndex===index?e.target.value:label));

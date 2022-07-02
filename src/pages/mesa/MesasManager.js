@@ -2,7 +2,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import Page from "../Page";
-import { Button, Chip, Divider, Grid, IconButton, InputBase, List, Paper, Stack, TextField, Typography, useMediaQuery } from "@mui/material";
+import { Button, Chip, Divider, Grid, IconButton, InputBase, Paper, Stack, TextField, Typography, useMediaQuery } from "@mui/material";
 import { Search } from "@material-ui/icons";
 import { Box } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -255,10 +255,11 @@ export default function MesasManager() {
                   <Search />
                 </IconButton>
               </Paper>
-              <List sx={{paddingTop: "0", marginTop: 0,display:"flex", flexWrap:"wrap"}}>
+              <Grid container spacing={1} sx={{paddingTop: "0", marginTop: 0, width: "100%", maxHeight: '250px', overflowY:'auto'}}>
                 {participantes?.filter(participante => (parseInt(participante.id)===(!isNaN(searchFieldParticipante)?parseInt(searchFieldParticipante):0) || participante.name?.toLowerCase().includes(searchFieldParticipante?.toLowerCase()) || participante.muestras.find(e=>e.categoria?.name?.toLowerCase().includes(searchFieldParticipante?.toLowerCase()))) && !isParticipanteExistInMesas(participante.id)).map((participante, index)=>{
-                  return(<DraggableBox key={"participante"+participante.id} data={{muestras: participante.muestras}} onUpdate={()=>listAllMesas()} name={"participante-"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "start", backgroundColor: orange[500], borderRadius: 1, margin: 1, width:"45%", overflow: "hidden"}}>
-                      <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", width: "45%"}}>
+                  return(<Grid item xs={6} md={12} >
+                    <DraggableBox key={"participante"+participante.id} data={{muestras: participante.muestras}} onUpdate={()=>listAllMesas()} name={"participante-"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "start", backgroundColor: orange[500], borderRadius: 1, margin: 1, width:"100%", m:0, overflow: "hidden"}}>
+                      <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", width: "100%", m:0}}>
                         <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
                         <Chip size="small" label={"#"+participante.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
                         <Typography>{participante.name}</Typography>
@@ -277,9 +278,10 @@ export default function MesasManager() {
                           } />
                         )}
                       </Box>
-                    </DraggableBox>)
+                    </DraggableBox>
+                  </Grid>)
                 })}
-              </List>
+              </Grid>
             </>
           }
           {mode==="participanteSecundario"&&
@@ -299,10 +301,11 @@ export default function MesasManager() {
                   <Search />
                 </IconButton>
               </Paper>
-              <List sx={{paddingTop: "0", marginTop: 0,display:"flex", flexWrap:"wrap"}}>
+              <Grid container spacing={1} sx={{paddingTop: "0", marginTop: 0, width: "100%", maxHeight: '250px', overflow:'auto'}}>
                 {participantes?.filter(participante => (parseInt(participante.id)===(!isNaN(searchFieldParticipante)?parseInt(searchFieldParticipante):0) || participante.name?.toLowerCase().includes(searchFieldParticipante?.toLowerCase()) || participante.muestras.find(e=>e.categoria?.name?.toLowerCase().includes(searchFieldParticipante?.toLowerCase()))) && !isParticipanteSecExistInMesas(participante.id)).map((participante, index)=>{
-                  return(<DraggableBox key={"participante"+participante.id} data={{muestras: participante.muestras}} onUpdate={()=>listAllMesas()} name={"participanteSecundario-"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "start", backgroundColor: indigo[300], borderRadius: 1, margin: 1, width:"45%", overflow: "hidden"}}>
-                      <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", width: "45%"}}>
+                  return(<Grid item xs={6} md={12}>
+                    <DraggableBox key={"participante"+participante.id} data={{muestras: participante.muestras}} onUpdate={()=>listAllMesas()} name={"participanteSecundario-"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "start", backgroundColor: indigo[300], borderRadius: 1, margin: 1, width:"100%", m:0, overflow: "hidden"}}>
+                      <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", width: "100%", m:0}}>
                         <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
                         <Chip size="small" label={"#"+participante.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: indigo[200]}}/>
                         <Typography>{participante.name}</Typography>
@@ -321,9 +324,10 @@ export default function MesasManager() {
                           } />
                         )}
                       </Box>
-                    </DraggableBox>)
+                    </DraggableBox>
+                  </Grid>)
                 })}
-              </List>
+              </Grid>
             </>
           }
           {mode==="muestra"&&
@@ -343,9 +347,10 @@ export default function MesasManager() {
                   <Search />
                 </IconButton>
               </Paper>
-              <List sx={{paddingTop: "0", marginTop: 0}}>
+              <Grid container spacing={1} sx={{paddingTop: "0", marginTop: 0, width: "100%", maxHeight: '250px', overflow:'auto'}}>
                 {muestras?.filter(muestra => parseInt(muestra.id)===(!isNaN(searchFieldMuestra)?parseInt(searchFieldMuestra):0) || muestra.name?.toLowerCase().includes(searchFieldMuestra?.toLowerCase())).map((muestra, index)=>{
-                  return(<DraggableBox key={"muestras"+muestra.id} onUpdate={()=>listAllMesas()} name={"muestra-"+muestra.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: green[500], borderRadius: 1, margin: 1, ml: 1, mr: 1}}>
+                  return(<Grid item xs={6} md={12}>
+                    <DraggableBox key={"muestras"+muestra.id} onUpdate={()=>listAllMesas()} name={"muestra-"+muestra.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: green[500], borderRadius: 1, margin: 1, m: 0}}>
                       <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
                         <FontAwesomeIcon icon={faCannabis} style={{paddingLeft: 10}}/>
                         <Chip size="small" label={"#"+muestra.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: green[200]}}/>
@@ -361,9 +366,10 @@ export default function MesasManager() {
                           </Box>
                         </Box>
                       </Box>
-                    </DraggableBox>)
+                    </DraggableBox>
+                  </Grid>)
                 })}
-              </List>
+              </Grid>
             </>
           }
           <Grid container>
