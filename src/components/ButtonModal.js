@@ -26,7 +26,7 @@ export default function ButtonModal({children, style, faIcon, textButton="", but
     const [open, setOpen] = useState(false);
 
     return (<>
-        <Button variant="outlined" color={buttonColor} onClick={()=>{setOpen(true); onClick();}} sx={{...sx, width:"fit-content"}}>
+        <Button variant="outlined" color={buttonColor} onClick={()=>{setOpen(true); onClick();}} sx={{...sx, p: 1, m: 1}}>
             <FontAwesomeIcon icon={faIcon}/>{textButton&&<span style={{ marginLeft: 5 }}>{textButton}</span>}
         </Button>
         <Modal open={open} onClose={()=>setOpen(false)} >

@@ -16,6 +16,7 @@ export default function ListCategoria() {
   const context = useContext(Context);
   const [categorias, setCategorias] = useState([]);
   const [categoriaName, setCategoriaName] = useState("");
+  const [categoriaLabels, setCategoriaLabels] = useState([""]);
   const [searchField, setSearchField] = useState("");
 
   const listAllCategorias = () => {
@@ -60,6 +61,7 @@ export default function ListCategoria() {
     axios.put("/api/categoria/update",{
       id: idCategoria,
       name: categoriaName,
+      labels: categoriaLabels.toString()
     })
     .then(function (response) {
       if(response.status === 200){
@@ -76,10 +78,12 @@ export default function ListCategoria() {
   const createCategoria = () => {
     axios.post("/api/categoria/create", {
         name: categoriaName,
+        labels: categoriaLabels.toString()
     }).then(function (response) {
         if (response.status === 200) {
             context.showMessage("Categoría creada correctamente!", "success");
             setCategoriaName("");
+            setCategoriaLabels([""])
             listAllCategorias();
         } else {
             context.showMessage("No se ha creado la Categoría. Contacte con el administrador.", "error");
@@ -116,10 +120,31 @@ export default function ListCategoria() {
                 <Search />
               </IconButton>
             </Paper>
-            <ButtonModal onClick={()=>{setCategoriaName("")}} faIcon={faPlus} sx={{whiteSpace: "nowrap", ml: 2}} saveDisabled={!categoriaName} operation={()=>{createCategoria()}}>
+            <ButtonModal onClick={()=>{setCategoriaName(""); setCategoriaLabels([""])}} faIcon={faPlus} sx={{whiteSpace: "nowrap", ml: 2}} saveDisabled={!categoriaName} operation={()=>{createCategoria()}}>
                 <Box>
                     <Divider sx={{pb:2}}>Nueva Categoría</Divider>
-                    <TextField fullWidth id="dojo-name-input" label="Nombre" variant="outlined" size="small" value={categoriaName} onChange={(e)=>setCategoriaName(e?.target?.value)} />                         
+                    <TextField fullWidth id="dojo-name-input" label="Nombre" variant="outlined" size="small" value={categoriaName} onChange={(e)=>setCategoriaName(e?.target?.value)} />
+                    <Divider sx={{pb:2}}/>
+                    <Typography variant="subtitle2" sx={{pt:1}}>Valores:</Typography>
+                    {categoriaLabels.map((label, index)=>
+                      <Box key={"categoria-valor-"+index} sx={{display:"flex", flexDirection: "row", pl:3, pt: 1}}>
+                        <TextField id={"categoria-valor-input-"+index}
+                          fullWidth
+                          label="Valor"
+                          variant="outlined"
+                          size="small"
+                          value={label}
+                          onChange={(e)=>{
+                            setCategoriaLabels(categoriaLabels.map((label, currentIndex)=>currentIndex===index?e.target.value:label));
+                          }} />
+                        <Button onClick={()=>{ setCategoriaLabels(categoriaLabels.filter((label, currentindex)=>index!==currentindex)) }}>
+                            <FontAwesomeIcon icon={faTrash}/>
+                        </Button>
+                      </Box>
+                    )}
+                    <Button fullWidth color="success" variant="outlined" startIcon={<FontAwesomeIcon icon={faPlus}/>}  onClick={()=>{setCategoriaLabels(categoriaLabels.concat(""))}} sx={{my:1}}>
+                      Agregar Valor
+                    </Button>
                 </Box>
             </ButtonModal>
           </Box>
@@ -127,7 +152,7 @@ export default function ListCategoria() {
           <List sx={{paddingTop: "0", marginTop: 0}}>
             {categorias?.filter(dojo => (dojo.name?.toLowerCase().includes(searchField?.toLowerCase()))).map((categoria)=>{
               return(
-                <div key={"dojo-list-element-"+categoria.id}>
+                <div key={"categorias-list-element-"+categoria.id}>
                   <ListItem sx={{display: "flex", justifyContent: "space-between"}}>
                     <Box sx={{display: "flex"}}>
                       <ListItemAvatar sx={{display: "flex", alignItems: "center"}}>
@@ -137,29 +162,41 @@ export default function ListCategoria() {
                       </ListItemAvatar>
                       <Stack>
                         <ListItemText primary={<Typography variant="h5" sx={{mr:1, fontWeight: "bold"}}>{categoria.name}</Typography>} />
+                        <Typography variant="subtitle2">Valores:</Typography>
                         {categoria.labels.map((label)=>
-                          <small sx={{pr:2}}>-{label}</small>
+                          <small style={{marginLeft:"5px"}}>-{label}</small>
                         )}
                       </Stack>
                     </Box>
-                    <Box>
-                      <ButtonModal onClick={()=>{setCategoriaName(categoria.name)}} faIcon={faEdit} textButton="" sx={{whiteSpace: "nowrap", mr: 1}} saveDisabled={!categoriaName} operation={()=>{updateCategoria(categoria.id)}}>
+                    <Box sx={{display:"flex", flexDirection:"column"}}>
+                      <ButtonModal onClick={()=>{setCategoriaName(categoria.name); setCategoriaLabels(categoria.labels)}} faIcon={faEdit} textButton="" sx={{m: 1}} saveDisabled={!categoriaName} operation={()=>{updateCategoria(categoria.id)}}>
                         <Box>
                             <Divider sx={{pb:2}}>Editar Categoría</Divider>
                             <TextField fullWidth id="categoria-name-input" label="Nombre" variant="outlined" size="small" value={categoriaName} onChange={(e)=>setCategoriaName(e?.target?.value)} />                         
                             <Divider sx={{pb:2}}/>
                             <Typography variant="subtitle2" sx={{pt:1}}>Valores:</Typography>
-                            {categoria.labels.map((label, index)=>
-                              <Box key={"categoria-valor-"+index} sx={{display:"flex", flexDirection: "row", pl:3}}>
-                                <TextField fullWidth id={"categoria-valor-input-"+index} label="Valor" variant="outlined" size="small" value={label} onChange={()=>{}} />
-                                <Button onClick={()=>{}}>
+                            {categoriaLabels.map((label, index)=>
+                              <Box key={"categoria-valor-"+index} sx={{display:"flex", flexDirection: "row", pl:3, pt: 1}}>
+                                <TextField id={"categoria-valor-input-"+index}
+                                  fullWidth
+                                  label="Valor"
+                                  variant="outlined"
+                                  size="small"
+                                  value={label}
+                                  onChange={(e)=>{
+                                    setCategoriaLabels(categoriaLabels.map((label, currentIndex)=>currentIndex===index?e.target.value:label));
+                                  }} />
+                                <Button onClick={()=>{ setCategoriaLabels(categoriaLabels.filter((label, currentindex)=>index!==currentindex)) }}>
                                     <FontAwesomeIcon icon={faTrash}/>
                                 </Button>
                               </Box>
                             )}
+                            <Button fullWidth color="success" variant="outlined" startIcon={<FontAwesomeIcon icon={faPlus}/>}  onClick={()=>{setCategoriaLabels(categoriaLabels.concat(""))}} sx={{my:1}}>
+                              Agregar Valor
+                            </Button>
                         </Box>
                       </ButtonModal>
-                      <ConfirmModal faIcon={faTrash} buttonColor="error" message="Esta seguro que desea eliminar el Dojo?" operation={()=>{deleteCategoria(categoria.id)}}/>
+                      <ConfirmModal faIcon={faTrash} buttonColor="error" message="Esta seguro que desea eliminar la Categoría?" operation={()=>{deleteCategoria(categoria.id)}} sx={{m:1, p:0}}/>
                     </Box>
                   </ListItem>
                   <Divider />

@@ -25,7 +25,7 @@ export default function ConfirmModal({message, operation, faIcon, buttonColor="p
     const [open, setOpen] = useState(false);
 
     return (<>
-        <Button variant="outlined" color={buttonColor} onClick={()=>{setOpen(true)}}>
+        <Button variant="outlined" color={buttonColor} onClick={()=>{setOpen(true)}} sx={{p: 1, m: 1}}>
             <FontAwesomeIcon icon={faIcon}/>
         </Button>
         <Modal open={open} onClose={()=>setOpen(false)} >
