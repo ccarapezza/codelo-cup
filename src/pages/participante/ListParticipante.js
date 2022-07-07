@@ -120,6 +120,7 @@ export default function ListParticipante() {
                               }
                             </Box>
                           } 
+                          secondaryTypographyProps={{variant: "div"}}
                           secondary={participante.muestras?.map((muestra)=>
                             <Chip
                               key={"muestra-hash-"+muestra.hash}
@@ -158,7 +159,7 @@ export default function ListParticipante() {
         </>
         :
         <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <h2><Chip label="No se encontraron participantes"/></h2>
+          <Chip label="No se encontraron participantes"/>
         </Box>
       }
     </Page>

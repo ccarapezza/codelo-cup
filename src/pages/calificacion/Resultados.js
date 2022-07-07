@@ -28,6 +28,8 @@ export default function Resultados() {
   const [juradoFilter, setJuradoFilter] = useState(false);
   const [participanteFilter, setParticipanteFilter] = useState(false);  
 
+  const [labels, setLabels] = useState([]);
+
   const loadResultados = useCallback(
     () => {
       setLoading(true);
@@ -99,15 +101,6 @@ export default function Resultados() {
           promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
         })
       })
-      .sort(function(a, b) {
-        if (a[orderValue] > b[orderValue]) {
-          return sortOrder?1:-1;
-        }
-        if (a[orderValue] < b[orderValue]) {
-          return sortOrder?-1:1;
-        }
-        return 0;
-      })
       .filter((resultado)=>{
         if(dojoFilter){
           return resultado.muestra?.participante?.dojo?true:false;
@@ -123,6 +116,26 @@ export default function Resultados() {
         }else{
           return resultado;
         }
+      })
+      .sort(function(a, b) {
+        let aValue = null;
+        let bValue = null;
+
+        if(orderValue==="promedioTotal"){
+          aValue = a.promedioTotal;
+          bValue = b.promedioTotal;
+        }else{
+          aValue = a.valores.find((valor)=>camelize(valor.label)===orderValue).valor;
+          bValue = b.valores.find((valor)=>camelize(valor.label)===orderValue).valor;
+        }
+
+        if (aValue > bValue) {
+          return sortOrder?1:-1;
+        }
+        if (aValue < bValue) {
+          return sortOrder?-1:1;
+        }
+        return 0;
       });
       setResultadoProcessed(resultadoSortAndFilter);
   }, [dojoFilter, growFilter, muestraCategoriaFilter, orderValue, resultados, sortOrder])
@@ -131,34 +144,24 @@ export default function Resultados() {
     loadResultados();
   }, [loadResultados]);
 
+  const camelize = (str)=> {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    }).replace(/\s+/g, '');
+  }
+
   return (
     <Page title="Resultados" footer={false} loading={loading}>
         <Divider sx={{m: 0}}>Ordenar por:</Divider>
         <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", flexWrap: "wrap", margin: 0}} direction="row" spacing={1}>
-          {/*
-          Agregar filtros segun categoria
-          <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="presentacion"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("presentacion"); setSortOrder(sortOrder?0:1)}}>
-            {orderValue==="presentacion"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
-            <small>Presentación</small>
-          </Button>
-          <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="aromaApagado"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("aromaApagado"); setSortOrder(sortOrder?0:1)}}>
-          {orderValue==="aromaApagado"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
-            <small>Aroma (En flor)</small>
-          </Button>
-          <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="aromaPrendido"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("aromaPrendido"); setSortOrder(sortOrder?0:1)}}>
-            {orderValue==="aromaPrendido"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
-            <small>Aroma (Picadura)</small>
-          </Button>
-          <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="saborPrendido"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("saborPrendido"); setSortOrder(sortOrder?0:1)}}>
-            {orderValue==="saborPrendido"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
-            <small>Sabor Prendido</small>
-          </Button>
-          <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="saborApagado"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("saborApagado"); setSortOrder(sortOrder?0:1)}}>
-            {orderValue==="saborApagado"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
-            <small>Sabor Apagado</small>
-          </Button>
-          */}
-          
+          {labels.map((label, index)=>{
+            const lbl = camelize(label);
+            console.log(lbl)
+            return(<Button key={"label-order-"+index} color="secondary" sx={{margin: "5px!important"}} variant={orderValue===lbl?"contained":"outlined"} size="small" onClick={()=>{setOrderValue(lbl); setSortOrder(sortOrder?0:1)}}>
+              {orderValue===label&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
+              <small>{label}</small>
+            </Button>);
+          })}
           <Button color="secondary" sx={{margin: "5px!important"}} variant={orderValue==="promedioTotal"?"contained":"outlined"} size="small" onClick={()=>{setOrderValue("promedioTotal"); setSortOrder(sortOrder?0:1)}}>
             {orderValue==="promedioTotal"&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
             <small>Promedio Total</small>
@@ -166,7 +169,7 @@ export default function Resultados() {
         </Stack>
         <Divider>Filtrar por:</Divider>
           <Box sx={{display:"flex", flexDirection:matches?"row":"column"}}>
-            <SelectCategoria sx={{flexGrow: 1, whiteSpace:"nowrap", width: "auto", mt:0, mb:1}} blankLabel="Todas" value={muestraCategoriaFilter} onChange={(e)=>setMuestraCategoriaFilter(e?.target?.value)}/>
+            <SelectCategoria sx={{flexGrow: 1, whiteSpace:"nowrap", width: "auto", mt:0, mb:1}} blankLabel="Todas" value={muestraCategoriaFilter} onChange={(e)=>setMuestraCategoriaFilter(e?.target?.value)} setLabels={setLabels}/>
             <FormControlLabel sx={{flexGrow: 1, whiteSpace:"nowrap", mx:1, textAlign: "center", display: "inline", alignSelf: "center"}} control={<Switch checked={dojoFilter} onChange={(e)=>{setDojoFilter(e.target.checked); setGrowFilter(e.target.checked?false:growFilter);}} />} label={<><FontAwesomeIcon icon={faVihara}/>Categoria Dojos</>}/>
             <FormControlLabel sx={{flexGrow: 1, whiteSpace:"nowrap", mx:1, textAlign: "center", display: "inline", alignSelf: "center"}} control={<Switch checked={growFilter} onChange={(e)=>{setGrowFilter(e.target.checked); setDojoFilter(e.target.checked?false:dojoFilter);}} />} label={<><span className="fa-layers fa-fw" style={{color: "black", marginLeft:10}}><FontAwesomeIcon icon={faCannabis} transform="shrink-4 up-8"/><FontAwesomeIcon icon={faStoreAlt} transform="shrink-3 down-5"/></span>Categoria Grows</>}/>           
           </Box>
@@ -231,10 +234,13 @@ export default function Resultados() {
               })
             })
             .sort(function(a, b) {
-              if (a[orderValue] > b[orderValue]) {
+              const aValue = a.valores.find((valor)=>camelize(valor.label)===orderValue).valor;
+              const bValue = b.valores.find((valor)=>camelize(valor.label)===orderValue).valor;
+
+              if (aValue > bValue) {
                 return sortOrder?1:-1;
               }
-              if (a[orderValue] < b[orderValue]) {
+              if (aValue < bValue) {
                 return sortOrder?-1:1;
               }
               return 0;
@@ -254,11 +260,11 @@ export default function Resultados() {
                   <Divider sx={{pb:"5px"}}><Chip color="success" label={"PROMEDIO"}/></Divider>
                     {resultado.valores.map((currentValor, index)=>{
                       const idInput = "valores-grows-"+index+"-input"
-                      return(<>
+                      return(<React.Fragment key={"res-val-"+resultado.muestra?.participante?.grow+"-"+index}>
                           <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
                           <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                           <Divider/>
-                        </>)
+                        </React.Fragment>)
                     })}
                   <Divider sx={{marginBottom: "5px"}}/>
                   <InputLabel>Muestras: <strong style={{paddingLeft:"5px"}}>{resultado.count}</strong></InputLabel>
@@ -301,10 +307,13 @@ export default function Resultados() {
               })
             })
             .sort(function(a, b) {
-              if (a[orderValue] > b[orderValue]) {
+              const aValue = a.valores.find((valor)=>camelize(valor.label)===orderValue).valor;
+              const bValue = b.valores.find((valor)=>camelize(valor.label)===orderValue).valor;
+
+              if (aValue > bValue) {
                 return sortOrder?1:-1;
               }
-              if (a[orderValue] < b[orderValue]) {
+              if (aValue < bValue) {
                 return sortOrder?-1:1;
               }
               return 0;
@@ -317,11 +326,11 @@ export default function Resultados() {
 
                   {resultado.valores.map((currentValor, index)=>{
                     const idInput = "valores-dojo-"+index+"-input"
-                    return(<>
+                    return(<React.Fragment key={"res-val-"+resultado.muestra?.participante?.dojo?.id+"-"+index}>
                         <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
                         <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                         <Divider/>
-                      </>)
+                      </React.Fragment>)
                   })}
                   <Divider sx={{marginBottom: "5px"}}/>
                   <InputLabel>Muestras: <strong style={{paddingLeft:"5px"}}>{resultado.count}</strong></InputLabel>
@@ -331,7 +340,7 @@ export default function Resultados() {
           }
           {!dojoFilter&&!growFilter&&resultadoProcessed?.map((resultado)=>{
               return(
-                <div key={resultado.muestraId}>
+                <div key={"muestra-res"+resultado.muestraId}>
                   <ListItem className="scroll-flex-fix" sx={{display:"flex", alignItems:"center", overflowX: "auto"}}>
                     
                   <ListItemAvatar sx={{display:"flex", flexDirection:"column", alignItems:"center", margin: 2}}>

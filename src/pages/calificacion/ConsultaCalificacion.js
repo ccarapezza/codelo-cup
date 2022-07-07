@@ -20,8 +20,7 @@ export default function ConsultaCalificacion() {
     const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
     const [camera, setCamera] = useState("environment");
-
-    const [hashMuestra, setHashMuestra] = useState();
+    
     const [verGrafico, setVerGrafico] = useState(false);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);

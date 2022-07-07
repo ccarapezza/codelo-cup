@@ -153,7 +153,7 @@ export default function CreateParticipante() {
                       </Box>
                       <TextField {...register("muestra-name-input"+index, { required: true })} error={errors["muestra-name-input"+index]} label="Nombre" variant="outlined" value={muestras[index]?.name} onChange={(e)=>setNombreMuestra(index, e?.target?.value)}/>
                       <TextField id="muestra-desc-input" label="Banco/Criador" variant="outlined" value={muestras[index]?.description} onChange={(e)=>setDescripcionMuestra(index, e?.target?.value)}/>
-                      <SelectCategoria optionsEnable={true} selectProps={{...register("categoria-input"+index, { required: true })}} error={errors["categoria-input"+index]?true:false} value={muestras[index]?.categoriaId} onChange={(e)=>setCategoriaMuestra(index, e?.target?.value)}/>
+                      <SelectCategoria optionsEnable={false} selectProps={{...register("categoria-input"+index, { required: true })}} error={errors["categoria-input"+index]?true:false} value={muestras[index]?.categoriaId} onChange={(e)=>setCategoriaMuestra(index, e?.target?.value)}/>
                     </Stack>
                   </ListItem>
                   <Divider/>

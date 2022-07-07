@@ -58,42 +58,50 @@ export default function ListCategoria() {
   };
 
   const updateCategoria = (idCategoria) => {
-    axios.put("/api/categoria/update",{
-      id: idCategoria,
-      name: categoriaName,
-      labels: categoriaLabels.toString()
-    })
-    .then(function (response) {
-      if(response.status === 200){
-        context.showMessage("Categoría actualizada","success");
-        listAllCategorias();
-      }
-    })
-    .catch(function (error) {
-      context.showMessage("No se pudo actualizar la Categoría","error");
-      console.log(error);
-    })
-  };
-
-  const createCategoria = () => {
-    axios.post("/api/categoria/create", {
+    if(validationCategoria()){
+      axios.put("/api/categoria/update",{
+        id: idCategoria,
         name: categoriaName,
         labels: categoriaLabels.toString()
-    }).then(function (response) {
-        if (response.status === 200) {
-            context.showMessage("Categoría creada correctamente!", "success");
-            setCategoriaName("");
-            setCategoriaLabels([""])
-            listAllCategorias();
-        } else {
-            context.showMessage("No se ha creado la Categoría. Contacte con el administrador.", "error");
-            console.error(response);
+      })
+      .then(function (response) {
+        if(response.status === 200){
+          context.showMessage("Categoría actualizada","success");
+          listAllCategorias();
         }
-    })
-    .catch(function (error) {
-        context.showMessage("No se ha creado la Categoría. Contacte con el administrador.", "error");
-        console.error(error);
-    })
+      })
+      .catch(function (error) {
+        context.showMessage("No se pudo actualizar la Categoría","error");
+        console.log(error);
+      })
+    }
+  };
+
+  const validationCategoria = () => {
+    return !categoriaLabels.includes('');
+  }
+
+  const createCategoria = () => {
+    if(validationCategoria()){
+      axios.post("/api/categoria/create", {
+          name: categoriaName,
+          labels: categoriaLabels.toString()
+      }).then(function (response) {
+          if (response.status === 200) {
+              context.showMessage("Categoría creada correctamente!", "success");
+              setCategoriaName("");
+              setCategoriaLabels([""])
+              listAllCategorias();
+          } else {
+              context.showMessage("No se ha creado la Categoría. Contacte con el administrador.", "error");
+              console.error(response);
+          }
+      })
+      .catch(function (error) {
+          context.showMessage("No se ha creado la Categoría. Contacte con el administrador.", "error");
+          console.error(error);
+      })
+    }
   };
 
   useEffect(() => {
@@ -120,7 +128,7 @@ export default function ListCategoria() {
                 <Search />
               </IconButton>
             </Paper>
-            <ButtonModal onClick={()=>{setCategoriaName(""); setCategoriaLabels([""])}} faIcon={faPlus} sx={{whiteSpace: "nowrap", ml: 2}} saveDisabled={!categoriaName} operation={()=>{createCategoria()}}>
+            <ButtonModal onClick={()=>{setCategoriaName(""); setCategoriaLabels([""])}} faIcon={faPlus} sx={{whiteSpace: "nowrap", ml: 2}} saveDisabled={!categoriaName||!validationCategoria()} operation={()=>{createCategoria()}}>
                 <Box>
                     <Divider sx={{pb:2}}>Nueva Categoría</Divider>
                     <TextField fullWidth id="dojo-name-input" label="Nombre" variant="outlined" size="small" value={categoriaName} onChange={(e)=>setCategoriaName(e?.target?.value)} />
@@ -133,6 +141,7 @@ export default function ListCategoria() {
                           label="Valor"
                           variant="outlined"
                           size="small"
+                          error={!label}
                           value={label}
                           onChange={(e)=>{
                             setCategoriaLabels(categoriaLabels.map((label, currentIndex)=>currentIndex===index?e.target.value:label));
@@ -163,13 +172,13 @@ export default function ListCategoria() {
                       <Stack>
                         <ListItemText primary={<Typography variant="h5" sx={{mr:1, fontWeight: "bold"}}>{categoria.name}</Typography>} />
                         <Typography variant="subtitle2">Valores:</Typography>
-                        {categoria.labels.map((label)=>
-                          <small style={{marginLeft:"5px"}}>-{label}</small>
+                        {categoria.labels.map((label, index)=>
+                          <small key={label+"-label-"+index+"-"+categoria.id} style={{marginLeft:"5px"}}>-{label}</small>
                         )}
                       </Stack>
                     </Box>
                     <Box sx={{display:"flex", flexDirection:"column"}}>
-                      <ButtonModal onClick={()=>{setCategoriaName(categoria.name); setCategoriaLabels(categoria.labels)}} faIcon={faEdit} textButton="" sx={{m: 1}} saveDisabled={!categoriaName} operation={()=>{updateCategoria(categoria.id)}}>
+                      <ButtonModal onClick={()=>{setCategoriaName(categoria.name); setCategoriaLabels(categoria.labels)}} faIcon={faEdit} textButton="" sx={{m: 1}} saveDisabled={!categoriaName||!validationCategoria()} operation={()=>{updateCategoria(categoria.id)}}>
                         <Box>
                             <Divider sx={{pb:2}}>Editar Categoría</Divider>
                             <TextField fullWidth id="categoria-name-input" label="Nombre" variant="outlined" size="small" value={categoriaName} onChange={(e)=>setCategoriaName(e?.target?.value)} />                         
@@ -182,7 +191,7 @@ export default function ListCategoria() {
                                   label="Valor"
                                   variant="outlined"
                                   size="small"
-                                  error={true}
+                                  error={!label}
                                   value={label}
                                   onChange={(e)=>{
                                     setCategoriaLabels(categoriaLabels.map((label, currentIndex)=>currentIndex===index?e.target.value:label));

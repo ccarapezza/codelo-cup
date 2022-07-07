@@ -6,7 +6,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import Context from '../context/Context';
 import ButtonModal from './ButtonModal';
 
-export default function SelectCategoria({id="select-categoria", label="Categoría", value, onChange, selectProps, error, blankLabel="", sx, optionsEnable=false}) {
+export default function SelectCategoria({id="select-categoria", label="Categoría", value, onChange, selectProps, error, blankLabel="", sx, optionsEnable=false, setLabels}) {
     const context = useContext(Context)
     const [categorias, setCategorias] = useState([]);
     const [categoriaName, setCategoriaName] = useState([]);
@@ -60,7 +60,17 @@ export default function SelectCategoria({id="select-categoria", label="Categorí
                 value={value}
                 label={label}
                 labelId={id+"-label"}
-                onChange={(e)=>onChange(e)}
+                onChange={(e)=>{
+                    onChange(e);
+                    if(setLabels){
+                        const cat = categorias?.find((categoria)=>categoria.id===parseInt(e.target.value));
+                        if(cat){
+                            setLabels(categorias?.find((categoria)=>categoria.id===parseInt(e.target.value))?.labels.split(","))
+                        }else{
+                            setLabels([]);
+                        }
+                    }
+                }}
                 sx={{m: 0}}
             >
                 <MenuItem value="">{blankLabel}</MenuItem>
