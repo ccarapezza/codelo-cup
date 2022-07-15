@@ -3,8 +3,8 @@ import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/render
 
 const styles = StyleSheet.create({
   body: {
-    paddingTop: 30,
-    paddingBottom: 30,
+    paddingTop: 60,
+    paddingBottom: 60,
     paddingHorizontal: 35,
     display: "flex",
     flexDirection: "row",
@@ -15,19 +15,19 @@ const styles = StyleSheet.create({
     textTransform: "uppercase"
   },
   image: {
-    width: "150pt",
-    height: "150pt",
+    width: "100pt",
+    height: "100pt",
   },
   muestra:{
     border: "1pt",
     borderColor: "black",
-    width: "170pt",
-    height: "180pt",
+    width: "113pt",
+    height: "120pt",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 15,
-    marginRight: 5,
+    marginTop: 0,
+    marginRight: 0,
   }
 });
 
