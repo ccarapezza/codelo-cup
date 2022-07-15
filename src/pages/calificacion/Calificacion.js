@@ -12,6 +12,7 @@ import Loading from '../../components/Loading';
 import { useHistory, useParams } from 'react-router';
 import { red } from '@material-ui/core/colors';
 import { Typography } from '@material-ui/core';
+import CategoriaColors from '../../CategoriaColors';
 
 export default function Calificacion() {
     let history = useHistory();
@@ -24,9 +25,11 @@ export default function Calificacion() {
     const [idMuestra, setIdMuestra] = useState();
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [categoria, setCategoria] = useState(null);
 
     const validarMuestra = useCallback((hash) => {
         setIdMuestra(null);
+        setCategoria(null);
         setLoading(true);
         axios.post("/api/participante/validar-muestra", {
             hashMuestra: hash
@@ -35,6 +38,7 @@ export default function Calificacion() {
                 const data = response.data;
                 const calificacion = data?.calificacion;
                 setIdMuestra(data?.muestraN);
+                setCategoria(data?.categoria);
                 setLabels(data?.labels);
                 if(calificacion){
                     setValores(JSON.parse("["+calificacion.valores.toString()+"]"))
@@ -129,6 +133,12 @@ export default function Calificacion() {
                     Calificación 
                     {idMuestra && !error && <Chip sx={{ ml: 1, color: "white" }} size="small" variant="outlined" label={"Muestra #" + idMuestra} />}
                     {calificacionHash && !error && <Chip sx={{ ml: 1 }} color="primary" size="small" variant="outlined" label={""} />}
+                    {categoria && !error && 
+                        <Box key={"mesa"+mesa.id+"categoria"+categoria.id} sx={{width:"fit-content", display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1}}>
+                            <FontAwesomeIcon icon={faTag} style={{paddingLeft: 10, paddingRight: 10}}/>
+                            <Typography sx={{pr:2}}>{categoria.name}</Typography>
+                        </Box>
+                    }
                 </Box>} >
             {loading ?
                 <Loading />
