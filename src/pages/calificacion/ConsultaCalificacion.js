@@ -162,13 +162,11 @@ export default function ConsultaCalificacion() {
                     context.showMessage("Muestra identificada pero aun no posee calificaciones", "warning");
                 }
             } else {
-                debugger
                 context.showMessage("No se ha podido validar la muestra.", "error");
                 console.error(response);
             }
         }).catch(function (error) {
             //setHashMuestra();
-            debugger
             context.showMessage("No se ha podido validar la muestra.", "error");
             console.error(error);
         }).then(function () {

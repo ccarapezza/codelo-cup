@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import Page from "../Page";
@@ -6,8 +5,8 @@ import { Button, Chip, Divider, Grid, IconButton, InputBase, Paper, Stack, TextF
 import { Search } from "@material-ui/icons";
 import { Box } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCannabis, faEdit, faExclamationCircle, faPlus, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
-import { orange, green, red, indigo } from '@mui/material/colors';
+import { faCannabis, faEdit, faExclamationCircle, faPlus, faTag, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
+import { orange, green, red, indigo, yellow } from '@mui/material/colors';
 import { DropBox } from "../../components/DropBox";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -23,13 +22,11 @@ export default function MesasManager() {
   const [mesas, setMesas] = useState([]);
   const [participantes, setParticipantes] = useState([]);
   const [muestras, setMuestras] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [searchFieldMuestra, setSearchFieldMuestra] = useState("");
   const [searchFieldParticipante, setSearchFieldParticipante] = useState("");
   const [mesaName, setMesaName] = useState("");
-
   const matches = useMediaQuery(useTheme().breakpoints.up('sm'));
-
-
   const [mode, setMode] = useState("");
 
   const context = useContext(Context);
@@ -64,6 +61,21 @@ export default function MesasManager() {
     })
   };
 
+  const listAllCategorias = () => {
+    setCategorias([]);
+    axios.get("/api/categoria/list")
+    .then(function (response) {
+      // handle success
+      if(response.status === 200){
+        setCategorias(response.data);
+      }
+    })
+    .catch(function (error) {
+      context.showMessage("No se pudo obtener las categorías","error");
+      console.log(error);
+    })   
+  };
+
   const listAllMesas = () => {
     setLoading(true);
     setMesas([]);
@@ -87,6 +99,23 @@ export default function MesasManager() {
   const deleteParticipanteOfMesa = (idParticipante, idMesa) => {
     axios.post("/api/mesas/remove-participante",{
       idParticipante: idParticipante,
+      idMesa: idMesa,
+    })
+    .then(function (response) {
+      if(response.status === 200){
+        context.showMessage("Mesa actualizada","success");
+        listAllMesas();
+      }
+    })
+    .catch(function (error) {
+      context.showMessage("No se pudo actualizar la mesa","error");
+      console.log(error);
+    })
+  };
+
+  const deleteCategoriaOfMesa = (idCategoria, idMesa) => {
+    axios.post("/api/mesas/remove-categoria",{
+      idCategoria: idCategoria,
       idMesa: idMesa,
     })
     .then(function (response) {
@@ -214,6 +243,7 @@ export default function MesasManager() {
     listAllMesas();
     listAllParticipantes();
     listAllMuestras();
+    listAllCategorias();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -230,6 +260,9 @@ export default function MesasManager() {
             </Button>
             <Button variant="outlined" onClick={()=>{mode==="muestra"?setMode(""):setMode("muestra")}} sx={{mx: 1, backgroundColor: green[500], p:mode==="muestra"?2:1}}>
               <FontAwesomeIcon icon={faCannabis}/><span style={{ marginLeft: 5 }}>Agregar Muestras</span>
+            </Button>
+            <Button variant="outlined" onClick={()=>{mode==="categoria"?setMode(""):setMode("categoria")}} sx={{mx: 1, backgroundColor: yellow[500], p:mode==="categoria"?2:1}}>
+              <FontAwesomeIcon icon={faTag}/><span style={{ marginLeft: 5 }}>Agregar Categoría</span>
             </Button>
             <ButtonModal onClick={()=>setMesaName("")} sx={{mx: 1}} faIcon={faPlus} textButton="Crear Mesa" operation={()=>{createMesa()}}>
               <Box>
@@ -372,6 +405,22 @@ export default function MesasManager() {
               </Grid>
             </>
           }
+          {mode==="categoria"&&
+            <>
+              <Grid container spacing={1} sx={{paddingTop: "0", marginTop: 0, width: "100%", maxHeight: '250px', overflow:'auto'}}>
+                {categorias?.map((categoria)=>{
+                  return(<Grid item xs={6} md={12}>
+                    <DraggableBox key={"categoria-"+categoria.id} data={categoria} onUpdate={()=>listAllMesas()} name={"categoria-"+categoria.id} sx={{width:"fit-content",display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1, m: 0}}>
+                      <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
+                        <FontAwesomeIcon icon={faTag} style={{paddingLeft: 10, paddingRight: 10}}/>
+                        <Typography sx={{pr:2}}>{categoria.name}</Typography>
+                      </Box>
+                    </DraggableBox>
+                  </Grid>)
+                })}
+              </Grid>
+            </>
+          }
           <Grid container>
             {mesas.sort(function(a, b) {
               const nameA = a.name.toUpperCase();
@@ -379,8 +428,19 @@ export default function MesasManager() {
               return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
             }).map((mesa)=>{
               return(<Grid key={"mesa"+mesa.id} item xs={12} sm={3} sx={{padding: 1}}>
-                <DropBox name={"mesa-"+mesa.id} displayName={mesa.name} data={{participantes: mesa.participantes, participantesSecundarios: mesa.participantesSecundarios, muestras: mesa.muestras}} sx={{minHeight: "250pt", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+                <DropBox name={"mesa-"+mesa.id} displayName={mesa.name} data={{participantes: mesa.participantes, participantesSecundarios: mesa.participantesSecundarios, muestras: mesa.muestras, categorias: mesa.categorias}} sx={{minHeight: "250pt", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
                     <Box sx={{pr: 4, pl: 4}}>
+                      {mesa.categorias.map((categoria)=>
+                        <Box key={"mesa"+mesa.id+"categoria"+categoria.id} sx={{width:"fit-content", display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1}}>
+                          <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", whiteSpace: "nowrap", overflow: "hidden"}}>
+                            <FontAwesomeIcon icon={faTag} style={{paddingLeft: 10, paddingRight: 10}}/>
+                            <Typography sx={{pr:2}}>{categoria.name}</Typography>
+                          </Box>
+                          <IconButton sx={{justifySelf:"end"}} onClick={()=>{deleteCategoriaOfMesa(categoria.id, mesa.id)}}>
+                            <FontAwesomeIcon icon={faTrash} style={{fontSize: ".8rem"}}/>
+                          </IconButton>
+                        </Box>
+                      )}
                       {mesa.participantes.map((participante)=>
                         <Box key={"mesa"+mesa.id+"participante"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: orange[500], borderRadius: 1, margin: 1}}>
                           <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", whiteSpace: "nowrap", overflow: "hidden"}}>

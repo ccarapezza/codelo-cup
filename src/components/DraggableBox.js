@@ -60,6 +60,17 @@ export const DraggableBox = function DraggableBox({ name, data, children, sx, on
                         context.showMessage("No se puede agregar la muestra a esta mesa.", "error");
                     }
                 }
+                if(objectType==="categoria"){
+                    for (const categoria of dropResult.data?.categorias) {
+                        forbidden = forbidden || categoria.id===parseInt(objectId);
+                    }
+
+                    if(!forbidden){
+                        addCategoria(objectId, mesaId);
+                    }else{
+                        context.showMessage("No se puede agregar la categoría a esta mesa.", "error");
+                    }
+                }
             }
         },
         collect: (monitor) => ({
@@ -127,6 +138,27 @@ export const DraggableBox = function DraggableBox({ name, data, children, sx, on
         })
         .catch(function (error) {
             context.showMessage("Error al agregar la Muestra.", "error");
+            console.error(error);
+        })
+    }
+
+    const addCategoria = (idCategoria, idMesa) => {
+        axios.post("/api/mesas/add-categoria",{
+            idCategoria: idCategoria,
+            idMesa: idMesa,
+        }).then(function (response) {
+            if(response.status === 200){
+                context.showMessage("Categoría agregada correctamente!.", "success");
+                if(onUpdate){
+                    onUpdate();
+                }
+            }else{
+                context.showMessage("Error al agregar la Categoría.", "error");
+                console.error(response);
+            }
+        })
+        .catch(function (error) {
+            context.showMessage("Error al agregar la Categoría.", "error");
             console.error(error);
         })
     }
