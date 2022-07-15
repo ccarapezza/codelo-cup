@@ -136,7 +136,7 @@ export default function Calificacion() {
                     {categoria && !error && 
                         <Box key={"categoria"+categoria.id} sx={{width:"fit-content", display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1}}>
                             <FontAwesomeIcon icon={faTag} style={{paddingLeft: 10, paddingRight: 10}}/>
-                            <Typography sx={{pr:2}}>{categoria.name}</Typography>
+                            <Typography variant='small' sx={{px:2}}>{categoria.name}</Typography>
                         </Box>
                     }
                 </Box>} >
@@ -145,6 +145,12 @@ export default function Calificacion() {
                 : idMuestra && !error ?
                     <Stack >
                         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "end", my:0, py:0 }}>
+                            {categoria && !error && 
+                                <Box key={"categoria"+categoria.id} sx={{alignSelf:"start", width:"fit-content", display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1}}>
+                                    <FontAwesomeIcon icon={faTag} style={{paddingLeft: 10, paddingRight: 10}}/>
+                                    <Typography variant='small' sx={{px:2}}>{categoria.name}</Typography>
+                                </Box>
+                            }
                             <Typography>Modo:</Typography>
                             <Box sx={{ display: "flex", alignItems: "center", mx: 2, my:0}}>
                                 <FontAwesomeIcon icon={faSlidersH} style={{margin:0, padding: 0}}/>
@@ -157,7 +163,6 @@ export default function Calificacion() {
                             </Box>
                         </Box>
                         <Divider sx={{ mt: 1, mb: 1 }} />
-                        {JSON.stringify(valores)}
 
                         {labels.map((label, index)=>{
                             const inputName = "value-"+index+"-input";
