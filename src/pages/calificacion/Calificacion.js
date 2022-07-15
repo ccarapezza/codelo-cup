@@ -6,7 +6,7 @@ import { Box } from '@mui/system';
 import QrReader from 'react-qr-reader';
 import Context from '../../context/Context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCamera, faSlidersH, faSquareFull, faStar, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCamera, faSlidersH, faSquareFull, faStar, faSyncAlt, faTag } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import Loading from '../../components/Loading';
 import { useHistory, useParams } from 'react-router';
@@ -134,7 +134,7 @@ export default function Calificacion() {
                     {idMuestra && !error && <Chip sx={{ ml: 1, color: "white" }} size="small" variant="outlined" label={"Muestra #" + idMuestra} />}
                     {calificacionHash && !error && <Chip sx={{ ml: 1 }} color="primary" size="small" variant="outlined" label={""} />}
                     {categoria && !error && 
-                        <Box key={"mesa"+mesa.id+"categoria"+categoria.id} sx={{width:"fit-content", display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1}}>
+                        <Box key={"categoria"+categoria.id} sx={{width:"fit-content", display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1}}>
                             <FontAwesomeIcon icon={faTag} style={{paddingLeft: 10, paddingRight: 10}}/>
                             <Typography sx={{pr:2}}>{categoria.name}</Typography>
                         </Box>
