@@ -41,7 +41,7 @@ export default function Calificacion() {
                 setCategoria(data?.categoria);
                 setLabels(data?.labels);
                 if(calificacion){
-                    setValores(JSON.parse("["+calificacion.valores.toString()+"]"))
+                    setValores(JSON.parse("["+calificacion.valores.map(valor=>valor.valor).toString()+"]"))
                     context.showMessage("Muestra identificada! Ya calificó esta muestra pero puede actualizarla.", "warning");
                 }else{
                     setValores(data?.labels.map(()=>5));
