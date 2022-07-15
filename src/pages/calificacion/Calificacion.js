@@ -133,12 +133,6 @@ export default function Calificacion() {
                     Calificación 
                     {idMuestra && !error && <Chip sx={{ ml: 1, color: "white" }} size="small" variant="outlined" label={"Muestra #" + idMuestra} />}
                     {calificacionHash && !error && <Chip sx={{ ml: 1 }} color="primary" size="small" variant="outlined" label={""} />}
-                    {categoria && !error && 
-                        <Box key={"categoria"+categoria.id} sx={{width:"fit-content", display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1}}>
-                            <FontAwesomeIcon icon={faTag} style={{paddingLeft: 10, paddingRight: 10}}/>
-                            <Typography variant='small' sx={{px:2}}>{categoria.name}</Typography>
-                        </Box>
-                    }
                 </Box>} >
             {loading ?
                 <Loading />
@@ -146,9 +140,9 @@ export default function Calificacion() {
                     <Stack >
                         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "end", my:0, py:0 }}>
                             {categoria && !error && 
-                                <Box key={"categoria"+categoria.id} sx={{alignSelf:"start", width:"fit-content", display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1}}>
-                                    <FontAwesomeIcon icon={faTag} style={{paddingLeft: 10, paddingRight: 10}}/>
-                                    <Typography variant='small' sx={{px:2}}>{categoria.name}</Typography>
+                                <Box key={"categoria"+categoria.id} sx={{color:"white", px: 1, alignSelf:"start", width:"fit-content", display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1}}>
+                                    <FontAwesomeIcon icon={faTag} style={{paddingLeft: 10, paddingRight: 10, color:"white"}}/>
+                                    <Typography variant='small' sx={{px:2, color:"white"}}>{categoria.name}</Typography>
                                 </Box>
                             }
                             <Typography>Modo:</Typography>
