@@ -2,7 +2,7 @@
 import { Avatar, Button, Chip, Divider, FormControlLabel, InputLabel, List, ListItem, ListItemAvatar, Paper, Rating, Stack, Switch, Typography, useMediaQuery} from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
-import React, { Fragment, useCallback, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Page from "../Page";
 import { faCannabis, faClock, faEye, faEyeSlash, faGavel, faSortAmountDown, faSortAmountUp, faStoreAlt, faSync, faUser, faUserAlt, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +14,9 @@ import { useTheme } from "@emotion/react";
 
 export default function Resultados() {
   const [loading, setLoading] = useState(false); 
+
+  const [calificaciones, setCalificaciones] = useState([]);
+
   const [resultados, setResultados] = useState([]);
   const [resultadoProcessed, setResultadoProcessed] = useState([]); 
   const [muestraCategoriaFilter, setMuestraCategoriaFilter] = useState("")
@@ -30,45 +33,13 @@ export default function Resultados() {
 
   const [labels, setLabels] = useState([]);
 
-  const loadResultados = useCallback(
-    () => {
-      setLoading(true);
-      axios.get("/api/calificaciones/resultados")
+  useEffect(() => {
+    setLoading(true);
+    axios.get("/api/calificaciones/resultados")
       .then(function (response) {
         // handle success
         if(response.status === 200){
-          const calificaciones = response.data?.calificaciones;
-          setResultados(calificaciones
-            .filter((calificacion)=>{
-              if(juradoFilter){
-                return calificacion.participante.esJurado;
-              }else if(participanteFilter){
-                return !calificacion.participante.esJurado;
-              }else{
-                return true;
-              }
-            })
-            .reduce(function(m, d){
-              if(!m[d.muestraId]){
-                m[d.muestraId] = {
-                  ...d,
-                  count: 1,
-                  calificaciones: []
-                };
-                delete d.muestra;
-                m[d.muestraId].calificaciones.push(d);
-                return m;
-              }
-
-              m[d.muestraId].valores = m[d.muestraId].valores.map((currentValor, index)=>{
-                currentValor.valor += d.valores[index].valor;
-                return currentValor;
-              })
-              m[d.muestraId].count += 1;
-              delete d.muestra;
-              m[d.muestraId].calificaciones.push(d);
-              return m;
-          },{}));
+          setCalificaciones(response.data?.calificaciones);
         }
       })
       .catch(function (error) {
@@ -78,9 +49,63 @@ export default function Resultados() {
       .then(function(){
         setLoading(false);
       })
-    },
-    [juradoFilter, participanteFilter],
-  )
+  }, []);
+
+  const reloadResultados = ()=>{
+    setLoading(true);
+    axios.get("/api/calificaciones/resultados")
+      .then(function (response) {
+        // handle success
+        if(response.status === 200){
+          setCalificaciones(response.data?.calificaciones);
+        }
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      })
+      .then(function(){
+        setLoading(false);
+      })
+  }
+
+  useEffect(() => {
+    setResultados(calificaciones
+      .filter((calificacion)=>{
+        if(juradoFilter){
+          return calificacion.participante.esJurado;
+        }else if(participanteFilter){
+          return !calificacion.participante.esJurado;
+        }else{
+          return true;
+        }
+      })
+      .reduce(function(m, d){
+        if(!m[d.muestraId]){
+          m[d.muestraId] = {
+            muestraId: d.muestraId,
+            muestra: d.muestra,
+            valores: d.valores,
+            count: 1,
+            calificaciones: []
+          };
+          delete d.muestra;
+          m[d.muestraId].calificaciones.push(d);
+          return m;
+        }
+
+        m[d.muestraId].valores = m[d.muestraId].valores.map((currentValor, index)=>{
+          return {
+            ...currentValor,
+            valor: currentValor.valor + d.valores[index].valor
+          };
+        })
+        m[d.muestraId].count += 1;
+        delete d.muestra;
+        m[d.muestraId].calificaciones.push(d);
+        return m;
+    },{}));
+  }, [calificaciones, juradoFilter, participanteFilter])
 
   useEffect(() => {
     const resultadoSortAndFilter = Object.keys(resultados).map((k)=>resultados[k])
@@ -140,9 +165,11 @@ export default function Resultados() {
       setResultadoProcessed(resultadoSortAndFilter);
   }, [dojoFilter, growFilter, muestraCategoriaFilter, orderValue, resultados, sortOrder])
 
+  /*
   useEffect(() => {
     loadResultados();
   }, [loadResultados]);
+  */
 
   const camelize = (str)=> {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
@@ -191,7 +218,7 @@ export default function Resultados() {
               <Typography variant="h10">Ver calificaciones</Typography>
             </Button>
           }
-          <Button variant="outlined" onClick={()=>{loadResultados()}}>
+          <Button variant="outlined" onClick={()=>{reloadResultados()}}>
             <FontAwesomeIcon icon={faSync} style={{marginRight: 15}} />
             <Typography variant="h10">Refrescar</Typography>
           </Button>
@@ -386,20 +413,20 @@ export default function Resultados() {
                       <Divider sx={{marginBottom: "5px"}}/>
                       <InputLabel>Calificaciones: <strong style={{paddingLeft:"5px"}}>{resultado.count}</strong></InputLabel>
                     </Paper>
-                    {showDetails&&resultado.calificaciones?.map((calificacion)=>{
+                    {showDetails&&resultado.calificaciones?.sort((a, b) => a.participante?.n>b.participante?.n).map((calificacion)=>{
                       const updatedAt = new Date(Date.parse(calificacion.updatedAt));
                       return(<Paper sx={{padding:"5px", mr: 1}} elevation={4} key={"calificacion-"+calificacion.id}>
                           <Divider sx={{pb:"5px"}}><Chip sx={{textOverflow: "ellipsis"}} color="secondary" label={`#${calificacion.participante?.n} - ${calificacion.participante?.name}`}/></Divider>
                           {calificacion.valores.map((currentValor, index)=>{
-                            const idInput = "valores-details-"+index+"-input"
+                            const idInput = "valores-details-"+index+"-input";
                             return(<Fragment key={"valores-details-value"+index}>
-                                <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
+                                <InputLabel htmlFor={idInput}><span>{currentValor.label}!: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
                                 <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                                 <Divider/>
                               </Fragment>)
                           })}
-                          <InputLabel htmlFor={"promedio-total-input-"+calificacion.id}><strong>Promedio Total: {resultado.promedioTotal}</strong></InputLabel>
-                          <Rating name={"promedio-total-input-"+calificacion.id} value={resultado.promedioTotal} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
+                          <InputLabel htmlFor={"promedio-total-input-"+calificacion.id}><strong>Promedio Total: {calificacion.valores.reduce((previousValue, currentValue)=>previousValue+currentValue.valor, 0) / calificacion.valores.length}</strong></InputLabel>
+                          <Rating name={"promedio-total-input-"+calificacion.id} value={calificacion.valores.reduce((previousValue, currentValue)=>previousValue+currentValue.valor, 0) / calificacion.valores.length} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                           <Divider sx={{marginBottom: "5px"}}/>
                           <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                             <Chip variant="outlined" label={calificacion.participante.mesa?.name?calificacion.participante.mesa?.name:"SIN MESA"} />
