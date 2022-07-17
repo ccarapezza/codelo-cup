@@ -1,7 +1,7 @@
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Card, CardContent, Chip, Divider, Grid, LinearProgress, Paper, Typography } from '@mui/material'
-import { orange } from '@mui/material/colors';
+import { indigo, orange } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
@@ -21,21 +21,43 @@ export default function SummaryCalificaciones() {
                     return valorAnterior + valorActual;
                 },0);
 
+                const muestrasCountByCategoria = data.muestrasCategoria.reduce(function(reduceValue, currentValue){
+                    if(reduceValue[currentValue.categoria.name]){
+                        reduceValue[currentValue.categoria.name]++
+                    }else{
+                        reduceValue[currentValue.categoria.name] = 1;
+                    }
+                    return reduceValue;
+                },{})
+
                 const mesaDataCalificaciones = data.mesaData.map((mesa)=>{
                     const calificacionesMesaCount = mesa.participantes.reduce(function(calificacionesCount, participante){
                         return calificacionesCount + participante.calificaciones.length;
                     },0);
+
+                    const calificacionesSecMesaCount = mesa.participantesSecundarios.reduce(function(calificacionesCount, participante){
+                        return calificacionesCount + participante.calificaciones.length;
+                    },0);
+
+                    const calificacionesByCategoriaMesaCount = mesa.categorias.map((categoria)=>categoria.name).reduce(function(reduceValue, currentValue){
+                        reduceValue+=muestrasCountByCategoria[currentValue];
+                        return reduceValue;
+                    },0);
+
                     return ({
                         id: mesa.id,
                         name: mesa.name,
-                        calificacionesRealizadas:  calificacionesMesaCount,
-                        calificacionesEsperadas: mesa.participantes.length*mesa.muestras.length,
+                        calificacionesRealizadas:  calificacionesMesaCount+calificacionesSecMesaCount,
+                        calificacionesEsperadas: mesa.participantes.length*(mesa.participantesSecundarios.length?mesa.participantesSecundarios.length:1)*mesa.muestras.length + calificacionesByCategoriaMesaCount*mesa.participantes.length+ calificacionesByCategoriaMesaCount*mesa.participantesSecundarios.length ,
+                        calificacionesEsperadaPorParticipante: mesa.muestras.length + calificacionesByCategoriaMesaCount,
                         participantes: mesa.participantes,
+                        participantesSecundarios: mesa.participantesSecundarios,
                         muestras: mesa.muestras
                     });
                 });
 
                 console.log(mesaDataCalificaciones)
+                console.log(muestrasCountByCategoria)
 
                 const calificacionesCount = data.calificaciones.length;
                 const calificacionesJuradoCount = data.calificacionesJurado.length;
@@ -50,6 +72,7 @@ export default function SummaryCalificaciones() {
                     calificacionesCount,
                     calificacionesJuradoCount,
                     muestrasCount,
+                    muestrasCountByCategoria,
                     participantesCount,
                     juradosCount,
                     ultimaActualizacion: lastUpdated.toLocaleTimeString().substr(0, lastUpdated.toLocaleTimeString().lastIndexOf(":"))
@@ -122,7 +145,20 @@ export default function SummaryCalificaciones() {
                                             <Typography sx={{maxWidth:"150px", whiteSpace: "nowrap", fontSize: ".7rem", overflow: "hidden", textOverflow: "ellipsis", p:"2px"}}>{participante.name}</Typography>
                                         </Box>
                                         <Box sx={{mx: 1, fontWeight: "bold", fontSize: ".8rem"}}>
-                                            <p style={{margin:0}}>{participante.calificaciones.length}/{mesa.muestras.length}</p>
+                                            <p style={{margin:0}}>{participante.calificaciones.length}/{mesa.calificacionesEsperadaPorParticipante}</p>
+                                        </Box>
+                                    </Box>
+                                )}
+
+                                {mesa.participantesSecundarios.map((participante)=>
+                                    <Box key={"mesa"+mesa.id+"participante"+participante.id} sx={{display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: indigo[300], borderRadius: 1, margin: 1, fontSize: ".7rem"}}>
+                                        <Box sx={{display: "flex", alignItems:"center", justifyContent: "start"}}>
+                                            <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
+                                            <Chip size="small" label={"#"+participante.n} sx={{margin: 0, fontSize: ".6rem", fontWeight: "bold", backgroundColor: indigo[200], mx: "4px"}}/>
+                                            <Typography sx={{maxWidth:"150px", whiteSpace: "nowrap", fontSize: ".7rem", overflow: "hidden", textOverflow: "ellipsis", p:"2px"}}>{participante.name}</Typography>
+                                        </Box>
+                                        <Box sx={{mx: 1, fontWeight: "bold", fontSize: ".8rem"}}>
+                                            <p style={{margin:0}}>{participante.calificaciones.length}/{mesa.calificacionesEsperadaPorParticipante}</p>
                                         </Box>
                                     </Box>
                                 )}

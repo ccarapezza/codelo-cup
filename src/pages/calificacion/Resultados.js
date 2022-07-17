@@ -228,10 +228,9 @@ export default function Resultados() {
           {
             growFilter&&(resultadoProcessed.reduce(function(grows, muestraGrow){
               const findedGrow = grows.findIndex(g=>muestraGrow?.muestra?.participante?.grow===g?.muestra?.participante?.grow);
-              if(findedGrow){
+              if(findedGrow<0){
                 let newGrow  = {
                   muestra: muestraGrow.muestra,
-                  valores: muestraGrow.valores,
                   promedioTotal: muestraGrow.promedioTotal,
                   count: 1,
                   muestras: []
@@ -239,10 +238,7 @@ export default function Resultados() {
                 newGrow.muestras.push(muestraGrow);
                 grows.push(newGrow);
               }else{
-                grows[findedGrow].valores = grows[findedGrow].valores.map((currentValor, index)=>{
-                  currentValor.valor += muestraGrow.valores[index].valor
-                  return currentValor;
-                })
+                grows[findedGrow].promedioTotal += muestraGrow.promedioTotal;
                 grows[findedGrow].count += 1;
                 grows[findedGrow].muestras.push(muestraGrow);
               }
@@ -251,18 +247,13 @@ export default function Resultados() {
             .map((calificacion)=>{
               return({
                 ...calificacion,
-                valores: calificacion.valores.map((currentValor)=>{
-                  return({
-                    ...currentValor,
-                    valor: Math.round(currentValor.valor/calificacion.count * 10) / 10
-                  })
-                }),
+                valores: [],
                 promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
               })
             })
             .sort(function(a, b) {
-              const aValue = a.valores.find((valor)=>camelize(valor.label)===orderValue).valor;
-              const bValue = b.valores.find((valor)=>camelize(valor.label)===orderValue).valor;
+              const aValue = a.promedioTotal;
+              const bValue = b.promedioTotal;
 
               if (aValue > bValue) {
                 return sortOrder?1:-1;
@@ -293,6 +284,8 @@ export default function Resultados() {
                           <Divider/>
                         </React.Fragment>)
                     })}
+                  <InputLabel htmlFor={"promedio-total-grow-input-"+resultado.id}><strong>Promedio Total: {resultado.promedioTotal}</strong></InputLabel>
+                    <Rating name={"promedio-total-grow-input-"+resultado.id} value={resultado.promedioTotal} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                   <Divider sx={{marginBottom: "5px"}}/>
                   <InputLabel>Muestras: <strong style={{paddingLeft:"5px"}}>{resultado.count}</strong></InputLabel>
                 </Paper>
@@ -305,7 +298,7 @@ export default function Resultados() {
               if(!dojos[muestraDojo?.muestra?.participante?.dojo?.id]){
                 dojos[muestraDojo?.muestra?.participante?.dojo?.id] = {
                   muestra: muestraDojo.muestra,
-                  valores: muestraDojo.valores,
+                  valores: [],
                   promedioTotal: muestraDojo.promedioTotal,
                   count: 1,
                   muestras: []
@@ -313,10 +306,9 @@ export default function Resultados() {
                 dojos[muestraDojo?.muestra?.participante?.dojo?.id].muestras.push(muestraDojo);
                 return dojos;
               }
-              dojos[muestraDojo?.muestra?.participante?.dojo?.id].valores.map((currentValor, index)=>{
-                currentValor.valor += muestraDojo.valores[index].valor;
-                return currentValor;
-              })
+
+              dojos[muestraDojo?.muestra?.participante?.dojo?.id].promedioTotal += muestraDojo.promedioTotal;
+
               dojos[muestraDojo?.muestra?.participante?.dojo?.id].count += 1;
               dojos[muestraDojo?.muestra?.participante?.dojo?.id].muestras.push(muestraDojo);
               return dojos;
@@ -324,18 +316,13 @@ export default function Resultados() {
             .map((calificacion)=>{
               return({
                 ...calificacion,
-                valores: calificacion.valores.map((currentValor)=>{
-                  return({
-                    ...currentValor,
-                    valor: Math.round(currentValor.valor/calificacion.count * 10) / 10
-                  })
-                }),
+                valores: [],
                 promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
               })
             })
             .sort(function(a, b) {
-              const aValue = a.valores.find((valor)=>camelize(valor.label)===orderValue).valor;
-              const bValue = b.valores.find((valor)=>camelize(valor.label)===orderValue).valor;
+              const aValue = a.promedioTotal;
+              const bValue = b.promedioTotal;
 
               if (aValue > bValue) {
                 return sortOrder?1:-1;
@@ -346,6 +333,7 @@ export default function Resultados() {
               return 0;
             })
             .map((resultado)=>{
+              console.log("res", resultado);
               return(<div key={"res-"+resultado.muestra?.participante?.dojo?.id}>
                 <Paper sx={{padding:"5px", margin: 2}} elevation={4}>
                   <Divider sx={{pb:"5px"}}><Chip component="div" icon={<FontAwesomeIcon icon={faVihara} style={{color: "white"}}/>} label={resultado?.muestra?.participante?.dojo?.name} sx={{backgroundColor: deepPurple[400], color: "white", fontWeight: "bold", fontSize:"1.2rem"}}/></Divider>
@@ -359,6 +347,8 @@ export default function Resultados() {
                         <Divider/>
                       </React.Fragment>)
                   })}
+                  <InputLabel htmlFor={"promedio-total-dojo-input-"+resultado.id}><strong>Promedio Total: {resultado.promedioTotal}</strong></InputLabel>
+                    <Rating name={"promedio-total-dojo-input-"+resultado.id} value={resultado.promedioTotal} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                   <Divider sx={{marginBottom: "5px"}}/>
                   <InputLabel>Muestras: <strong style={{paddingLeft:"5px"}}>{resultado.count}</strong></InputLabel>
                 </Paper>
