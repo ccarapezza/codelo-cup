@@ -138,22 +138,24 @@ export default function Calificacion() {
                 <Loading />
                 : idMuestra && !error ?
                     <Stack >
-                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "end", my:0, py:0 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", my:0, py:0 }}>
                             {categoria && !error && 
-                                <Box key={"categoria"+categoria.id} sx={{color:"white", px: 1, alignSelf:"start", width:"fit-content", display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1}}>
-                                    <FontAwesomeIcon icon={faTag} style={{paddingLeft: 10, paddingRight: 10, color:"white"}}/>
+                                <Box key={"categoria"+categoria.id} sx={{color:"white", px: 1, width:"fit-content", display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1}}>
+                                    <FontAwesomeIcon icon={faTag} style={{paddingRight: 10, color:"white"}}/>
                                     <Typography variant='small' sx={{px:2, color:"white"}}>{categoria.name}</Typography>
                                 </Box>
                             }
-                            <Typography>Modo:</Typography>
-                            <Box sx={{ display: "flex", alignItems: "center", mx: 2, my:0}}>
-                                <FontAwesomeIcon icon={faSlidersH} style={{margin:0, padding: 0}}/>
-                                <FormControlLabel
-                                    sx={{flexGrow: 1, whiteSpace:"nowrap", mx:0, px:0, textAlign: "center", display: "inline", alignSelf: "center"}}
-                                    control={<Switch size="small" color="default" checked={starView} onChange={(e)=>{setStarView(e.target?.checked)}} sx={{color:red[500], mx:0}} />}
-                                    label={""}
-                                />
-                                <FontAwesomeIcon icon={faStar} style={{margin:0, padding: 0}}/>
+                            <Box sx={{width:"fit-content", display: "flex", alignItems:"center"}}>
+                                <Typography>Modo:</Typography>
+                                <Box sx={{ display: "flex", alignItems: "center", mx: 2, my:0}}>
+                                    <FontAwesomeIcon icon={faSlidersH} style={{margin:0, padding: 0}}/>
+                                    <FormControlLabel
+                                        sx={{flexGrow: 1, whiteSpace:"nowrap", mx:0, px:0, textAlign: "center", display: "inline", alignSelf: "center"}}
+                                        control={<Switch size="small" color="default" checked={starView} onChange={(e)=>{setStarView(e.target?.checked)}} sx={{color:red[500], mx:0}} />}
+                                        label={""}
+                                    />
+                                    <FontAwesomeIcon icon={faStar} style={{margin:0, padding: 0}}/>
+                                </Box>
                             </Box>
                         </Box>
                         <Divider sx={{ mt: 1, mb: 1 }} />
