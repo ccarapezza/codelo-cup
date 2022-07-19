@@ -89,7 +89,6 @@ export default function Resultados() {
             count: 1,
             calificaciones: []
           };
-          delete d.muestra;
           m[d.muestraId].calificaciones.push(d);
           return m;
         }
@@ -101,7 +100,6 @@ export default function Resultados() {
           };
         })
         m[d.muestraId].count += 1;
-        delete d.muestra;
         m[d.muestraId].calificaciones.push(d);
         return m;
     },{}));
