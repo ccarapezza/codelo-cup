@@ -6,8 +6,8 @@ import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from "@emotion/react";
 import { blueGrey, deepOrange } from "@mui/material/colors";
 
-//axios.defaults.baseURL = process.env.NODE_ENV === "production"?"https://codelo-cup-api.herokuapp.com/":"http://localhost:8080/";
-axios.defaults.baseURL = "https://codelo-cup-api.herokuapp.com/";
+axios.defaults.baseURL = process.env.BACKEND_URL;
+//axios.defaults.baseURL = "https://codelo-cup-api.herokuapp.com/";
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
 // Add a response interceptor
