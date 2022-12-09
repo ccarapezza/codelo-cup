@@ -127,12 +127,12 @@ export default function CreateParticipante() {
     <Page title="Nuevo Participante" footer={false}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack width="100%" spacing={2}>
-          <TextField {...register("name-input", { required: true })} error={errors["name-input"]} fullWidth id="name-input" label="Nombre" variant="outlined" value={nombre} onChange={(e)=>setNombre(e?.target?.value)} />
-          <TextField type="number" {...register("dni-input", { required: true })} error={errors["dni-input"]} fullWidth id="dni-input" label="DNI" variant="outlined" value={dni} onChange={(e)=>setDni(e?.target?.value)} />
+          <TextField {...register("name-input", { required: true })} error={errors["name-input"]?true:false} fullWidth id="name-input" label="Nombre" variant="outlined" value={nombre} onChange={(e)=>setNombre(e?.target?.value)} />
+          <TextField type="number" {...register("dni-input", { required: true })} error={errors["dni-input"]?true:false} fullWidth id="dni-input" label="DNI" variant="outlined" value={dni} onChange={(e)=>setDni(e?.target?.value)} />
           <Box sx={{display:"flex", flexDirection: "row" }}>
             <FormControlLabel control={<Switch checked={esGrow} onChange={(e)=>setEsGrow(e.target.checked)} />} label="Es Grow?" sx={{whiteSpace:"nowrap"}}/>
             {esGrow&&
-              <TextField {...register("grow-name-input", { required: true })} error={errors["grow-name-input"]} fullWidth id="grow-name-input" label="Nombre" variant="outlined" value={grow} onChange={(e)=>setGrow(e?.target?.value)} />
+              <TextField {...register("grow-name-input", { required: true })} error={errors["grow-name-input"]?true:false} fullWidth id="grow-name-input" label="Nombre" variant="outlined" value={grow} onChange={(e)=>setGrow(e?.target?.value)} />
             }
           </Box>
           <SelectDojo value={dojo} onChange={(e)=>setDojo(e?.target?.value)}/>
@@ -151,7 +151,7 @@ export default function CreateParticipante() {
                           <Delete fontSize="small"/>
                         </IconButton>
                       </Box>
-                      <TextField {...register("muestra-name-input"+index, { required: true })} error={errors["muestra-name-input"+index]} label="Nombre" variant="outlined" value={muestras[index]?.name} onChange={(e)=>setNombreMuestra(index, e?.target?.value)}/>
+                      <TextField {...register("muestra-name-input"+index, { required: true })} error={errors["muestra-name-input"+index]?true:false} label="Nombre" variant="outlined" value={muestras[index]?.name} onChange={(e)=>setNombreMuestra(index, e?.target?.value)}/>
                       <TextField id="muestra-desc-input" label="Banco/Criador" variant="outlined" value={muestras[index]?.description} onChange={(e)=>setDescripcionMuestra(index, e?.target?.value)}/>
                       <SelectCategoria optionsEnable={false} selectProps={{...register("categoria-input"+index, { required: true })}} error={errors["categoria-input"+index]?true:false} value={muestras[index]?.categoriaId} onChange={(e)=>setCategoriaMuestra(index, e?.target?.value)}/>
                     </Stack>

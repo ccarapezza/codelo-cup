@@ -48,10 +48,12 @@ export default function Calificacion() {
                     context.showMessage("Muestra identificada!", "success");
                 }
             } else {
+                alert(JSON.stringify(response))
                 context.showMessage("No se ha podido validar la muestra.", "error");
                 console.error(response);
             }
         }).catch(function (error) {
+            alert("!"+JSON.stringify(error))
             setHashMuestra();
             context.showMessage("No se ha podido validar la muestra.", "error");
             console.error(error);

@@ -5,8 +5,11 @@ import Routes from "./Routes";
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from "@emotion/react";
 import { blueGrey, deepOrange } from "@mui/material/colors";
+import { useEffect } from "react";
 
-axios.defaults.baseURL = "https://codelo-cup-api-production.up.railway.app/";
+//axios.defaults.baseURL = "https://codelo-cup-api-production.up.railway.app/";
+//axios.defaults.baseURL = "https://localhost:8443/";
+axios.defaults.baseURL = "https://192.168.0.60:8443/";
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
 // Add a response interceptor
@@ -19,7 +22,7 @@ axios.interceptors.response.use(function (response) {
   // Do something with response error
   console.log("status", error.response.status);
   if(error.response.status===403){
-    if(!window.location.href.endsWith(".herokuapp.com/")){
+    if(!window.location.href.endsWith(".railway.app/")){
       localStorage.clear();
       window.location.href = "/";
     }
@@ -49,6 +52,25 @@ const theme = createTheme({
 })
 
 export default function App() {
+
+  useEffect(() => {
+    if(!window.location.href.includes("server-down")){
+      axios.get("/api/is-alive")
+      .then(function (response) {
+        // handle success
+        if(response.status === 200){
+          console.log("Is alive!");
+        }else{
+          window.location.href = "/server-down";
+        }
+      })
+      .catch(function (error) {
+        // handle error
+        window.location.href = "/server-down";
+        console.log(error);
+      })
+    }
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>

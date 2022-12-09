@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { faCannabis, faChair, faClock, faDatabase, faGavel, faListAlt, faPollH, faQrcode, faSearch, faServer, faSignOutAlt, faSquare, faTags, faUser, faUserPlus, faVihara } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faChair, faClock, faCogs, faDatabase, faGavel, faKey, faListAlt, faPollH, faQrcode, faSearch, faServer, faSignOutAlt, faSquare, faTags, faUser, faUserPlus, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Chip, Divider, Grid, InputLabel, Paper, Rating, Stack } from "@mui/material";
 import { useHistory } from "react-router";
@@ -44,95 +44,141 @@ export default function Home() {
       <Stack spacing={2}>
         {context.isLogged?
           <>
-            <Divider>
-              <Chip label="Menú Administrador" color="primary"/>
-            </Divider>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/participante/create")}}>
-              <span className="fa-layers fa-fw fa-6x">
-                <FontAwesomeIcon icon={faUserPlus} transform="shrink-6 left-1"/>
-              </span>
-              <span>Nuevo Participante</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/participante/list")}}>
-              <span className="fa-layers fa-fw fa-6x">
-                <FontAwesomeIcon icon={faListAlt} transform="shrink-6 left-1"/>
-              </span>
-              <span>Listado Participantes</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/participante/create-jurado")}}>
-              <span className="fa-layers fa-fw fa-6x">
-                <FontAwesomeIcon icon={faGavel} transform="shrink-6 left-1"/>
-              </span>
-              <span>Nuevo Jurado</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/participante/jurado-list")}}>
-              <span className="fa-layers fa-fw fa-6x">
-                <FontAwesomeIcon icon={faListAlt} transform="shrink-6 left-1"/>
-              </span>
-              <span>Listado Jurados</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/dojo/list")}}>
-              <span className="fa-layers fa-fw fa-6x">
-                <FontAwesomeIcon icon={faVihara} transform="shrink-6 left-1"/>
-              </span>
-              <span>Listado Dojos</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/categoria/list")}}>
-              <span className="fa-layers fa-fw fa-6x">
-                <FontAwesomeIcon icon={faTags} transform="shrink-6 left-1"/>
-              </span>
-              <span>Listado Categorias</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/participante/qr-list")}}>
-              <span className="fa-layers fa-fw fa-6x">
-                <FontAwesomeIcon icon={faQrcode} transform="shrink-6 left-1"/>
-                <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4"/>
-                <FontAwesomeIcon icon={faUser} inverse transform="shrink-12 down-4 right-4"/>
-              </span>
-              <span>QRs Participantes</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/muestra/qr-list")}}>
-              <span className="fa-layers fa-fw fa-6x">
-                <FontAwesomeIcon icon={faQrcode} transform="shrink-6 left-1"/>
-                <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4"/>
-                <FontAwesomeIcon icon={faCannabis} inverse transform="shrink-12 down-4 right-4"/>
-              </span>
-              <span>QRs Muestras</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/calificaciones/resultados")}}>
-              <span className="fa-layers fa-fw fa-6x">
-                <FontAwesomeIcon icon={faPollH} transform="shrink-6 left-1"/>
-              </span>
-              <span>Resultados</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/calificaciones/muestra")}}>
-                <span className="fa-layers fa-fw fa-6x">
-                  <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-3"/>
-                  <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4 left-2"/>
-                  <FontAwesomeIcon icon={faSearch} inverse transform="shrink-12 down-4 right-4 left-2"/>
-                </span>
-              <span>Consultar Muestras</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/mesas-manager")}}>
-              <span className="fa-layers fa-fw fa-6x">
-                <FontAwesomeIcon icon={faChair} transform="shrink-6 left-1"/>
-              </span>
-              <span>Mesas</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/summary")}}>
-              <span className="fa-layers fa-fw fa-6x">
-                <FontAwesomeIcon icon={faDatabase} transform="shrink-6 left-1"/>
-              </span>
-              <span>Summary</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/summary-calificaciones")}}>
-              <span className="fa-layers fa-fw fa-6x">
-                <FontAwesomeIcon icon={faServer} transform="shrink-6 left-1"/>
-              </span>
-              <span>Summary Calificaciones</span>
-            </Button>
-            <Button variant="outlined" fullWidth onClick={(e)=>{context.logout()}}>
-              <span className="fa-layers fa-fw fa-6x">
+            <Grid container>
+              <Grid item xs={12}>
+                <Paper sx={{m:1, p:1, mt: 2}}>
+                  <Stack spacing={1}>
+                    <Divider sx={{mb:2}}>
+                      <Chip label="Carga de Datos" color="primary"/>
+                    </Divider>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/participante/list")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faListAlt} transform="shrink-6 left-1"/>
+                      </span>
+                      <span>Participantes</span>
+                    </Button>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/muestra/list")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-1"/>
+                      </span>
+                      <span>Muestras</span>
+                    </Button>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/participante/jurado-list")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faListAlt} transform="shrink-6 left-1"/>
+                      </span>
+                      <span>Jurados</span>
+                    </Button>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/dojo/list")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faVihara} transform="shrink-6 left-1"/>
+                      </span>
+                      <span>Dojos</span>
+                    </Button>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/categoria/list")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faTags} transform="shrink-6 left-1"/>
+                      </span>
+                      <span>Categorias</span>
+                    </Button>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/mesas-manager")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faChair} transform="shrink-6 left-1"/>
+                      </span>
+                      <span>Mesas</span>
+                    </Button>
+                  </Stack>
+                </Paper>
+                <Paper sx={{m:1, p:1, mt: 2}}>
+                  <Stack spacing={1}>
+                    <Divider sx={{mb:2}}>
+                      <Chip label="Avanzando" color="primary"/>
+                    </Divider>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/change-admin-pass")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faKey} transform="shrink-6 left-1"/>
+                      </span>
+                      <span>Cambio de contraseña</span>
+                    </Button>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/config")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faCogs} transform="shrink-6 left-1"/>
+                      </span>
+                      <span>Configuración Copa</span>
+                    </Button>
+                  </Stack>
+                </Paper>
+                <Paper sx={{m:1, p:1, mt: 2}}>
+                  <Stack spacing={1}>
+                    <Divider sx={{mb:2}}>
+                      <Chip label="Generacion QRs" color="primary"/>
+                    </Divider>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/participante/qr-list")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faQrcode} transform="shrink-6 left-1"/>
+                        <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4"/>
+                        <FontAwesomeIcon icon={faUser} inverse transform="shrink-12 down-4 right-4"/>
+                      </span>
+                      <span>QRs Participantes</span>
+                    </Button>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/muestra/qr-list")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faQrcode} transform="shrink-6 left-1"/>
+                        <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4"/>
+                        <FontAwesomeIcon icon={faCannabis} inverse transform="shrink-12 down-4 right-4"/>
+                      </span>
+                      <span>QRs Muestras</span>
+                    </Button>
+                  </Stack>
+                </Paper>
+              </Grid>
+              <Grid item xs={12}>
+                <Paper sx={{m:1, p:1, mt: 2}}>
+                  <Stack spacing={1}>
+                    <Divider sx={{mb:2}}>
+                      <Chip label="Resumen" color="primary"/>
+                    </Divider>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/calificaciones/resultados")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faPollH} transform="shrink-6 left-1"/>
+                      </span>
+                      <span>Resultados</span>
+                    </Button>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/calificaciones/muestra")}}>
+                        <span className="fa-layers fa-fw fa-2x">
+                          <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-3"/>
+                          <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4 left-2"/>
+                          <FontAwesomeIcon icon={faSearch} inverse transform="shrink-12 down-4 right-4 left-2"/>
+                        </span>
+                      <span>Consultar Muestras</span>
+                    </Button>
+                  </Stack>
+                </Paper>
+                <Paper sx={{m:1, p:1, mt: 2}}>
+                  <Stack spacing={1}>
+                    <Divider sx={{mb: 2}}>
+                      <Chip label="Resumen On LIVE" color="primary"/>
+                    </Divider>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/summary")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faDatabase} transform="shrink-6 left-1"/>
+                      </span>
+                      <span>Summary</span>
+                    </Button>
+                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/summary-calificaciones")}}>
+                      <span className="fa-layers fa-fw fa-2x">
+                        <FontAwesomeIcon icon={faServer} transform="shrink-6 left-1"/>
+                      </span>
+                      <span>Summary Calificaciones</span>
+                    </Button>
+                  </Stack>
+                </Paper>
+              </Grid>
+            </Grid>
+            
+            
+            <Button variant="contained" fullWidth onClick={(e)=>{context.logout()}}>
+              <span className="fa-layers fa-fw fa-2x">
                 <FontAwesomeIcon icon={faSignOutAlt} transform="shrink-6 left-1"/>
               </span>
               <span>Cerrar Sesión</span>
@@ -141,7 +187,7 @@ export default function Home() {
           :context.isParticipanteLogged?
             <>
               <Button variant="outlined" sx={{alignItems: "center", flexDirection: "column"}} onClick={(e)=>{history.push("/calificacion")}} >
-                <span className="fa-layers fa-fw fa-6x">
+                <span className="fa-layers fa-fw fa-2x">
                   <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-1"/>
                   <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4"/>
                   <FontAwesomeIcon icon={faQrcode} inverse transform="shrink-12 down-4 right-4"/>
@@ -150,7 +196,7 @@ export default function Home() {
               </Button>
               {context.isJuradoLogged&&
                 <Button variant="outlined" sx={{alignItems: "center", flexDirection: "column"}} onClick={(e)=>{history.push("/calificaciones/muestra")}}>
-                  <span className="fa-layers fa-fw fa-6x">
+                  <span className="fa-layers fa-fw fa-2x">
                     <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-1"/>
                     <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4"/>
                     <FontAwesomeIcon icon={faSearch} inverse transform="shrink-12 down-4 right-4"/>
@@ -195,7 +241,7 @@ export default function Home() {
               <img src={copaLogo} alt="CodeloCup" style={{width:"100%", maxWidth:"500px"}}/>
             </Box>
             <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/login")}}>
-              <span className="fa-layers fa-fw fa-6x">
+              <span className="fa-layers fa-fw fa-2x">
                 <FontAwesomeIcon icon={faUser} transform="shrink-6 left-1"/>
                 <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4"/>
                 <FontAwesomeIcon icon={faQrcode} inverse transform="shrink-12 down-4 right-4"/>

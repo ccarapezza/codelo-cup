@@ -20,7 +20,12 @@ export default function Login() {
   const handleScan = (data) => {
     if (data) {
       setHash(data)
-      context.participanteLogin(data)
+      context.participanteLogin(data).then(function (response) {
+        console.log("Ok!");
+      }).catch(function (error) {
+        context.showMessage("No se ha encontrado el Participante. Contacte con el administrador.", "error");
+        console.error(error);
+      })
     }
   };
 

@@ -9,7 +9,7 @@ import { useContext, useState } from "react";
 import { useHistory } from "react-router";
 import Context from "../context/Context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCannabis, faChair, faGavel, faHome, faKey, faListAlt, faPollH, faQrcode, faSearch, faSignOutAlt, faSquare, faSyncAlt, faTags, faUser, faUserPlus, faVihara } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faChair, faCogs, faGavel, faHome, faKey, faListAlt, faPollH, faQrcode, faSearch, faSignOutAlt, faSquare, faSyncAlt, faTags, faUser, faUserPlus, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { deepOrange, indigo, yellow } from "@mui/material/colors";
 import Loading from "../components/Loading";
 
@@ -59,9 +59,9 @@ export default function Page({ title, children, footer = true, style, loading = 
           }}
         >
           <List>
-            <ListItem button key={"home"} onClick={(e)=>history.push("/")}>
+            <ListItem sx={{py:0}} button key={"home"} onClick={(e)=>history.push("/")}>
               <ListItemIcon>
-                <span className="fa-layers fa-fw fa-3x">
+                <span className="fa-layers fa-fw fa-2x">
                   <FontAwesomeIcon icon={faHome} transform="shrink-6 left-2"/>
                 </span>
               </ListItemIcon>
@@ -69,9 +69,9 @@ export default function Page({ title, children, footer = true, style, loading = 
             </ListItem>
             {context.isParticipanteLogged?
               <>
-                <ListItem button key={"refresh-participante"} onClick={(e)=>history.push("/login")}>
+                <ListItem sx={{py:0}} button key={"refresh-participante"} onClick={(e)=>history.push("/login")}>
                   <ListItemIcon>
-                    <span className="fa-layers fa-fw fa-3x">
+                    <span className="fa-layers fa-fw fa-2x">
                       <FontAwesomeIcon icon={faUser} transform="shrink-6 left-2"/>
                       <FontAwesomeIcon icon={faSquare} transform="shrink-10 down-4 right-4 left-2"/>
                       <FontAwesomeIcon icon={faSyncAlt} inverse transform="shrink-12 down-4 right-4 left-2"/>
@@ -79,9 +79,9 @@ export default function Page({ title, children, footer = true, style, loading = 
                   </ListItemIcon>
                   <ListItemText primary={"Cambiar Participante"} />
                 </ListItem>
-                <ListItem button key={"calificar-muestra"} onClick={(e)=>history.push("/calificacion")}>
+                <ListItem sx={{py:0}} button key={"calificar-muestra"} onClick={(e)=>history.push("/calificacion")}>
                   <ListItemIcon>
-                    <span className="fa-layers fa-fw fa-3x">
+                    <span className="fa-layers fa-fw fa-2x">
                       <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-3"/>
                       <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4 left-2"/>
                       <FontAwesomeIcon icon={faQrcode} inverse transform="shrink-12 down-4 right-4 left-2"/>
@@ -90,9 +90,9 @@ export default function Page({ title, children, footer = true, style, loading = 
                   <ListItemText primary={"Calificar Muestra"} />
                 </ListItem>
                 {context.isJuradoLogged&&
-                  <ListItem button key={"consultar-muestra"} onClick={(e)=>history.push("/calificaciones/muestra")}>
+                  <ListItem sx={{py:0}} button key={"consultar-muestra"} onClick={(e)=>history.push("/calificaciones/muestra")}>
                     <ListItemIcon>
-                      <span className="fa-layers fa-fw fa-3x">
+                      <span className="fa-layers fa-fw fa-2x">
                         <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-3"/>
                         <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4 left-2"/>
                         <FontAwesomeIcon icon={faSearch} inverse transform="shrink-12 down-4 right-4 left-2"/>
@@ -101,9 +101,9 @@ export default function Page({ title, children, footer = true, style, loading = 
                     <ListItemText primary={"Consultar Muestra"} />
                   </ListItem>
                 }
-                <ListItem button key={"logout"} onClick={(e)=>context.logout()}>
+                <ListItem sx={{py:0}} button key={"logout"} onClick={(e)=>context.logout()}>
                   <ListItemIcon>
-                    <span className="fa-layers fa-fw fa-3x">
+                    <span className="fa-layers fa-fw fa-2x">
                       <FontAwesomeIcon icon={faSignOutAlt} transform="shrink-6 left-2"/>
                     </span>
                   </ListItemIcon>
@@ -111,9 +111,9 @@ export default function Page({ title, children, footer = true, style, loading = 
                 </ListItem>
               </>
               :!context.isLogged&&
-              <ListItem button key={"participante-login"} onClick={(e)=>history.push("/login")}>
+              <ListItem sx={{py:0}} button key={"participante-login"} onClick={(e)=>history.push("/login")}>
                 <ListItemIcon>
-                <span className="fa-layers fa-fw fa-3x">
+                <span className="fa-layers fa-fw fa-2x">
                   <FontAwesomeIcon icon={faUser} transform="shrink-6 left-3"/>
                   <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4 left-2"/>
                   <FontAwesomeIcon icon={faQrcode} inverse transform="shrink-12 down-4 right-4 left-2"/>
@@ -126,59 +126,81 @@ export default function Page({ title, children, footer = true, style, loading = 
           {context.isLogged&&
             <List>
               <Divider key={"admin-menu-title"}>
-                <Chip label="Menú Administrador" color="primary"/>
+                <Chip label="Carga Datos" color="primary"/>
               </Divider>
-              <ListItem button key={"create-player"} onClick={(e)=>{history.push("/participante/create")}}>
+              <ListItem sx={{py:0}} button key={"participante-list"} onClick={(e)=>{history.push("/participante/list")}}>
                 <ListItemIcon>
-                  <span className="fa-layers fa-fw fa-3x">
-                    <FontAwesomeIcon icon={faUserPlus} transform="shrink-6 left-1"/>
-                  </span>
-                </ListItemIcon>
-                <ListItemText primary={"Nuevo Participante"} />
-              </ListItem>
-              <ListItem button key={"participante-list"} onClick={(e)=>{history.push("/participante/list")}}>
-                <ListItemIcon>
-                  <span className="fa-layers fa-fw fa-3x">
+                  <span className="fa-layers fa-fw fa-2x">
                     <FontAwesomeIcon icon={faListAlt} transform="shrink-6 left-1"/>
                   </span>
                 </ListItemIcon>
-                <ListItemText primary={"Listado Participantes"} />
+                <ListItemText primary={"Participantes"} />
               </ListItem>
-              <ListItem button key={"create-jurado"} onClick={(e)=>{history.push("/participante/create-jurado")}}>
+              <ListItem sx={{py:0}} button key={"muestras"} onClick={(e)=>{history.push("/muestra/list")}}>
                 <ListItemIcon>
-                  <span className="fa-layers fa-fw fa-3x">
-                    <FontAwesomeIcon icon={faGavel} transform="shrink-6 left-1"/>
+                  <span className="fa-layers fa-fw fa-2x">
+                    <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-1"/>
                   </span>
                 </ListItemIcon>
-                <ListItemText primary={"Nuevo Jurado"} />
+                <ListItemText primary={"Muestras"} />
               </ListItem>
-              <ListItem button key={"jurado-list"} onClick={(e)=>{history.push("/participante/jurado-list")}}>
+              <ListItem sx={{py:0}} button key={"jurado-list"} onClick={(e)=>{history.push("/participante/jurado-list")}}>
                 <ListItemIcon>
-                  <span className="fa-layers fa-fw fa-3x">
+                  <span className="fa-layers fa-fw fa-2x">
                     <FontAwesomeIcon icon={faListAlt} transform="shrink-6 left-1"/>
                   </span>
                 </ListItemIcon>
-                <ListItemText primary={"Listado Jurados"} />
+                <ListItemText primary={"Jurados"} />
               </ListItem>
-              <ListItem button key={"dojo-list"} onClick={(e)=>{history.push("/dojo/list")}}>
+              <ListItem sx={{py:0}} button key={"dojo-list"} onClick={(e)=>{history.push("/dojo/list")}}>
                 <ListItemIcon>
-                  <span className="fa-layers fa-fw fa-3x">
+                  <span className="fa-layers fa-fw fa-2x">
                     <FontAwesomeIcon icon={faVihara} transform="shrink-6 left-1"/>
                   </span>
                 </ListItemIcon>
-                <ListItemText primary={"Listado Dojos"} />
+                <ListItemText primary={"Dojos"} />
               </ListItem>
-              <ListItem button key={"categoria-list"} onClick={(e)=>{history.push("/categoria/list")}}>
+              <ListItem sx={{py:0}} button key={"categoria-list"} onClick={(e)=>{history.push("/categoria/list")}}>
                 <ListItemIcon>
-                  <span className="fa-layers fa-fw fa-3x">
+                  <span className="fa-layers fa-fw fa-2x">
                     <FontAwesomeIcon icon={faTags} transform="shrink-6 left-1"/>
                   </span>
                 </ListItemIcon>
-                <ListItemText primary={"Listado Categorias"} />
+                <ListItemText primary={"Categorias"} />
               </ListItem>
-              <ListItem button key={"participante-qr-list"} onClick={(e)=>{history.push("/participante/qr-list")}}>
+              <ListItem sx={{py:0}} button key={"mesas-manager"} onClick={(e)=>{history.push("/mesas-manager")}}>
                 <ListItemIcon>
-                  <span className="fa-layers fa-fw fa-3x">
+                  <span className="fa-layers fa-fw fa-2x">
+                    <FontAwesomeIcon icon={faChair} transform="shrink-6 left-1"/>
+                  </span>
+                </ListItemIcon>
+                <ListItemText primary={"Mesas"} />
+              </ListItem>
+              <Divider sx={{mb:2}}>
+                <Chip label="Avanzando" color="primary"/>
+              </Divider>
+              <ListItem sx={{py:0}} button key={"participante-qr-list"} onClick={(e)=>{history.push("/change-admin-pass")}}>
+                <ListItemIcon>
+                  <span className="fa-layers fa-fw fa-2x">
+                    <FontAwesomeIcon icon={faKey} transform="shrink-6 left-1"/>
+                  </span>
+                </ListItemIcon>
+                <ListItemText primary={"Cambio contraseña"} />
+              </ListItem>
+              <ListItem sx={{py:0}} button key={"config"} onClick={(e)=>{history.push("/config")}}>
+                <ListItemIcon>
+                  <span className="fa-layers fa-fw fa-2x">
+                    <FontAwesomeIcon icon={faCogs} transform="shrink-6 left-1"/>
+                  </span>
+                </ListItemIcon>
+                <ListItemText primary={"Configuración Copa"} />
+              </ListItem>
+              <Divider sx={{mt: 3}} key={"qr-menu-title"}>
+                <Chip label="Generación QRs" color="primary"/>
+              </Divider>
+              <ListItem sx={{py:0}} button key={"participante-qr-list"} onClick={(e)=>{history.push("/participante/qr-list")}}>
+                <ListItemIcon>
+                  <span className="fa-layers fa-fw fa-2x">
                     <FontAwesomeIcon icon={faQrcode} transform="shrink-6 left-1"/>
                     <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4"/>
                     <FontAwesomeIcon icon={faUser} inverse transform="shrink-12 down-4 right-4"/>
@@ -186,9 +208,9 @@ export default function Page({ title, children, footer = true, style, loading = 
                 </ListItemIcon>
                 <ListItemText primary={"QRs Participantes"} />
               </ListItem>
-              <ListItem button key={"muestra-qr-list"} onClick={(e)=>{history.push("/muestra/qr-list")}}>
+              <ListItem sx={{py:0}} button key={"muestra-qr-list"} onClick={(e)=>{history.push("/muestra/qr-list")}}>
                 <ListItemIcon>
-                  <span className="fa-layers fa-fw fa-3x">
+                  <span className="fa-layers fa-fw fa-2x">
                     <FontAwesomeIcon icon={faQrcode} transform="shrink-6 left-1"/>
                     <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4"/>
                     <FontAwesomeIcon icon={faCannabis} inverse transform="shrink-12 down-4 right-4"/>
@@ -196,17 +218,20 @@ export default function Page({ title, children, footer = true, style, loading = 
                 </ListItemIcon>
                 <ListItemText primary={"QRs Muestras"} />
               </ListItem>
-              <ListItem button key={"resultados"} onClick={(e)=>{history.push("/calificaciones/resultados")}}>
+              <Divider sx={{mt: 3}} key={"resumen-menu-title"}>
+                <Chip label="Resumen" color="primary"/>
+              </Divider>
+              <ListItem sx={{py:0}} button key={"resultados"} onClick={(e)=>{history.push("/calificaciones/resultados")}}>
                 <ListItemIcon>
-                  <span className="fa-layers fa-fw fa-3x">
+                  <span className="fa-layers fa-fw fa-2x">
                     <FontAwesomeIcon icon={faPollH} transform="shrink-6 left-1"/>
                   </span>
                 </ListItemIcon>
                 <ListItemText primary={"Resultados"} />
               </ListItem>
-              <ListItem button key={"consultar-muestra"} onClick={(e)=>{history.push("/calificaciones/muestra")}}>
+              <ListItem sx={{py:0}} button key={"consultar-muestra"} onClick={(e)=>{history.push("/calificaciones/muestra")}}>
                 <ListItemIcon>
-                  <span className="fa-layers fa-fw fa-3x">
+                  <span className="fa-layers fa-fw fa-2x">
                     <FontAwesomeIcon icon={faCannabis} transform="shrink-6 left-3"/>
                     <FontAwesomeIcon icon={faSquare} transform="shrink-11 down-4 right-4 left-2"/>
                     <FontAwesomeIcon icon={faSearch} inverse transform="shrink-12 down-4 right-4 left-2"/>
@@ -214,17 +239,10 @@ export default function Page({ title, children, footer = true, style, loading = 
                 </ListItemIcon>
                 <ListItemText primary={"Consultar Muestra"} />
               </ListItem>
-              <ListItem button key={"mesas-manager"} onClick={(e)=>{history.push("/mesas-manager")}}>
+              <Divider sx={{my: 2}}/>
+              <ListItem sx={{py:0}} button key={"logout"} onClick={(e)=>{context.logout()}}>
                 <ListItemIcon>
-                  <span className="fa-layers fa-fw fa-3x">
-                    <FontAwesomeIcon icon={faChair} transform="shrink-6 left-1"/>
-                  </span>
-                </ListItemIcon>
-                <ListItemText primary={"Mesas"} />
-              </ListItem>
-              <ListItem button key={"logout"} onClick={(e)=>{context.logout()}}>
-                <ListItemIcon>
-                  <span className="fa-layers fa-fw fa-3x">
+                  <span className="fa-layers fa-fw fa-2x">
                     <FontAwesomeIcon icon={faSignOutAlt} transform="shrink-6 left-1"/>
                   </span>
                 </ListItemIcon>

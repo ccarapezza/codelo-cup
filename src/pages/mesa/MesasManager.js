@@ -5,8 +5,8 @@ import { Button, Chip, Divider, Grid, IconButton, InputBase, Paper, Stack, TextF
 import { Search } from "@material-ui/icons";
 import { Box } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCannabis, faEdit, faExclamationCircle, faPlus, faTag, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
-import { orange, green, red, indigo, yellow } from '@mui/material/colors';
+import { faCannabis, faDice, faEdit, faExclamationCircle, faFootballBall, faPlus, faRandom, faTag, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
+import { orange, green, red, indigo, yellow, blue } from '@mui/material/colors';
 import { DropBox } from "../../components/DropBox";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -26,6 +26,7 @@ export default function MesasManager() {
   const [searchFieldMuestra, setSearchFieldMuestra] = useState("");
   const [searchFieldParticipante, setSearchFieldParticipante] = useState("");
   const [mesaName, setMesaName] = useState("");
+  const [randomizeEnableDisabled, setRandomizeEnableDisabled] = useState(false);
   const matches = useMediaQuery(useTheme().breakpoints.up('sm'));
   const [mode, setMode] = useState("");
 
@@ -239,11 +240,66 @@ export default function MesasManager() {
     },0)
   }
 
+  const naturalSorter = (as, bs) => {
+    var a, b, a1, b1, i= 0, n, L,
+    rx=/(\.\d+)|(\d+(\.\d+)?)|([^\d.]+)|(\.\D+)|(\.$)/g;
+    if(as=== bs) return 0;
+    a= as.toLowerCase().match(rx);
+    b= bs.toLowerCase().match(rx);
+    L= a.length;
+    while(i<L){
+        if(!b[i]) return 1;
+        a1= a[i];
+        b1= b[i++];
+        if(a1!== b1){
+            n= a1-b1;
+            if(!isNaN(n)) return n;
+            return a1>b1? 1:-1;
+        }
+    }
+    return b[i]? -1:0;
+  }
+
+  const handoutParticipantes = (mesa) => {
+    axios.get("/api/mesas/handOutMuestas")
+    .then(function (response) {
+      // handle success
+      if(response.status === 200){
+        context.showMessage("Mesas distribuidas correctamente","success");
+        listAllMesas();
+        obtainRandomizeEnable();
+      }
+    })
+    .catch(function (error) {
+      context.showMessage("No se pudo distribuir las mesas correctamente","error");
+      console.log(error);
+    })   
+  }
+
+  const obtainRandomizeEnable = () => {
+    setLoading(true);
+    axios.get("/api/mesas/randomizeEnable")
+    .then(function (response) {
+      // handle success
+      if(response.status === 200){
+        console.log(response.data);
+        setRandomizeEnableDisabled(!response.data?.randomizeEnable);
+      }
+    })
+    .catch(function (error) {
+      context.showMessage("No se pudo obtener los participantes","error");
+      console.log(error);
+    }).then(function () {
+      setLoading(false);
+    })
+  }
+
   useEffect(() => {
     listAllMesas();
     listAllParticipantes();
     listAllMuestras();
     listAllCategorias();
+    obtainRandomizeEnable();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -264,6 +320,10 @@ export default function MesasManager() {
             <Button variant="outlined" onClick={()=>{mode==="categoria"?setMode(""):setMode("categoria")}} sx={{mx: 1, backgroundColor: yellow[500], p:mode==="categoria"?2:1}}>
               <FontAwesomeIcon icon={faTag}/><span style={{ marginLeft: 5 }}>Agregar Categoría</span>
             </Button>
+            <Button variant="outlined" disabled={randomizeEnableDisabled} onClick={()=>{handoutParticipantes();}} sx={{mx: 1, backgroundColor: blue[300], p:1}}>
+              <FontAwesomeIcon icon={faDice}/><span style={{ marginLeft: 5 }}>Repartir Muestras y Participantes</span>
+            </Button>
+            
             <ButtonModal onClick={()=>setMesaName("")} sx={{mx: 1}} faIcon={faPlus} textButton="Crear Mesa" operation={()=>{createMesa()}}>
               <Box>
                 <Divider sx={{pb:2}}>Nueva mesa</Divider>
@@ -423,9 +483,7 @@ export default function MesasManager() {
           }
           <Grid container>
             {mesas.sort(function(a, b) {
-              const nameA = a.name.toUpperCase();
-              const nameB = b.name.toUpperCase();
-              return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+              return naturalSorter(a.name, b.name);
             }).map((mesa)=>{
               return(<Grid key={"mesa"+mesa.id} item xs={12} sm={3} sx={{padding: 1}}>
                 <DropBox name={"mesa-"+mesa.id} displayName={mesa.name} data={{participantes: mesa.participantes, participantesSecundarios: mesa.participantesSecundarios, muestras: mesa.muestras, categorias: mesa.categorias}} sx={{minHeight: "250pt", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>

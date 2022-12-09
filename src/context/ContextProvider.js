@@ -78,21 +78,19 @@ function ContextProvider({ children }) {
     localStorage.clear();
     setParticipanteData(null);
     setIsParticipanteLogged(false);
-    axios.post("/api/participante/login",{
+    return axios.post("/api/participante/login",{
       hash: hash
     }).then(function (response) {
       if(response.status === 200){
         setParticipanteData(response.data);
         showMessage("Participante Identificado correctamente!", "success");
         history.push("/");
+        return true;
       }else{
         showMessage("No se ha encontrado el Participante.", "error");
         console.error(response);  
+        return false;
       }
-    })
-    .catch(function (error) {
-      showMessage("No se ha encontrado el Participante. Contacte con el administrador."+error, "error");
-      console.error(error);
     })
   };
 
