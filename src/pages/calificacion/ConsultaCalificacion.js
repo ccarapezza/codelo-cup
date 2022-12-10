@@ -13,6 +13,7 @@ import ComparatorColors from '../../ComparatorColors';
 import { ExpandMore } from '@material-ui/icons';
 import { useTheme } from '@emotion/react';
 import { useMediaQuery } from '@material-ui/core';
+import { Fragment } from 'react';
 
 export default function ConsultaCalificacion() {
     const context = useContext(Context);
@@ -107,7 +108,7 @@ export default function ConsultaCalificacion() {
                         m = {
                             ...d,
                             count: 1,
-                            promedioTotal: (d.valores.reduce((previousValue, currentValue)=>previousValue+currentValue.valor) / d.valores.length),
+                            promedioTotal: (d.valores.reduce((previousValue, currentValue)=>previousValue.valor+currentValue.valor, 0) / d.valores.length),
                             calificaciones: []
                         };
                         muestraId = d.muestra.id;
@@ -119,7 +120,7 @@ export default function ConsultaCalificacion() {
                         currentValor.valor += d.valores[index].valor;
                         return currentValor.valor;
                     });
-                    m.promedioTotal = d.valores.reduce((previousValue, currentValue)=>previousValue+currentValue.valor) / d.valores.length;
+                    m.promedioTotal = d.valores.reduce((previousValue, currentValue)=>previousValue+currentValue.valor, 0) / d.valores.length;
                     m.count += 1;
                     delete d.muestra;
                     m.calificaciones.push(d);
@@ -131,7 +132,7 @@ export default function ConsultaCalificacion() {
                           valores: calificacion.valores.map((currentValor)=>{
                             return({
                               ...currentValor,
-                              valor: Math.round(currentValor.valor/calificacion.count * 10) / 10
+                              valor: Math.round(currentValor/calificacion.count * 10) / 10
                             })
                           }),
                           promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
@@ -230,12 +231,12 @@ export default function ConsultaCalificacion() {
                                                 <Divider sx={{pb:"5px"}}><Chip color="success" label={"PROMEDIO"}/></Divider>
                                                 {currentPromedio.valores.map((currentValor, index)=>{
                                                     const idInput = "valores-promedio-"+index+"-input"
-                                                    return(<>
+                                                    return(<Fragment key={idInput+"key"}>
                                                         {JSON.stringify(currentPromedio)}
                                                         <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
                                                         <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                                                         <Divider/>
-                                                    </>)
+                                                    </Fragment>)
                                                 })}
                                                 <Divider sx={{marginBottom: "5px"}}/>
                                                 <InputLabel>Calificaciones: <strong style={{paddingLeft:"5px"}}>{currentPromedio.count}</strong></InputLabel>

@@ -144,7 +144,7 @@ export default function Calificacion() {
                             {categoria && !error && 
                                 <Box key={"categoria"+categoria.id} sx={{color:"white", px: 1, width:"fit-content", display: "flex", alignItems:"center", justifyContent: "space-between", backgroundColor: CategoriaColors[categoria.id], borderRadius: 1, margin: 1}}>
                                     <FontAwesomeIcon icon={faTag} style={{paddingRight: 10, color:"white"}}/>
-                                    <Typography variant='small' sx={{px:2, color:"white"}}>{categoria.name}</Typography>
+                                    <Typography variant='caption' sx={{px:2, color:"white"}}>{categoria.name}</Typography>
                                 </Box>
                             }
                             <Box sx={{width:"fit-content", display: "flex", alignItems:"center"}}>
@@ -172,7 +172,9 @@ export default function Calificacion() {
                                             name={inputName}
                                             value={valores[index]}
                                             onChange={(event, value) => {
-                                                setValor(index, value)
+                                                if(value){
+                                                    setValor(index, value)
+                                                }
                                             }}
                                             max={10} />
                                         :
@@ -184,7 +186,9 @@ export default function Calificacion() {
                                             name={inputName}
                                             value={valores[index]}
                                             onChange={(event, value) => {
-                                                setValor(index, value)
+                                                if(value){
+                                                    setValor(index, value)
+                                                }
                                             }}
                                             max={10} />
                                     }

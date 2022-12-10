@@ -85,11 +85,10 @@ function ContextProvider({ children }) {
         setParticipanteData(response.data);
         showMessage("Participante Identificado correctamente!", "success");
         history.push("/");
-        return true;
       }else{
         showMessage("No se ha encontrado el Participante.", "error");
         console.error(response);  
-        return false;
+        throw new Error("No se ha encontrado el Participante.");
       }
     })
   };
@@ -138,7 +137,7 @@ function ContextProvider({ children }) {
           logout();
         },
         participanteLogin: (hash) => {
-          participanteLogin(hash);
+          return participanteLogin(hash);
         }
       }}>
         {children}

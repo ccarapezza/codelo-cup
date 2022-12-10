@@ -3,34 +3,39 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Card, CardContent, CardHeader, IconButton, Stack } from "@mui/material";
 import React, { useContext, useState } from "react";
 import QrReader from "react-qr-reader";
+import { useHistory } from "react-router-dom";
 import Loading from "../components/Loading";
 import Context from "../context/Context";
 import Page from "./Page";
 
 export default function Login() {
   const context = useContext(Context);
+  const history = useHistory();
   const [camera, setCamera] = useState("environment");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
   const switchCamera = () => {
       setCamera(camera==="environment"?"user":"environment");
   };
 
-  const [hash, setHash] = useState();
-  const [error, setError] = useState(false);
-
   const handleScan = (data) => {
     if (data) {
-      setHash(data)
-      context.participanteLogin(data).then(function (response) {
-        console.log("Ok!");
-      }).catch(function (error) {
+      setLoading(true)
+      context.participanteLogin(data)
+      .catch(function (error) {
         context.showMessage("No se ha encontrado el Participante. Contacte con el administrador.", "error");
+        history.push("/");
         console.error(error);
+      }).then(function (response) {
+        setLoading(false);
       })
     }
   };
 
   const handleError = (err) => {
     setError(err);
+    setLoading(false);
     console.error(err);
   };
 
@@ -60,7 +65,7 @@ export default function Login() {
                 <div>QR RESULT:{hash}</div>
                 <div>{JSON.stringify(error)}</div>
               */}
-              {!hash?
+              {!loading?
                 <QrReader
                   facingMode={camera}
                   delay={300}

@@ -8,6 +8,7 @@ import Page from "./Page";
 import axios from "axios";
 import { Box } from "@mui/system";
 import copaLogo from './../assets/8va-copa-cata-codelo.jpeg'
+import { Fragment } from "react";
 
 export default function Home() {
   const context = useContext(Context);
@@ -215,11 +216,11 @@ export default function Home() {
 
                         {calificacion.valores.map((currentValor, index)=>{
                           const idInput = "valores-dojo-"+index+"-input"
-                          return(<>
+                          return(<Fragment key={idInput+"-key"}>
                               <InputLabel htmlFor={idInput}><span>{currentValor.label}: </span><strong style={{paddingLeft:"5px"}}>{currentValor.valor}</strong></InputLabel>
                               <Rating name={idInput} value={currentValor.valor} max={10} readOnly sx={{fontSize: "1.4rem"}}/>
                               <Divider/>
-                            </>)
+                            </Fragment>)
                         })}
 
                         <Divider sx={{marginBottom: "5px"}}/>

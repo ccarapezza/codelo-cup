@@ -18,13 +18,14 @@ export default function Resultados() {
   const [calificaciones, setCalificaciones] = useState([]);
 
   const [resultados, setResultados] = useState([]);
-  const [resultadoProcessed, setResultadoProcessed] = useState([]); 
+  const [resultadoProcessed, setResultadoProcessed] = useState([]);
+  const [resultadoGrouped, setResultadoGrouped] = useState([]);
   const [muestraCategoriaFilter, setMuestraCategoriaFilter] = useState("")
   const matches = useMediaQuery(useTheme().breakpoints.up('sm'));
   //Custom Table End
 
   const [showDetails, setShowDetails] = useState(false);
-  const [orderValue, setOrderValue] = useState("presentacion");
+  const [orderValue, setOrderValue] = useState("");
   const [sortOrder, setSortOrder] = useState(0);
   const [dojoFilter, setDojoFilter] = useState(false);
   const [growFilter, setGrowFilter] = useState(false);
@@ -125,15 +126,6 @@ export default function Resultados() {
         })
       })
       .filter((resultado)=>{
-        if(dojoFilter){
-          return resultado.muestra?.participante?.dojo?true:false;
-        }
-        if(growFilter){
-          return resultado.muestra?.participante?.grow?true:false;
-        }
-        return resultado;
-      })
-      .filter((resultado)=>{
         if(resultado.muestra?.categoria && muestraCategoriaFilter){
           return parseInt(resultado.muestra.categoria.id) === muestraCategoriaFilter
         }else{
@@ -147,11 +139,10 @@ export default function Resultados() {
         if(orderValue==="promedioTotal"){
           aValue = a.promedioTotal;
           bValue = b.promedioTotal;
-        }else{
+        }else if(orderValue){
           aValue = a.valores.find((valor)=>camelize(valor.label)===orderValue).valor;
           bValue = b.valores.find((valor)=>camelize(valor.label)===orderValue).valor;
         }
-
         if (aValue > bValue) {
           return sortOrder?1:-1;
         }
@@ -162,6 +153,82 @@ export default function Resultados() {
       });
       setResultadoProcessed(resultadoSortAndFilter);
   }, [dojoFilter, growFilter, muestraCategoriaFilter, orderValue, resultados, sortOrder])
+
+  useEffect(() => {
+    let resultadoGroupedList;
+    if(resultadoProcessed.length>0){
+      resultadoGroupedList = resultadoProcessed.filter((resultado)=>{
+        if(dojoFilter){
+          return resultado.muestra?.participante?.dojo?true:false;
+        }
+        if(growFilter){
+          return resultado.muestra?.participante?.grow?true:false;
+        }
+        return resultado;
+      });
+      if(dojoFilter){
+        resultadoGroupedList = resultadoGroupedList.reduce(function(dojos, muestraDojo){
+          if(!dojos[muestraDojo?.muestra?.participante?.dojo?.id]){
+            dojos[muestraDojo?.muestra?.participante?.dojo?.id] = {
+              muestra: muestraDojo.muestra,
+              valores: [],
+              promedioTotal: muestraDojo.promedioTotal,
+              count: 1,
+              muestras: []
+            };
+            dojos[muestraDojo?.muestra?.participante?.dojo?.id].muestras.push(muestraDojo);
+            return dojos;
+          }
+          dojos[muestraDojo?.muestra?.participante?.dojo?.id].promedioTotal += muestraDojo.promedioTotal;
+          dojos[muestraDojo?.muestra?.participante?.dojo?.id].count += 1;
+          dojos[muestraDojo?.muestra?.participante?.dojo?.id].muestras.push(muestraDojo);
+          return dojos;
+        },[])
+      }
+  
+      if(growFilter){
+        resultadoGroupedList = resultadoGroupedList.reduce(function(grows, muestraGrow){
+          const findedGrow = grows.findIndex(g=>muestraGrow?.muestra?.participante?.grow===g?.muestra?.participante?.grow);
+          if(findedGrow<0){
+            let newGrow  = {
+              muestra: muestraGrow.muestra,
+              promedioTotal: muestraGrow.promedioTotal,
+              count: 1,
+              muestras: []
+            };
+            newGrow.muestras.push(muestraGrow);
+            grows.push(newGrow);
+          }else{
+            grows[findedGrow].promedioTotal += muestraGrow.promedioTotal;
+            grows[findedGrow].count += 1;
+            grows[findedGrow].muestras.push(muestraGrow);
+          }
+          return grows;
+        },[])
+      }
+  
+      if(dojoFilter||growFilter){
+        setResultadoGrouped(resultadoGroupedList.map((calificacion)=>{
+          return({
+            ...calificacion,
+            valores: [],
+            promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
+          })
+        })
+        .sort(function(a, b) {
+          const aValue = a.promedioTotal;
+          const bValue = b.promedioTotal;
+          if (aValue > bValue) {
+            return sortOrder?1:-1;
+          }
+          if (aValue < bValue) {
+            return sortOrder?-1:1;
+          }
+          return 0;
+        }));
+      }
+    }
+  }, [dojoFilter, growFilter, resultadoProcessed]);
 
   /*
   useEffect(() => {
@@ -181,7 +248,6 @@ export default function Resultados() {
         <Stack sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", flexWrap: "wrap", margin: 0}} direction="row" spacing={1}>
           {labels.map((label, index)=>{
             const lbl = camelize(label);
-            console.log(lbl)
             return(<Button key={"label-order-"+index} color="secondary" sx={{margin: "5px!important"}} variant={orderValue===lbl?"contained":"outlined"} size="small" onClick={()=>{setOrderValue(lbl); setSortOrder(sortOrder?0:1)}}>
               {orderValue===label&&<FontAwesomeIcon icon={sortOrder?faSortAmountUp: faSortAmountDown} style={{margin: 5}}/>}
               <small>{label}</small>
@@ -194,7 +260,7 @@ export default function Resultados() {
         </Stack>
         <Divider>Filtrar por:</Divider>
           <Box sx={{display:"flex", flexDirection:matches?"row":"column"}}>
-            <SelectCategoria sx={{flexGrow: 1, whiteSpace:"nowrap", width: "auto", mt:0, mb:1}} blankLabel="Todas" value={muestraCategoriaFilter} onChange={(e)=>setMuestraCategoriaFilter(e?.target?.value)} setLabels={setLabels}/>
+            <SelectCategoria sx={{flexGrow: 1, whiteSpace:"nowrap", width: "auto", mt:0, mb:1}} blankLabel="Todas" value={muestraCategoriaFilter} onChange={(e)=>{setMuestraCategoriaFilter(e?.target?.value); setOrderValue("");}} setLabels={setLabels}/>
             <FormControlLabel sx={{flexGrow: 1, whiteSpace:"nowrap", mx:1, textAlign: "center", display: "inline", alignSelf: "center"}} control={<Switch checked={dojoFilter} onChange={(e)=>{setDojoFilter(e.target.checked); setGrowFilter(e.target.checked?false:growFilter);}} />} label={<><FontAwesomeIcon icon={faVihara}/>Categoria Dojos</>}/>
             <FormControlLabel sx={{flexGrow: 1, whiteSpace:"nowrap", mx:1, textAlign: "center", display: "inline", alignSelf: "center"}} control={<Switch checked={growFilter} onChange={(e)=>{setGrowFilter(e.target.checked); setDojoFilter(e.target.checked?false:dojoFilter);}} />} label={<><span className="fa-layers fa-fw" style={{color: "black", marginLeft:10}}><FontAwesomeIcon icon={faCannabis} transform="shrink-4 up-8"/><FontAwesomeIcon icon={faStoreAlt} transform="shrink-3 down-5"/></span>Categoria Grows</>}/>           
           </Box>
@@ -224,44 +290,7 @@ export default function Resultados() {
         <Divider/>
         <List sx={{paddingTop: 0, marginTop: 0}}>
           {
-            growFilter&&(resultadoProcessed.reduce(function(grows, muestraGrow){
-              const findedGrow = grows.findIndex(g=>muestraGrow?.muestra?.participante?.grow===g?.muestra?.participante?.grow);
-              if(findedGrow<0){
-                let newGrow  = {
-                  muestra: muestraGrow.muestra,
-                  promedioTotal: muestraGrow.promedioTotal,
-                  count: 1,
-                  muestras: []
-                };
-                newGrow.muestras.push(muestraGrow);
-                grows.push(newGrow);
-              }else{
-                grows[findedGrow].promedioTotal += muestraGrow.promedioTotal;
-                grows[findedGrow].count += 1;
-                grows[findedGrow].muestras.push(muestraGrow);
-              }
-              return grows;
-            },[])
-            .map((calificacion)=>{
-              return({
-                ...calificacion,
-                valores: [],
-                promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
-              })
-            })
-            .sort(function(a, b) {
-              const aValue = a.promedioTotal;
-              const bValue = b.promedioTotal;
-
-              if (aValue > bValue) {
-                return sortOrder?1:-1;
-              }
-              if (aValue < bValue) {
-                return sortOrder?-1:1;
-              }
-              return 0;
-            })
-            .map((resultado)=>{
+            growFilter&&(resultadoGrouped.map((resultado)=>{
               return(<div key={"res-"+resultado.muestra?.participante?.grow}>
                 <Paper sx={{padding:"5px", margin: 2}} elevation={4}>
                   <Divider sx={{pb:"5px"}}><Chip title="Es Grow" icon={
@@ -290,47 +319,8 @@ export default function Resultados() {
               </div>)
             }))
           }
-
           {
-            dojoFilter&&(resultadoProcessed.reduce(function(dojos, muestraDojo){
-              if(!dojos[muestraDojo?.muestra?.participante?.dojo?.id]){
-                dojos[muestraDojo?.muestra?.participante?.dojo?.id] = {
-                  muestra: muestraDojo.muestra,
-                  valores: [],
-                  promedioTotal: muestraDojo.promedioTotal,
-                  count: 1,
-                  muestras: []
-                };
-                dojos[muestraDojo?.muestra?.participante?.dojo?.id].muestras.push(muestraDojo);
-                return dojos;
-              }
-
-              dojos[muestraDojo?.muestra?.participante?.dojo?.id].promedioTotal += muestraDojo.promedioTotal;
-
-              dojos[muestraDojo?.muestra?.participante?.dojo?.id].count += 1;
-              dojos[muestraDojo?.muestra?.participante?.dojo?.id].muestras.push(muestraDojo);
-              return dojos;
-            },[])
-            .map((calificacion)=>{
-              return({
-                ...calificacion,
-                valores: [],
-                promedioTotal: Math.round(calificacion.promedioTotal/calificacion.count * 10) / 10
-              })
-            })
-            .sort(function(a, b) {
-              const aValue = a.promedioTotal;
-              const bValue = b.promedioTotal;
-
-              if (aValue > bValue) {
-                return sortOrder?1:-1;
-              }
-              if (aValue < bValue) {
-                return sortOrder?-1:1;
-              }
-              return 0;
-            })
-            .map((resultado)=>{
+            dojoFilter&&(resultadoGrouped.map((resultado)=>{
               console.log("res", resultado);
               return(<div key={"res-"+resultado.muestra?.participante?.dojo?.id}>
                 <Paper sx={{padding:"5px", margin: 2}} elevation={4}>
