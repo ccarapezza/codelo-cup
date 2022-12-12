@@ -1,6 +1,6 @@
-import { faBong, faExclamation, faExclamationCircle, faJoint, faSquare } from "@fortawesome/free-solid-svg-icons";
+import { faBong, faExclamation, faExclamationCircle, faSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import React from "react";
 import Page from "./Page";
 
@@ -16,6 +16,10 @@ export default function ServerDownPage() {
           <FontAwesomeIcon icon={faExclamation} inverse transform="shrink-12 down-3 left-1"/>
         </div>
         <Typography variant="h4" sx={{textAlign: "center"}}>Hay problemas con el servidor, intente nuevamente en un momento o contacte a un adminsitrador.</Typography>
+        <Button variant="contained" href="/" sx={{mt: 2}}>
+          Volver
+          <FontAwesomeIcon icon={faBong} transform="shrink-4" />
+        </Button>
       </Stack>
     </Page>
   );

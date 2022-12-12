@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Page from "../Page";
 import { useForm } from "react-hook-form";
 import Context from "../../context/Context";

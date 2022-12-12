@@ -5,7 +5,7 @@ import { Button, Chip, Divider, Grid, IconButton, InputBase, Paper, Stack, TextF
 import { Search } from "@material-ui/icons";
 import { Box } from "@mui/system";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCannabis, faDice, faEdit, faExclamationCircle, faFootballBall, faPlus, faRandom, faTag, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faDice, faEdit, faExclamationCircle, faPlus, faTag, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 import { orange, green, red, indigo, yellow, blue } from '@mui/material/colors';
 import { DropBox } from "../../components/DropBox";
 import { DndProvider } from "react-dnd";

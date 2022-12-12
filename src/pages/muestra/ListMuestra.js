@@ -4,10 +4,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Page from "../Page";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTags, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { Box } from "@mui/system";
 import { Search } from "@material-ui/icons";
-import { green, indigo, orange } from "@mui/material/colors";
+import { green, orange } from "@mui/material/colors";
 import CategoriaColors from "../../CategoriaColors";
 
 export default function ListMuestra() {
@@ -71,7 +71,7 @@ export default function ListMuestra() {
                           <ListItemText primary={<Typography variant="h5" sx={{mr:1, fontWeight: "bold"}}>{muestra.name}</Typography>} />
                           <Chip size="small" label={muestra.categoria?.name} sx={{mx: 1, backgroundColor: CategoriaColors[muestra.categoria.id-1], fontWeight: "bold", color:"white"}}/>
                         </Stack>
-                        <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", width: "100%", m:0, pr: 2, borderRadius: 2, backgroundColor: orange[500], width: "fit-content"}}>
+                        <Box sx={{display: "flex", alignItems:"center", justifyContent: "start", m:0, pr: 2, borderRadius: 2, backgroundColor: orange[500], width: "fit-content"}}>
                           <FontAwesomeIcon icon={faUser} style={{paddingLeft: 10}}/>
                           <Chip size="small" label={"#"+muestra.participante.n} sx={{margin: 1, fontSize: ".8rem", fontWeight: "bold", backgroundColor: orange[200]}}/>
                           <Typography>{muestra.participante.name}</Typography>

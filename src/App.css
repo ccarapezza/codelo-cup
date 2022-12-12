@@ -35,6 +35,12 @@
 .max-150 {
   max-width: "150px";
 }
+.max-100 {
+  max-width: "100px";
+}
+.max-50 {
+  max-width: "50px";
+}
 
 .scroll-flex-fix::before , 
 .scroll-flex-fix::after {

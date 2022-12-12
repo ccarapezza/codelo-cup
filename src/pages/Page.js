@@ -9,7 +9,7 @@ import { useContext, useState } from "react";
 import { useHistory } from "react-router";
 import Context from "../context/Context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCannabis, faChair, faCogs, faGavel, faHome, faKey, faListAlt, faPollH, faQrcode, faSearch, faSignOutAlt, faSquare, faSyncAlt, faTags, faUser, faUserPlus, faVihara } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faChair, faCogs, faGavel, faHome, faKey, faListAlt, faPollH, faQrcode, faSearch, faSignOutAlt, faSquare, faSyncAlt, faTags, faUser, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { deepOrange, indigo, yellow } from "@mui/material/colors";
 import Loading from "../components/Loading";
 

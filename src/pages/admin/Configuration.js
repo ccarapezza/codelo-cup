@@ -33,23 +33,6 @@ export default function Configuration() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const getCurrentRestriccionPorMesa = () => {
-    setLoading(true);
-    axios.get("/api/admin/get-mesa-restricted")
-    .then(function (response) {
-        // handle success
-        if(response.status === 200){
-          setRestriccionPorMesa(response.data?.value==="true");
-        }
-    })
-    .catch(function (error) {
-        context.showMessage("No se pudo obtener los dojos","error");
-        console.log(error);
-    }).finally(()=>{
-      setLoading(false);
-    });
-  }
-
   const updateRestriccionPorMesa = () => {
     setLoading(true);
     axios.put("/api/admin/update-mesa-restricted",{
@@ -70,8 +53,21 @@ export default function Configuration() {
   }
 
   useEffect(() => {
-    getCurrentRestriccionPorMesa();
-  }, [])
+    setLoading(true);
+    axios.get("/api/admin/get-mesa-restricted")
+    .then(function (response) {
+        // handle success
+        if(response.status === 200){
+          setRestriccionPorMesa(response.data?.value==="true");
+        }
+    })
+    .catch(function (error) {
+        context.showMessage("No se pudo obtener los dojos","error");
+        console.log(error);
+    }).finally(()=>{
+      setLoading(false);
+    });
+  }, [context])
   
 
   return (

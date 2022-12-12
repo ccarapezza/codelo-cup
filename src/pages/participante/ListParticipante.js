@@ -14,7 +14,6 @@ import ConfirmModal from "../../components/ConfirmModal";
 import Context from "../../context/Context";
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import ButtonModal from "../../components/ButtonModal";
 
 export default function ListParticipante() {
   const context = useContext(Context);

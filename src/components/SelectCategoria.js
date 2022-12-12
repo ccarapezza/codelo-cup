@@ -51,7 +51,7 @@ export default function SelectCategoria({id="select-categoria", label="Categorí
     }, [])
 
     return (
-        <FormControl fullWidth sx={{my: 2, display:"flex", flexDirection: "row", ...sx}}>
+        <FormControl size='small' fullWidth sx={{my: 2, display:"flex", flexDirection: "row", ...sx}}>
             <InputLabel id={id+"-label"}>{label}</InputLabel>
             <Select 
                 {...selectProps}

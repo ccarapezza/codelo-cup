@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { faCannabis, faChair, faClock, faCogs, faDatabase, faGavel, faKey, faListAlt, faPollH, faQrcode, faSearch, faServer, faSignOutAlt, faSquare, faTags, faUser, faUserPlus, faVihara } from "@fortawesome/free-solid-svg-icons";
+import { faCannabis, faChair, faClock, faCogs, faDatabase, faKey, faListAlt, faPollH, faQrcode, faSearch, faSignOutAlt, faSquare, faTags, faUser, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Chip, Divider, Grid, InputLabel, Paper, Rating, Stack } from "@mui/material";
 import { useHistory } from "react-router";
@@ -153,24 +153,11 @@ export default function Home() {
                         </span>
                       <span>Consultar Muestras</span>
                     </Button>
-                  </Stack>
-                </Paper>
-                <Paper sx={{m:1, p:1, mt: 2}}>
-                  <Stack spacing={1}>
-                    <Divider sx={{mb: 2}}>
-                      <Chip label="Resumen On LIVE" color="primary"/>
-                    </Divider>
                     <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/summary")}}>
                       <span className="fa-layers fa-fw fa-2x">
                         <FontAwesomeIcon icon={faDatabase} transform="shrink-6 left-1"/>
                       </span>
                       <span>Summary</span>
-                    </Button>
-                    <Button variant="outlined" fullWidth onClick={(e)=>{history.push("/summary-calificaciones")}}>
-                      <span className="fa-layers fa-fw fa-2x">
-                        <FontAwesomeIcon icon={faServer} transform="shrink-6 left-1"/>
-                      </span>
-                      <span>Summary Calificaciones</span>
                     </Button>
                   </Stack>
                 </Paper>
