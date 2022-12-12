@@ -7,7 +7,7 @@ import Context from "../context/Context";
 import Page from "./Page";
 import axios from "axios";
 import { Box } from "@mui/system";
-import copaLogo from './../assets/8va-copa-cata-codelo.jpeg'
+import copaLogo from './../assets/copa-logo.png';
 import { Fragment } from "react";
 
 export default function Home() {

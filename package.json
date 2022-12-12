@@ -1,7 +1,7 @@
 {
   "name": "codelo-cup",
   "version": "0.1.0",
-  "homepage": "https://codelo-cup.herokuapp.com/",
+  "homepage": "https://copadelmar.up.railway.app/",
   "private": true,
   "dependencies": {
     "@denorg/qrcode": "^2.0.0",
