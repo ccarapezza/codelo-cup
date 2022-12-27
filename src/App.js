@@ -49,7 +49,7 @@ const theme = createTheme({
     tonalOffset: 0.2,
   },
 })
-
+/*
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -74,7 +74,7 @@ const darkTheme = createTheme({
     tonalOffset: 0.2,
   },
 });
-
+*/
 export default function App() {
 
   useEffect(() => {
