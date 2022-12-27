@@ -4,7 +4,7 @@ import ContextProvider from "./context/ContextProvider";
 import Routes from "./Routes";
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from "@emotion/react";
-import { blueGrey, deepOrange, grey } from "@mui/material/colors";
+import { blueGrey, deepOrange } from "@mui/material/colors";
 import { useEffect } from "react";
 import { CssBaseline } from '@mui/material/';
 
